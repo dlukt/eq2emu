@@ -6657,7 +6657,8 @@ sint32 WorldDatabase::AddMasterTitle(const char* titleName, int8 isPrefix)
 	if(title)
 		return title->GetID();
 
-	query.RunQuery2(Q_INSERT, "INSERT INTO titles set title='%s', prefix=%u", titleName, isPrefix);
+	string escaped_title = getSafeEscapeString(titleName);
+	query.RunQuery2(Q_INSERT, "INSERT INTO titles set title='%s', prefix=%u", escaped_title.c_str(), isPrefix);
 	if(query.GetErrorNumber() && query.GetError() && query.GetErrorNumber() < 0xFFFFFFFF){
 		LogWrite(DATABASE__ERROR, 0, "Database", "Error in AddMasterTitle query '%s': %s", query.GetQuery(), query.GetError());
 		return false;
