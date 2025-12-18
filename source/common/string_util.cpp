@@ -465,7 +465,8 @@ char *CleanMobName(const char *in, char *out)
 {
 	unsigned i, j;
 
-	for (i = j = 0; i < strlen(in); i++)
+	// Optimization: check for null terminator instead of calling strlen on every iteration
+	for (i = j = 0; in[i] != 0; i++)
 	{
 		// convert _ to space.. any other conversions like this?  I *think* this
 		// is the only non alpha char that's not stripped but converted.
