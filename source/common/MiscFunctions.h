@@ -74,7 +74,7 @@ int32 ParseIntValue(string input);
 int64 ParseLongLongValue(string input);
 map<string, string> TranslateBrokerRequest(string request);
 void	MovementDecode(uchar* dst, uchar* newval, uchar* orig, int16 len);
-vector<string>* SplitString(string str, char delim);
+vector<string>* SplitString(const string& str, char delim);
 int8 DoOverLoad(int32 val, uchar* data);
 int8 CheckOverLoadSize(int32 val);
 int32	CountWordsInString(const char* text);

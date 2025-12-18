@@ -359,20 +359,20 @@ int8 MakeInt8(float* input){
 	return (int8)(input2*255);
 }
 
-vector<string>* SplitString(string str, char delim){
+vector<string>* SplitString(const string& str, char delim){
 	vector<string>* results = new vector<string>;
-	int32 pos;
-	while((pos = str.find_first_of(delim))!= str.npos){
-		if(pos > 0){
-			results->push_back(str.substr(0,pos));
+	size_t start = 0;
+	size_t end = str.find(delim);
+	while (end != string::npos) {
+		if (end > start) {
+			results->push_back(str.substr(start, end - start));
 		}
-		if(str.length() > pos)
-			str = str.substr(pos+1);
-		else
-			break;
+		start = end + 1;
+		end = str.find(delim, start);
 	}
-	if(str.length() > 0)
-		results->push_back(str);
+	if (start < str.length()) {
+		results->push_back(str.substr(start));
+	}
 	return results;
 }
 
