@@ -411,7 +411,7 @@ int32 LoginDatabase::SaveCharacter(PacketStruct* create, LoginAccount* acct, int
 	query.RunQuery2(Q_INSERT, create_char.c_str(), 
 		acct->getLoginAccountID(), 
 		create->getType_int32_ByName("server_id"), world_charid, 
-		create->getType_EQ2_16BitString_ByName("name").data.c_str(), 
+		getSafeEscapeString(create->getType_EQ2_16BitString_ByName("name").data.c_str()).c_str(),
 		create->getType_int8_ByName("race"), 
 		create->getType_int8_ByName("class"), 
 		create->getType_int8_ByName("gender"), 
