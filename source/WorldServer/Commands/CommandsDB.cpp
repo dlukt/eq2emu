@@ -211,7 +211,7 @@ int32 WorldDatabase::CreateSpawnFromTemplateByName(Client* client, const char* t
 	LogWrite(COMMAND__DEBUG, 5, "Command", "\tCoords: %.2f %.2f %.2f...", new_x, new_y, new_z);
 
 	// find the spawn_location_id in the template we plan to duplicate
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id, spawn_location_id FROM spawn_templates WHERE name = '%s'", template_name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id, spawn_location_id FROM spawn_templates WHERE name = '%s'", getSafeEscapeString(template_name).c_str());
 	if (result && (row = mysql_fetch_row(result))) {
 		if (row[0])
 		{
