@@ -498,9 +498,9 @@ char *RemoveApostrophes(const char *s)
 
 	strcpy(NewString, s);
 
-	for (unsigned int i = 0; i < strlen(NewString); ++i)
-		if (NewString[i] == '\'')
-			NewString[i] = '_';
+	for (char* p = NewString; *p; ++p)
+		if (*p == '\'')
+			*p = '_';
 
 	return NewString;
 }
@@ -519,10 +519,14 @@ const char *ConvertArrayF(float input, char *returnchar)
 
 bool isAlphaNumeric(const char *text)
 {
-	for (unsigned int charIndex = 0; charIndex<strlen(text); charIndex++) {
-		if ((text[charIndex] < 'a' || text[charIndex] > 'z') &&
-			(text[charIndex] < 'A' || text[charIndex] > 'Z') &&
-			(text[charIndex] < '0' || text[charIndex] > '9'))
+	if (!text)
+		return false;
+
+	for (const char* p = text; *p; ++p) {
+		char c = *p;
+		if ((c < 'a' || c > 'z') &&
+			(c < 'A' || c > 'Z') &&
+			(c < '0' || c > '9'))
 			return false;
 	}
 

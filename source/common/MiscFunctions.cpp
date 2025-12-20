@@ -650,10 +650,10 @@ int8 DoOverLoad(int32 val, uchar* data){
 /* Treats contiguous spaces as one space. */
 int32 CountWordsInString(const char* text) {
 	int32 words = 0;
-	if (text && strlen(text) > 0) {
+	if (text && *text) {
 		bool on_word = false;
-		for (int32 i = 0; i < strlen(text); i++) {
-			char letter = text[i];
+		for (const char* p = text; *p; ++p) {
+			char letter = *p;
 			if (on_word && !((letter >= 48 && letter <= 57) || (letter >= 65 && letter <= 90) || (letter >= 97 && letter <= 122)))
 				on_word = false;
 			else if (!on_word && ((letter >= 48 && letter <= 57) || (letter >= 65 && letter <= 90) || (letter >= 97 && letter <= 122))){
