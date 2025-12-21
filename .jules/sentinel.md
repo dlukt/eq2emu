@@ -1,4 +1,4 @@
-## 2024-05-23 - Fix SQL Injection in WorldDatabase::AddMasterTitle
-**Vulnerability:** SQL Injection in `WorldDatabase::AddMasterTitle`
-**Learning:** The `RunQuery2` method does not automatically sanitize inputs when using formatted strings. It acts like `printf`, so user input passed directly to `%s` is vulnerable.
-**Prevention:** Always use `getSafeEscapeString` or `getEscapeString` on any user-controlled string before passing it to a SQL query format string.
+## 2024-05-23 - Fix SQL Injection in Command_MoveCharacter
+**Vulnerability:** SQL Injection in `Commands::Command_MoveCharacter`
+**Learning:** `Command_MoveCharacter` took user input directly from `Seperator::arg` and inserted it into a SQL query using `snprintf` without any escaping. This allowed attackers to manipulate the query (e.g. via `/movechar ' OR 1=1 -- zone`).
+**Prevention:** Always escape user input using `database.getSafeEscapeString()` before using it in SQL queries, especially when constructing queries manually with string concatenation or formatting. Using `std::string` for query construction avoids buffer overflows associated with fixed-size buffers like `char query[256]`.

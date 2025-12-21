@@ -12248,20 +12248,19 @@ void Commands::Command_FindSpawn(Client* client, Seperator* sep) {
 void Commands::Command_MoveCharacter(Client* client, Seperator* sep) {
 	if(sep && sep->arg[0][0] && sep->arg[1][0])
 	{
-		char* name = sep->arg[0];
-		char* zoneName = sep->arg[1];
+		string name = database.getSafeEscapeString(sep->arg[0]);
+		string zoneName = database.getSafeEscapeString(sep->arg[1]);
 		int32 zone_duplicating_id = 0;
 		if(sep->arg[2][0])
 			zone_duplicating_id = atoul(sep->arg[2]);
 		
-		char query[256];
-		snprintf(query, 256, "UPDATE characters c, zones z set c.x = z.safe_x, c.y = z.safe_y, c.z = z.safe_z, c.heading = z.safe_heading, c.current_zone_id = z.id, c.zone_duplicating_id = %u where c.name = '%s' and z.name='%s'", zone_duplicating_id, name, zoneName);
-		if (database.RunQuery(query, strnlen(query, 256)))
+		string query = "UPDATE characters c, zones z set c.x = z.safe_x, c.y = z.safe_y, c.z = z.safe_z, c.heading = z.safe_heading, c.current_zone_id = z.id, c.zone_duplicating_id = " + std::to_string(zone_duplicating_id) + " where c.name = '" + name + "' and z.name='" + zoneName + "'";
+		if (database.RunQuery(query.c_str(), query.length()))
 		{
-			client->Message(CHANNEL_COLOR_YELLOW, "Ran query:%s", query);
+			client->Message(CHANNEL_COLOR_YELLOW, "Ran query:%s", query.c_str());
 		}
 		else
-			client->Message(CHANNEL_COLOR_RED, "Query FAILED to run: %s", query);
+			client->Message(CHANNEL_COLOR_RED, "Query FAILED to run: %s", query.c_str());
 	}
 }
 
