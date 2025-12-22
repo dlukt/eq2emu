@@ -23,7 +23,8 @@ int32 WorldDatabase::CreateNewBot(int32 char_id, string name, int8 race, int8 ad
 			index = result.GetInt32(0) + 1;
 	}
 
-	if (!database_new.Query("INSERT INTO `bots` (`char_id`, `bot_id`, `name`, `race`, `class`, `gender`, `model_type`) VALUES (%u, %u, \"%s\", %u, %u, %u, %u)", char_id, index, name.c_str(), race, advClass, gender, model_id)) {
+	string escaped_name = database_new.EscapeStr(name);
+	if (!database_new.Query("INSERT INTO `bots` (`char_id`, `bot_id`, `name`, `race`, `class`, `gender`, `model_type`) VALUES (%u, %u, \"%s\", %u, %u, %u, %u)", char_id, index, escaped_name.c_str(), race, advClass, gender, model_id)) {
 		LogWrite(DATABASE__ERROR, 0, "DBNew", "MySQL Error %u: %s", database_new.GetError(), database_new.GetErrorMsg());
 		return 0;
 	}
@@ -95,14 +96,16 @@ void WorldDatabase::SaveBotAppearance(Bot* bot) {
 }
 
 void WorldDatabase::SaveBotColors(int32 bot_id, const char* type, EQ2_Color color) {
-	if (!database_new.Query("INSERT INTO `bot_appearance` (`bot_id`, `type`, `red`, `green`, `blue`) VALUES (%i, '%s', %i, %i, %i) ON DUPLICATE KEY UPDATE `red` = %i, `blue` = %i, `green` = %i", bot_id, type, color.red, color.green, color.blue, color.red, color.blue, color.green)) {
+	string escaped_type = database_new.EscapeStr(type);
+	if (!database_new.Query("INSERT INTO `bot_appearance` (`bot_id`, `type`, `red`, `green`, `blue`) VALUES (%i, '%s', %i, %i, %i) ON DUPLICATE KEY UPDATE `red` = %i, `blue` = %i, `green` = %i", bot_id, escaped_type.c_str(), color.red, color.green, color.blue, color.red, color.blue, color.green)) {
 		LogWrite(DATABASE__ERROR, 0, "DBNew", "MySQL Error %u: %s", database_new.GetError(), database_new.GetErrorMsg());
 		return;
 	}
 }
 
 void WorldDatabase::SaveBotFloats(int32 bot_id, const char* type, float float1, float float2, float float3) {
-	if (!database_new.Query("INSERT INTO `bot_appearance` (`bot_id`, `type`, `red`, `green`, `blue`, `signed_value`) VALUES (%i, '%s', %i, %i, %i, 1) ON DUPLICATE KEY UPDATE `red` = %i, `blue` = %i, `green` = %i", bot_id, type, float1, float2, float3, float1, float2, float3)) {
+	string escaped_type = database_new.EscapeStr(type);
+	if (!database_new.Query("INSERT INTO `bot_appearance` (`bot_id`, `type`, `red`, `green`, `blue`, `signed_value`) VALUES (%i, '%s', %i, %i, %i, 1) ON DUPLICATE KEY UPDATE `red` = %i, `blue` = %i, `green` = %i", bot_id, escaped_type.c_str(), float1, float2, float3, float1, float2, float3)) {
 		LogWrite(DATABASE__ERROR, 0, "DBNew", "MySQL Error %u: %s", database_new.GetError(), database_new.GetErrorMsg());
 		return;
 	}
