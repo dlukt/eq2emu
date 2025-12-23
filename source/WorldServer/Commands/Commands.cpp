@@ -3336,7 +3336,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 		}
 		case COMMAND_FRIEND_ADD:{
 			string name = "";
-			if(sep && sep->arg[0] && strlen(sep->arg[0]) > 1)
+			if(sep && sep->arg[0] && sep->arg[0][0] != '\0' && sep->arg[0][1] != '\0')
 				name = database.GetPlayerName(sep->arg[0]);
 			else if(cmdTarget && cmdTarget->IsPlayer())
 				name = string(cmdTarget->GetName());
@@ -3460,7 +3460,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 				return;
 			}
 
-			if (sep && sep->arg[0] && strlen(sep->arg[0]) > 1) {
+			if (sep && sep->arg[0] && sep->arg[0][0] != '\0' && sep->arg[0][1] != '\0') {
 				Client* new_leader = zone_list.GetClientByCharName(sep->arg[0]);
 				if (new_leader && new_leader->GetPlayer()->GetGroupMemberInfo() && new_leader->GetPlayer()->GetGroupMemberInfo()->group_id == client->GetPlayer()->GetGroupMemberInfo()->group_id) {
 					if (client->GetPlayer()->IsGroupMember(new_leader->GetPlayer())) {

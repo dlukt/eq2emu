@@ -705,9 +705,11 @@ void LWorld::Kick(const char* message, bool iSetKickedFlag) {
 		Link->Disconnect();
 }
 bool LWorld::CheckServerName(const char* name) {
-	if (strlen(name) < 10)
+	// Optimization: Calculate strlen once to avoid re-calculation in loop
+	size_t len = strlen(name);
+	if (len < 10)
 		return false;
-	for (size_t i=0; i<strlen(name); i++) {
+	for (size_t i=0; i<len; i++) {
 		if (!((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= 'A' && name[i] <= 'Z') || (name[i] >= '0' && name[i] <= '9') || name[i] == ' ' || name[i] == '\'' || name[i] == '-' || name[i] == '(' || name[i] == ')' || name[i] == '[' || name[i] == ']' || name[i] == '/' || name[i] == '.' || name[i] == ',' || name[i] == '_' || name[i] == '+' || name[i] == '=' || name[i] == ':' || name[i] == '~'))
 			return false;
 	}
