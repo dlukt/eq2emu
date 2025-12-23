@@ -13125,6 +13125,7 @@ void Commands::Command_SetLocationEntry(Client* client, Seperator* sep) {
 	}
 	
 	const std::string& val = std::string(sep->arg[1]);
+	std::string safeVal = database.getSafeEscapeString(val.c_str());
 
 	Query query;	
 	if(field == "spawnpercentage" || field == "condition") {
@@ -13133,10 +13134,10 @@ void Commands::Command_SetLocationEntry(Client* client, Seperator* sep) {
 							Q_UPDATE,
 							// we embed the whitelisted field name directly in the format
 							"UPDATE spawn_location_entry "
-							"SET %s=%s "
+							"SET %s='%s' "
 							"WHERE id=%u and spawn_location_id=%u and spawn_id=%u ",
 							field.c_str(),
-							val.c_str(),
+							safeVal.c_str(),
 							spawnEntryID,
 							spawnLocationID,
 							dbID
@@ -13148,10 +13149,10 @@ void Commands::Command_SetLocationEntry(Client* client, Seperator* sep) {
 							Q_UPDATE,
 							// we embed the whitelisted field name directly in the format
 							"UPDATE spawn_location_placement "
-							"SET %s=%s "
+							"SET %s='%s' "
 							"WHERE id=%u and spawn_location_id=%u ",
 							field.c_str(),
-							val.c_str(),
+							safeVal.c_str(),
 							spawnPlacementID,
 							spawnLocationID
 		);
