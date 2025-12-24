@@ -86,14 +86,24 @@ void CoutTimestamp(bool ms) {
 }
 
 string loadInt32String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_32BitString* eq_string){
-	buffer += *pos;
-	int32 size = *(int32*)buffer;
-	if((size + *pos + sizeof(int16)) > buffer_size){
-		cout << "Error in loadInt32String: Corrupt packet.\n";
+	if (*pos < 0 || *pos + (int)sizeof(int32) > buffer_size) {
+		cout << "Error in loadInt32String: Buffer overflow reading size.\n";
 		return string("");
 	}
-	buffer += sizeof(int32);
-	string ret((char*)buffer, 0, size);
+	uchar* ptr = buffer + *pos;
+	int32 size = *(int32*)ptr;
+
+	if (size < 0) {
+		cout << "Error in loadInt32String: Negative string size.\n";
+		return string("");
+	}
+
+	if ((*pos + (int)sizeof(int32) + size) > buffer_size) {
+		cout << "Error in loadInt32String: Corrupt packet (string size exceeds buffer).\n";
+		return string("");
+	}
+	ptr += sizeof(int32);
+	string ret((char*)ptr, 0, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
@@ -102,14 +112,24 @@ string loadInt32String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_32BitSt
 	return ret;
 }
 string loadInt16String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_16BitString* eq_string){
-	buffer += *pos;
-	int16 size = *(int16*)buffer;
-	if((size + *pos + sizeof(int16))> buffer_size){
+	if (*pos < 0 || *pos + (int)sizeof(int16) > buffer_size) {
+		cout << "Error in loadInt16String: Buffer overflow reading size.\n";
+		return string("");
+	}
+	uchar* ptr = buffer + *pos;
+	int16 size = *(int16*)ptr;
+
+	if (size < 0) {
+		cout << "Error in loadInt16String: Negative string size.\n";
+		return string("");
+	}
+
+	if ((*pos + (int)sizeof(int16) + size) > buffer_size) {
 		cout << "Error in loadInt16String: Corrupt packet.\n";
 		return string("");
 	}
-	buffer += sizeof(int16);
-	string ret((char*)buffer, 0, size);
+	ptr += sizeof(int16);
+	string ret((char*)ptr, 0, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
@@ -118,14 +138,24 @@ string loadInt16String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_16BitSt
 	return ret;
 }
 string loadInt8String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_8BitString* eq_string){
-	buffer += *pos;
-	int8 size = *(int8*)buffer;
-	if((size + *pos + sizeof(int16)) > buffer_size){
+	if (*pos < 0 || *pos + (int)sizeof(int8) > buffer_size) {
+		cout << "Error in loadInt8String: Buffer overflow reading size.\n";
+		return string("");
+	}
+	uchar* ptr = buffer + *pos;
+	int8 size = *(int8*)ptr;
+
+	if (size < 0) {
+		cout << "Error in loadInt8String: Negative string size.\n";
+		return string("");
+	}
+
+	if ((*pos + (int)sizeof(int8) + size) > buffer_size) {
 		cout << "Error in loadInt8String: Corrupt packet.\n";
 		return string("");
 	}
-	buffer += sizeof(int8);
-	string ret((char*)buffer, 0, size);
+	ptr += sizeof(int8);
+	string ret((char*)ptr, 0, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
