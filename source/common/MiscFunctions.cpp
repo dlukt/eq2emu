@@ -666,17 +666,11 @@ int32 CountWordsInString(const char* text) {
 }
 
 bool IsNumber(const char *num) {
-	size_t len, i;
-
-	if (!num)
+	if (!num || !*num)
 		return false;
 
-	len = strlen(num);
-	if (len == 0)
-		return false;
-
-	for (i = 0; i < len; i++) {
-		if (!isdigit(num[i]))
+	for (const char* p = num; *p; ++p) {
+		if (!isdigit(*p))
 			return false;
 	}
 

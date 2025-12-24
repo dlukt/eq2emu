@@ -123,19 +123,24 @@ public:
 		return check[0] != '\0';
 	}
 	static bool IsNumber(const char* check) {
-		bool SeenDec = false;
-		int len = strlen(check);
-		if (len == 0) {
+		if (!check || !*check)
 			return false;
+
+		bool SeenDec = false;
+		const char* p = check;
+
+		// Handle optional sign at the beginning
+		if (*p == '-' || *p == '+') {
+			p++;
+			// Sign alone is not a number
+			if (!*p)
+				return false;
 		}
-		int i;
-		for (i = 0; i < len; i++) {
-			if (check[i] < '0' || check[i] > '9') {
-				if (check[i] == '.' && !SeenDec) {
+
+		for (; *p; ++p) {
+			if (*p < '0' || *p > '9') {
+				if (*p == '.' && !SeenDec) {
 					SeenDec = true;
-				}
-				else if (i == 0 && (check[i] == '-' || check[i] == '+') && !check[i+1] == 0) {
-					// this is ok, do nothin
 				}
 				else {
 					return false;
