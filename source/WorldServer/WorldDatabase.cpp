@@ -9022,7 +9022,7 @@ int32	WorldDatabase::GetAccountAge(int32 account_id) {
 
 void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, char* char_name, Client* client) {
 
-	if (!database_new.Query("update spawn_signs set char_id=%u, char_name='%s' where widget_id=%u", char_id, char_name, sign_id)) {
+	if (!database_new.Query("update spawn_signs set char_id=%u, char_name='%s' where widget_id=%u", char_id, database_new.EscapeStr(char_name).c_str(), sign_id)) {
 		LogWrite(SIGN__DEBUG, 0, "Sign", "ERROR in WorldDatabase::SaveSignMark");
 		return;
 	}
