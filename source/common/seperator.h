@@ -149,14 +149,15 @@ public:
 		}
 		return true;
 	}
-	static bool IsHexNumber(char* check) {
-		int len = strlen(check);
-		if (len < 3)
+	static bool IsHexNumber(const char* check) {
+		if (!check || check[0] != '0' || (check[1] != 'x' && check[1] != 'X'))
 			return false;
-		if (check[0] != '0' || (check[1] != 'x' && check[1] != 'X'))
-			return false;
-		for (int i=2; i<len; i++) {
-			if ((check[i] < '0' || check[i] > '9') && (check[i] < 'A' || check[i] > 'F') && (check[i] < 'a' || check[i] > 'f'))
+
+		const char* p = check + 2;
+		if (!*p) return false; // "0x" is not a number? original logic was len < 3 so yes.
+
+		for (; *p; ++p) {
+			if ((*p < '0' || *p > '9') && (*p < 'A' || *p > 'F') && (*p < 'a' || *p > 'f'))
 				return false;
 		}
 		return true;

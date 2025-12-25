@@ -308,49 +308,53 @@ int MakeRandomInt(int low, int high)
 	return (int)MakeRandomFloat((double)low, (double)high + 0.999);
 }
 int32 hextoi(char* num) {
-	int len = strlen(num);
-	if (len < 3)
+	if (!num || num[0] != '0' || (num[1] != 'x' && num[1] != 'X'))
 		return 0;
 
-	if (num[0] != '0' || (num[1] != 'x' && num[1] != 'X'))
+	if (num[2] == '\0')
 		return 0;
 
 	int32 ret = 0;
-	int mul = 1;
-	for (int i=len-1; i>=2; i--) {
-		if (num[i] >= 'A' && num[i] <= 'F')
-			ret += ((num[i] - 'A') + 10) * mul;
-		else if (num[i] >= 'a' && num[i] <= 'f')
-			ret += ((num[i] - 'a') + 10) * mul;
-		else if (num[i] >= '0' && num[i] <= '9')
-			ret += (num[i] - '0') * mul;
+	char* p = num + 2;
+	while (*p) {
+		char c = *p;
+		int val = 0;
+		if (c >= '0' && c <= '9')
+			val = c - '0';
+		else if (c >= 'a' && c <= 'f')
+			val = c - 'a' + 10;
+		else if (c >= 'A' && c <= 'F')
+			val = c - 'A' + 10;
 		else
 			return 0;
-		mul *= 16;
+		ret = (ret << 4) | val;
+		p++;
 	}
 	return ret;
 }
 
 int64 hextoi64(char* num) {
-	int len = strlen(num);
-	if (len < 3)
+	if (!num || num[0] != '0' || (num[1] != 'x' && num[1] != 'X'))
 		return 0;
 
-	if (num[0] != '0' || (num[1] != 'x' && num[1] != 'X'))
+	if (num[2] == '\0')
 		return 0;
 
 	int64 ret = 0;
-	int mul = 1;
-	for (int i=len-1; i>=2; i--) {
-		if (num[i] >= 'A' && num[i] <= 'F')
-			ret += ((num[i] - 'A') + 10) * mul;
-		else if (num[i] >= 'a' && num[i] <= 'f')
-			ret += ((num[i] - 'a') + 10) * mul;
-		else if (num[i] >= '0' && num[i] <= '9')
-			ret += (num[i] - '0') * mul;
+	char* p = num + 2;
+	while (*p) {
+		char c = *p;
+		int val = 0;
+		if (c >= '0' && c <= '9')
+			val = c - '0';
+		else if (c >= 'a' && c <= 'f')
+			val = c - 'a' + 10;
+		else if (c >= 'A' && c <= 'F')
+			val = c - 'A' + 10;
 		else
 			return 0;
-		mul *= 16;
+		ret = (ret << 4) | val;
+		p++;
 	}
 	return ret;
 }
