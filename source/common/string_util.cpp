@@ -115,12 +115,24 @@ const std::string StringFormat(const char *format, ...)
 
 std::vector<std::string> SplitString(const std::string &str, char delim) {
 	std::vector<std::string> ret;
-	std::stringstream ss(str);
-    std::string item;
+	ret.reserve(str.length() / 8 + 1); // Conservative reservation to reduce reallocations
 
-    while(std::getline(ss, item, delim)) {
-        ret.push_back(item);
-    }
+	size_t start = 0;
+	size_t end = str.find(delim);
+
+	while (end != std::string::npos) {
+		ret.emplace_back(str, start, end - start);
+		start = end + 1;
+		end = str.find(delim, start);
+	}
+
+	// Append the remainder, but match getline behavior which ignores the trailing empty token
+	// if the string ends with the delimiter.
+	if (start < str.length()) {
+		ret.emplace_back(str, start, str.length() - start);
+	}
+	// Note: If str is empty, or ends with delim (start == len), we add nothing,
+	// which matches stringstream/getline behavior for this loop.
 
 	return ret;
 }
