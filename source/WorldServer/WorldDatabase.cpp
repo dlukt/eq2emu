@@ -2351,7 +2351,7 @@ int32 WorldDatabase::GetCharacterID(const char* name) {
 	int32 id = 0;
 	Query query;
 	if (name) {
-		MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT `id` FROM `characters` WHERE `name`='%s'", name);
+		MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT `id` FROM `characters` WHERE `name`='%s'", getSafeEscapeString(name).c_str());
 		if (result && mysql_num_rows(result) > 0) {
 			MYSQL_ROW row;
 			row = mysql_fetch_row(result);
