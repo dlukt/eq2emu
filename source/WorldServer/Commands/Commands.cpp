@@ -291,7 +291,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 		char tmp[128] = {0};
 		switch(type){
 			case SPAWN_SET_VALUE_NAME:{
-				sprintf(tmp, "%s", target->GetName());
+				snprintf(tmp, sizeof(tmp), "%s", target->GetName());
 				target->SetName(value);
 				if(target->GetZone())
 					target->GetZone()->SendUpdateTitles(target);
@@ -299,260 +299,260 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 									  }
 			case SPAWN_SET_VALUE_X_OFFSET: 
 				{
-				sprintf(tmp, "%f", target->GetXOffset());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetXOffset());
 				target->SetXOffset(float(val));
 				break;
 				}
 			case SPAWN_SET_VALUE_Y_OFFSET: 
 				{
-				sprintf(tmp, "%f", target->GetYOffset());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetYOffset());
 				target->SetYOffset(float(val));
 				break;
 				}
 			case SPAWN_SET_VALUE_Z_OFFSET: 
 				{
-				sprintf(tmp, "%f", target->GetZOffset());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetZOffset());
 				target->SetZOffset(float(val));
 				break;
 				}
 			case SPAWN_SET_VALUE_EXPIRE: {
-				sprintf(tmp, "%u", target->GetExpireTime());
+				snprintf(tmp, sizeof(tmp), "%u", target->GetExpireTime());
 				target->SetExpireTime(val);
 				break;
 											}
 			case SPAWN_SET_VALUE_EXPIRE_OFFSET: {
-				sprintf(tmp, "%u", target->GetExpireOffsetTime());
+				snprintf(tmp, sizeof(tmp), "%u", target->GetExpireOffsetTime());
 				target->SetExpireOffsetTime(val);
 				break;
 											}
 			case SPAWN_SET_VALUE_SUB_TITLE: {
-				sprintf(tmp, "%s", target->GetSubTitle());
+				snprintf(tmp, sizeof(tmp), "%s", target->GetSubTitle());
 				target->SetSubTitle(value);
 				if(target->GetZone())
 					target->GetZone()->SendUpdateTitles(target);
 				break;
 											}
 			case SPAWN_SET_VALUE_LEVEL:{
-				sprintf(tmp, "%i", target->GetLevel());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetLevel());
 				target->SetLevel(val, send_update);
 				break;
 									   }
 			case SPAWN_SET_VALUE_DIFFICULTY:{
-				sprintf(tmp, "%i", target->GetDifficulty());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetDifficulty());
 				target->SetDifficulty(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_MODEL_TYPE:{
-				sprintf(tmp, "%i", target->GetModelType());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetModelType());
 				target->SetModelType(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_CLASS:{
-				sprintf(tmp, "%i", target->GetAdventureClass());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetAdventureClass());
 				target->SetAdventureClass(val, send_update);
 				break;
 									   }
 			case SPAWN_SET_VALUE_GENDER:{
-				sprintf(tmp, "%i", target->GetGender());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetGender());
 				target->SetGender(val, send_update);
 				break;
 										}
 			case SPAWN_SET_VALUE_SHOW_NAME:{
-				sprintf(tmp, "%i", target->GetShowName());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetShowName());
 				target->SetShowName(val, send_update);
 				break;
 										   }
 			case SPAWN_SET_VALUE_ATTACKABLE:{
-				sprintf(tmp, "%i", target->GetAttackable());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetAttackable());
 				target->SetAttackable(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_SHOW_LEVEL:{
-				sprintf(tmp, "%i", target->GetShowLevel());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetShowLevel());
 				target->SetShowLevel(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_TARGETABLE:{
-				sprintf(tmp, "%i", target->GetTargetable());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetTargetable());
 				target->SetTargetable(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_SHOW_COMMAND_ICON:{
-				sprintf(tmp, "%i", target->GetShowCommandIcon());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetShowCommandIcon());
 				target->SetShowCommandIcon(val, send_update);
 				break;
 												   }
 			case SPAWN_SET_VALUE_HAND_ICON:{
-				sprintf(tmp, "%i", target->GetShowHandIcon());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetShowHandIcon());
 				target->SetShowHandIcon(val, send_update);
 				break;
 										   }
 			case SPAWN_SET_VALUE_HAIR_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetHairType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetHairType());
 					((Entity*)target)->SetHairType(val, send_update);
 				}
 				break;
 										   }
 			case SPAWN_SET_VALUE_FACIAL_HAIR_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetFacialHairType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetFacialHairType());
 					((Entity*)target)->SetFacialHairType(val, send_update);
 				}
 				break;
 												  }
 			case SPAWN_SET_VALUE_WING_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetWingType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetWingType());
 					((Entity*)target)->SetWingType(val, send_update);
 				}
 				break;
 										   }
 			case SPAWN_SET_VALUE_CHEST_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetChestType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetChestType());
 					((Entity*)target)->SetChestType(val, send_update);
 				}
 				break;
 											}
 			case SPAWN_SET_VALUE_LEGS_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetLegsType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetLegsType());
 					((Entity*)target)->SetLegsType(val, send_update);
 				}
 				break;
 										   }
 			case SPAWN_SET_VALUE_SOGA_HAIR_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetSogaHairType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetSogaHairType());
 					((Entity*)target)->SetSogaHairType(val, send_update);
 				}
 				break;
 												}
 			case SPAWN_SET_VALUE_SOGA_FACIAL_HAIR_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->GetSogaFacialHairType());
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->GetSogaFacialHairType());
 					((Entity*)target)->SetSogaFacialHairType(val, send_update);
 				}
 				break;
 													   }
 			case SPAWN_SET_VALUE_SOGA_MODEL_TYPE:{
-				sprintf(tmp, "%i", target->GetSogaModelType());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetSogaModelType());
 				target->SetSogaModelType(val, send_update);
 				break;
 												 }
 			case SPAWN_SET_VALUE_SIZE:{
-				sprintf(tmp, "%i", target->GetSize());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetSize());
 				target->SetSize(val, send_update);
 				break;
 									  }
 			case SPAWN_SET_VALUE_HP:{
-				sprintf(tmp, "%i", target->GetHP());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetHP());
 				target->SetTotalHPBase(val);
 				target->SetHP(val, send_update);
 				break;
 									}
 			case SPAWN_SET_VALUE_POWER:{
-				sprintf(tmp, "%i", target->GetPower());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetPower());
 				target->SetTotalPowerBase(val);
 				target->SetPower(val, send_update);
 				break;
 									   }
 			case SPAWN_SET_VALUE_HEROIC:{
-				sprintf(tmp, "%i", target->GetHeroic());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetHeroic());
 				target->SetHeroic(val, send_update);
 				break;
 										}
 			case SPAWN_SET_VALUE_RESPAWN:{
-				sprintf(tmp, "%u", target->GetRespawnTime());
+				snprintf(tmp, sizeof(tmp), "%u", target->GetRespawnTime());
 				target->SetRespawnTime(val);
 				break;
 										 }
 			case SPAWN_SET_VALUE_X:{
-				sprintf(tmp, "%f", target->GetX());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetX());
 				target->SetX(atof(value), send_update);
 				break;
 								   }
 			case SPAWN_SET_VALUE_Y:{
-				sprintf(tmp, "%f", target->GetY());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetY());
 				target->SetY(atof(value), send_update);
 				break;
 								   }
 			case SPAWN_SET_VALUE_Z:{
-				sprintf(tmp, "%f", target->GetZ());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetZ());
 				target->SetZ(atof(value), send_update);
 				break;
 								   }
 			case SPAWN_SET_VALUE_HEADING:{
-				sprintf(tmp, "%f", target->GetHeading());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetHeading());
 				target->SetHeading(atof(value) + 360, send_update);
 				break;
 										 }
 			case SPAWN_SET_VALUE_VISUAL_STATE:{
-				sprintf(tmp, "%i", target->GetVisualState());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetVisualState());
 				target->SetVisualState(val, send_update);
 				break;
 											  }
 			case SPAWN_SET_VALUE_ACTION_STATE:{
-				sprintf(tmp, "%i", target->GetActionState());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetActionState());
 				target->SetActionState(val, send_update);
 				break;
 											  }
 			case SPAWN_SET_VALUE_MOOD_STATE:{
-				sprintf(tmp, "%i", target->GetMoodState());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetMoodState());
 				target->SetMoodState(val, send_update);
 				break;
 											}
 			case SPAWN_SET_VALUE_INITIAL_STATE:{
-				sprintf(tmp, "%i", target->GetInitialState());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetInitialState());
 				target->SetInitialState(val, send_update);
 				break;
 											   }
 			case SPAWN_SET_VALUE_ACTIVITY_STATE:{
-				sprintf(tmp, "%i", target->GetActivityStatus());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetActivityStatus());
 				target->SetActivityStatus(val, send_update);
 				break;
 												}
 			case SPAWN_SET_VALUE_COLLISION_RADIUS:{
-				sprintf(tmp, "%i", target->GetCollisionRadius());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetCollisionRadius());
 				target->SetCollisionRadius(val, send_update);
 				break;
 												  }
 			case SPAWN_SET_VALUE_DEVICE_ID: {
 				if (target->IsObject()) {
-					sprintf(tmp, "%i", ((Object*)target)->GetDeviceID());
+					snprintf(tmp, sizeof(tmp), "%i", ((Object*)target)->GetDeviceID());
 					((Object*)target)->SetDeviceID(val);
 				}
 				break;
 											}
 			case SPAWN_SET_VALUE_PITCH: {
-				sprintf(tmp, "%f", target->GetPitch());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetPitch());
 				target->SetPitch(atof(value), send_update);
 				break;
 										}
 			case SPAWN_SET_VALUE_ROLL: {
-				sprintf(tmp, "%f", target->GetRoll());
+				snprintf(tmp, sizeof(tmp), "%f", target->GetRoll());
 				target->SetRoll(atof(value), send_update);
 				break;
 									   }
 			case SPAWN_SET_VALUE_HIDE_HOOD: {
-				sprintf(tmp, "%i", target->appearance.hide_hood);
+				snprintf(tmp, sizeof(tmp), "%i", target->appearance.hide_hood);
 				target->SetHideHood(val);
 				break;
 											}
 			case SPAWN_SET_VALUE_EMOTE_STATE: {
-				sprintf(tmp, "%i", target->appearance.emote_state);
+				snprintf(tmp, sizeof(tmp), "%i", target->appearance.emote_state);
 				target->SetEmoteState(val);
 				break;
 											  }
 			case SPAWN_SET_VALUE_ICON: {
-			    sprintf(tmp, "%i", target->GetIconValue());
+			    snprintf(tmp, sizeof(tmp), "%i", target->GetIconValue());
 			    target->SetIcon(val);
 			    break;
 			}
 
 			case SPAWN_SET_VALUE_PREFIX: {
-				sprintf(tmp, "%s", target->GetPrefixTitle());
+				snprintf(tmp, sizeof(tmp), "%s", target->GetPrefixTitle());
 				target->SetPrefixTitle(value);
 				if(target->GetZone())
 					target->GetZone()->SendUpdateTitles(target);
@@ -560,7 +560,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 
 			case SPAWN_SET_VALUE_SUFFIX: {
-				sprintf(tmp, "%s", target->GetSuffixTitle());
+				snprintf(tmp, sizeof(tmp), "%s", target->GetSuffixTitle());
 				target->SetSuffixTitle(value);
 				if(target->GetZone())
 					target->GetZone()->SendUpdateTitles(target);
@@ -568,7 +568,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 
 			case SPAWN_SET_VALUE_LASTNAME: {
-				sprintf(tmp, "%s", target->GetLastName());
+				snprintf(tmp, sizeof(tmp), "%s", target->GetLastName());
 				target->SetLastName(value);
 				if(target->GetZone())
 					target->GetZone()->SendUpdateTitles(target);
@@ -580,17 +580,17 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 				break;
 			}
 			case SPAWN_SET_VALUE_MERCHANT_MIN_LEVEL: {
-				sprintf(tmp, "%i", target->GetMerchantMinLevel());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetMerchantMinLevel());
 				target->SetMerchantLevelRange(atoul(value), target->GetMerchantMaxLevel());
 				break;
 			}
 			case SPAWN_SET_VALUE_MERCHANT_MAX_LEVEL: {
-				sprintf(tmp, "%i", target->GetMerchantMaxLevel());
+				snprintf(tmp, sizeof(tmp), "%i", target->GetMerchantMaxLevel());
 				target->SetMerchantLevelRange(target->GetMerchantMinLevel(), atoul(value));
 				break;
 			}
 			case SPAWN_SET_VALUE_FACTION:{
-				sprintf(tmp, "%i", target->faction_id);
+				snprintf(tmp, sizeof(tmp), "%i", target->faction_id);
 				ZoneServer* zone = target->GetZone();
 				if (!zone && client)
 					zone = client->GetCurrentZone();
@@ -709,7 +709,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_CHEEK_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.cheek_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.cheek_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.cheek_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -718,7 +718,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_CHIN_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.chin_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.chin_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.chin_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -727,7 +727,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_EAR_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.ear_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.ear_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.ear_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -736,7 +736,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_EYE_BROW_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.eye_brow_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.eye_brow_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.eye_brow_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -745,7 +745,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_EYE_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.eye_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.eye_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.eye_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -754,7 +754,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_LIP_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.lip_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.lip_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.lip_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -763,7 +763,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_NOSE_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.nose_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.nose_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.nose_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -772,7 +772,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_BODY_SIZE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->features.body_size);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.body_size);
 					int8 new_value = atoul(value);
 					((Entity*)target)->features.body_size = new_value;
 					((Entity*)target)->info_changed = true;
@@ -781,7 +781,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_BODY_AGE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->features.body_age);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.body_age);
 					int8 new_value = atoul(value);
 					((Entity*)target)->features.body_age = new_value;
 					((Entity*)target)->info_changed = true;
@@ -790,7 +790,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_CHEEK_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_cheek_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_cheek_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_cheek_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -799,7 +799,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_CHIN_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_chin_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_chin_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_chin_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -808,7 +808,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_EAR_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_ear_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_ear_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_ear_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -817,7 +817,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_EYE_BROW_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_eye_brow_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_eye_brow_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_eye_brow_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -826,7 +826,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_EYE_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_eye_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_eye_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_eye_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -835,7 +835,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_LIP_TYPE:{
 				if(target->IsEntity() && index < 3){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_lip_type[index]);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_lip_type[index]);
 					sint8 new_value = atoi(value);
 					((Entity*)target)->features.soga_lip_type[index] = new_value;
 					((Entity*)target)->info_changed = true;
@@ -844,7 +844,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_BODY_SIZE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_body_size);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_body_size);
 					int8 new_value = atoul(value);
 					((Entity*)target)->features.soga_body_size = new_value;
 					((Entity*)target)->info_changed = true;
@@ -853,7 +853,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SOGA_BODY_AGE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%i", ((Entity*)target)->features.soga_body_age);
+					snprintf(tmp, sizeof(tmp), "%i", ((Entity*)target)->features.soga_body_age);
 					int8 new_value = atoul(value);
 					((Entity*)target)->features.soga_body_age = new_value;
 					((Entity*)target)->info_changed = true;
@@ -862,7 +862,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_ATTACK_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%u", ((Entity*)target)->GetInfoStruct()->get_attack_type());
+					snprintf(tmp, sizeof(tmp), "%u", ((Entity*)target)->GetInfoStruct()->get_attack_type());
 					int8 new_value = atoul(value);
 					((Entity*)target)->GetInfoStruct()->set_attack_type(new_value);
 				}
@@ -893,7 +893,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_LOOT_TIER:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%u", target->GetLootTier());
+					snprintf(tmp, sizeof(tmp), "%u", target->GetLootTier());
 					int32 new_value = atoul(value);
 					target->SetLootTier(new_value);
 				}
@@ -901,7 +901,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_LOOT_DROP_TYPE:{
 				if(target->IsEntity()){
-					sprintf(tmp, "%u", target->GetLootDropType());
+					snprintf(tmp, sizeof(tmp), "%u", target->GetLootDropType());
 					int32 new_value = atoul(value);
 					target->SetLootDropType(new_value);
 				}
@@ -909,7 +909,7 @@ bool Commands::SetSpawnCommand(Client* client, Spawn* target, int8 type, const c
 			}
 			case SPAWN_SET_SCARED_STRONG_PLAYERS:{
 				if(target->IsNPC()){
-					sprintf(tmp, "%u", target->IsScaredByStrongPlayers());
+					snprintf(tmp, sizeof(tmp), "%u", target->IsScaredByStrongPlayers());
 					int32 new_value = atoul(value);
 					target->SetScaredByStrongPlayers(new_value);
 				}
@@ -2616,7 +2616,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 			{
 				char tmp[75] = {0};
 
-				sprintf(tmp, "Hail, %s", spawn->GetName());
+				snprintf(tmp, sizeof(tmp), "Hail, %s", spawn->GetName());
 
 				bool show_bubble = true;
 
@@ -10649,7 +10649,7 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 			if (packet2 && sep->IsSet(7)) {
 				packet2->setDataByName("unknown", atoi(sep->arg[1]));
 				char blah[128];
-				sprintf(blah, "\\#6EFF6EYou get better at \12\\#C8FFC8%s\\#6EFF6E! (7/15)", sep->arg[2]);
+				snprintf(blah, sizeof(blah), "\\#6EFF6EYou get better at \12\\#C8FFC8%s\\#6EFF6E! (7/15)", sep->arg[2]);
 				packet2->setDataByName("text", blah);
 				packet2->setDataByName("message_type", sep->arg[3]);
 				packet2->setDataByName("size", atof(sep->arg[4]));
@@ -10722,7 +10722,7 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 		}
 		else if (atoi(sep->arg[0]) == 16 && sep->IsNumber(1)) {
 			char blah[32];
-			sprintf(blah, "Testing: %i", atoi(sep->arg[1]));
+			snprintf(blah, sizeof(blah), "Testing: %i", atoi(sep->arg[1]));
 			client->SimpleMessage(atoi(sep->arg[1]), blah);
 		}
 		else if (atoi(sep->arg[0]) == 17 && sep->IsNumber(2)) {
@@ -12280,10 +12280,10 @@ Player* player = client->GetPlayer();
 		bool pt; //used to verify return from DB.
 
 		//This should never be seen.
-		sprintf(tmp, " ");
+		snprintf(tmp, sizeof(tmp), " ");
 		if( strncasecmp(value, "angry", strlen(value)) == 0 ) 
 		{
-			sprintf(tmp, "%s appears angry", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears angry", characterName);
 			pval = "11852";
 			player->SetMoodState(11852, 1);
 			info->set_mood(11852);
@@ -12291,7 +12291,7 @@ Player* player = client->GetPlayer();
 		}
 		else if( strncasecmp(value, "afraid", strlen(value)) == 0 ) 
 		{
-			sprintf(tmp, "%s appears afraid", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears afraid", characterName);
 			pval = "11851";
 			player->SetMoodState(11851, 1);
 			info->set_mood(11851);
@@ -12299,14 +12299,14 @@ Player* player = client->GetPlayer();
 		} 
 		else if( strncasecmp(value, "happy", strlen(value)) == 0 ) 
 		{
-			sprintf(tmp, "%s appears happy", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears happy", characterName);
 			pval = "11854";
 			player->SetMoodState(11854, 1);
 			info->set_mood(11854);
 			pt = database.insertCharacterProperty(client, pname, pval);
 		} 
 		else if( strncasecmp(value, "sad", strlen(value)) == 0 ) {
-			sprintf(tmp, "%s appears sad", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears sad", characterName);
 			pval = "11856";
 			player->SetMoodState(11856, 1);
 			info->set_mood(11856);
@@ -12314,7 +12314,7 @@ Player* player = client->GetPlayer();
 		}
 		else if( strncasecmp(value, "tired", strlen(value)) == 0 ) 
 		{
-			sprintf(tmp, "%s appears tired", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears tired", characterName);
 			pval = "11857";
 			player->SetMoodState(11857, 1);
 			info->set_mood(11857);
