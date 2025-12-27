@@ -1,8 +1,4 @@
-## 2025-02-14 - Fix SQL Injection in SaveSignMark
-**Vulnerability:** SQL Injection in `WorldDatabase::SaveSignMark` due to unescaped user input (`char_name`) being concatenated into a SQL query.
-**Learning:** `DatabaseNew::Query` uses `vsnprintf` for formatting but does not automatically escape string parameters. Callers are responsible for escaping. This differs from Prepared Statements which handle escaping automatically.
-**Prevention:** Always use `database_new.EscapeStr(...)` or `getSafeEscapeString(...)` when inserting strings into SQL queries constructed via `Query`. Prefer parameterized queries if the database abstraction layer supports them (which this legacy codebase does not seem to fully support in this context).
-## 2024-05-23 - [CRITICAL] SQL Injection in WorldDatabase
-**Vulnerability:** Found a SQL Injection vulnerability in `WorldDatabase::GetCharacterID` where user input `name` was concatenated directly into a SQL query string.
-**Learning:** The `RunQuery2` function uses `printf`-style formatting but does NOT automatically escape string arguments. Developers must explicitly sanitize all string inputs before passing them to the query builder.
-**Prevention:** Always use `getSafeEscapeString()` on untrusted string inputs before using them in SQL queries. Avoid passing raw pointers from user input directly to database functions.
+## 2024-05-24 - [Commands.cpp Buffer Overflow Mitigation]
+**Vulnerability:** Extensive use of `sprintf` to format strings into fixed-size stack buffers (e.g., `char tmp[128]`, `char tmp[75]`) in `source/WorldServer/Commands/Commands.cpp`. This creates significant buffer overflow risks if inputs (like entity names or command arguments) exceed the buffer size.
+**Learning:** Legacy C++ code often neglects bounds checking for string formatting. Even with fixed constraints in game logic (e.g., max name length), defensive coding dictates using bounds-checked functions to prevent crashes or exploitation from unexpected long inputs.
+**Prevention:** Always use `snprintf` instead of `sprintf`. Ensure the size argument passed to `snprintf` matches the destination buffer size (`sizeof(buffer)`).
