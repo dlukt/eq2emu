@@ -7,3 +7,8 @@
 **Vulnerability:** In `Command_StoreSetPrice`, multiplying `int32` currency values (e.g., `plat * 1000000`) caused a 32-bit signed integer overflow when values exceeded ~2147 (since 2147 * 1M > INT_MAX). The overflow resulted in negative prices being set.
 **Learning:** C++ performs arithmetic based on the operand types. Even if the result is assigned to `int64`, the intermediate calculation `int32 * int` is performed as `int` (32-bit).
 **Prevention:** Explicitly cast operands to `int64` (e.g., `(int64)plat * 1000000`) to force 64-bit arithmetic for the entire expression.
+
+## 2024-05-27 - [Manual String Buffer Overflow]
+**Vulnerability:** In `LoginDatabase::SetZoneInformation`, a buffer was allocated based on string length but failed to account for the null terminator when appending characters manually, leading to a heap buffer over-read/flow.
+**Learning:** Manual string construction using `new char[]` and `strncpy` is error-prone. One-off errors in allocation size are common.
+**Prevention:** Use `std::string` or ensure allocation size accounts for all characters plus the null terminator. Always null-terminate manually constructed C-strings.
