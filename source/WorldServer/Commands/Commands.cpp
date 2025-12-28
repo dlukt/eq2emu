@@ -13221,7 +13221,7 @@ void Commands::Command_StoreSetPrice(Client* client, Seperator* sep) {
 			int32 gold = atoul(sep->arg[2]);
 			int32 silver = atoul(sep->arg[3]);
 			int32 copper = atoul(sep->arg[4]);
-			int64 price = plat * 1000000 + gold * 10000 + silver * 100 + copper;
+			int64 price = (int64)plat * 1000000 + (int64)gold * 10000 + (int64)silver * 100 + (int64)copper;
 			
 			LogWrite(PLAYER__INFO, 5, "Broker",
 			  "--StoreSetPrice: %u (%u), cost=%u",
@@ -13254,7 +13254,7 @@ void Commands::Command_StoreSetPriceLocal(Client* client, Seperator* sep) {
 			int32 gold = atoul(sep->arg[2]);
 			int32 silver = atoul(sep->arg[3]);
 			int32 copper = atoul(sep->arg[4]);
-			int64 price = plat * 1000000 + gold * 10000 + silver * 100 + copper;
+			int64 price = (int64)plat * 1000000 + (int64)gold * 10000 + (int64)silver * 100 + (int64)copper;
 			LogWrite(PLAYER__INFO, 5, "Broker",
 			  "--StoreSetLocalPrice: %u (%u), cost=%u",
 			  client->GetPlayer()->GetCharacterID(), unique_id, price
