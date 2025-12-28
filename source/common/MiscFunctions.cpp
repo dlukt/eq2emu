@@ -39,6 +39,7 @@
 #include "../common/seperator.h"
 #include "../common/packet_dump.h"
 #include <algorithm>
+#include <random> // Bolt: Optimized RNG
 
 using namespace std;
 
@@ -302,10 +303,20 @@ char * itoa(int value, char *result, int base) {
 /* 
  * solar: generate a random integer in the range low-high 
  * this should be used instead of the rand()%limit method
+ *
+ * Bolt: Optimized to use std::uniform_int_distribution with thread_local generator.
+ * This avoids float conversions and ensures thread safety without global locking.
  */
 int MakeRandomInt(int low, int high)
 {
-	return (int)MakeRandomFloat((double)low, (double)high + 0.999);
+	if (low == high) return low;
+	if (low > high) std::swap(low, high);
+
+	// Use thread_local to avoid re-initialization and locking overhead
+	thread_local std::mt19937 generator(std::random_device{}());
+	std::uniform_int_distribution<int> distribution(low, high);
+
+	return distribution(generator);
 }
 int32 hextoi(char* num) {
 	if (!num || num[0] != '0' || (num[1] != 'x' && num[1] != 'X'))
