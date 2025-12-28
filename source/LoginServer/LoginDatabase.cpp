@@ -81,10 +81,11 @@ void LoginDatabase::SetZoneInformation(int32 server_id, int32 zone_id, int32 ver
 					if (row2[0])
 					{
 						int len = strlen(row2[0]);
-						char* zoneName = new char[len + 2];
+						char* zoneName = new char[len + 3];
 						strncpy(zoneName, row2[0], len);
 						zoneName[len] = 0x2E;
 						zoneName[len + 1] = 0x30;
+						zoneName[len + 2] = 0;
 
 						packet->setMediumStringByName("zone", zoneName);
 						safe_delete_array(zoneName);
@@ -189,10 +190,10 @@ void LoginDatabase::SetServerZoneDescriptions(int32 server_id, map<int32, LoginZ
 		string query_string = "replace into ls_world_zones (server_id, zone_id, name, description) values";
 		int count=0;
 		char server_id_str[12] = {0};		
-		sprintf(server_id_str, "%i", server_id);
+		snprintf(server_id_str, sizeof(server_id_str), "%i", server_id);
 		for(zone_itr = zone_descriptions.begin(); zone_itr != zone_descriptions.end(); zone_itr++, count++){
 			char zone_id_str[12] = {0};
-			sprintf(zone_id_str, "%i", zone_itr->first);	
+			snprintf(zone_id_str, sizeof(zone_id_str), "%i", zone_itr->first);
 			if(count > 0)
 				query_string.append(", ");
 			query_string.append("(").append(server_id_str).append(",");
