@@ -12,3 +12,8 @@
 **Vulnerability:** In `LoginDatabase::SetZoneInformation`, a buffer was allocated based on string length but failed to account for the null terminator when appending characters manually, leading to a heap buffer over-read/flow.
 **Learning:** Manual string construction using `new char[]` and `strncpy` is error-prone. One-off errors in allocation size are common.
 **Prevention:** Use `std::string` or ensure allocation size accounts for all characters plus the null terminator. Always null-terminate manually constructed C-strings.
+
+## 2024-05-30 - [Buffer Overflow in ClaimItem]
+**Vulnerability:** `sprintf` was used to format user-controlled or potentially large strings into fixed-size buffers in `source/WorldServer/WorldDatabase.cpp`, specifically in `ClaimItem`.
+**Learning:** Even seemingly benign messages or internal logic can be vulnerable if they handle variable-length strings (like item names) without bounds checking.
+**Prevention:** Replace `sprintf` with `snprintf(buffer, sizeof(buffer), ...)` to enforce buffer limits and prevent overflows.
