@@ -3751,9 +3751,9 @@ vector<string>* WorldDatabase::GetSpawnNameList(const char* in_name){
 		}
 		char total[60] = {0};
 		if(mysql_num_rows(result) > 10)
-			sprintf(total, "Total number of results: %u (Limited to 10)", (int32)mysql_num_rows(result));
+			snprintf(total, sizeof(total), "Total number of results: %u (Limited to 10)", (int32)mysql_num_rows(result));
 		else
-			sprintf(total, "Total number of results: %u", (int32)mysql_num_rows(result));
+			snprintf(total, sizeof(total), "Total number of results: %u", (int32)mysql_num_rows(result));
 		ret->push_back(string(total));
 	}
 	return ret;
@@ -8938,16 +8938,16 @@ void WorldDatabase::ClaimItem(int32 char_id, int32 item_id, Client* client) {
 				if (total_time < 6) {
 					uint32 ttw = 6 - total_time;
 					char tmp[64] = { 0 };
-					sprintf(tmp, "You must wait %u more seconds.", ttw);
+					snprintf(tmp, sizeof(tmp), "You must wait %u more seconds.", ttw);
 					client->Message(CHANNEL_COLOR_RED, tmp);
 					return;
 				}
 				//handle the 2 different messages found from live (11/2022)				
 				if (item->generic_info.item_type == 18) {
-					sprintf(claim_msg, "You have consumed the item\nYou have chosen to give this character a %s", item->name.c_str());
+					snprintf(claim_msg, sizeof(claim_msg), "You have consumed the item\nYou have chosen to give this character a %s", item->name.c_str());
 				}
 				else {
-					sprintf(claim_msg, "You have consumed the item");
+					snprintf(claim_msg, sizeof(claim_msg), "You have consumed the item");
 				}
 					
 
