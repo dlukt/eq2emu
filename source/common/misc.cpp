@@ -290,16 +290,28 @@ unsigned int GetSpellNameCrc(const char* src) {
 	return crc32(crc, (unsigned const char*)src, strlen(src));
 }
 
-int GetItemNameCrc(string item_name){
-	const char *src = item_name.c_str();
+int GetItemNameCrc(const std::string& item_name) {
 	uLong crc = crc32(0L, Z_NULL, 0);    
-    crc = crc32(crc, (unsigned const char *)src,strlen(src)) + 1;
+	crc = crc32(crc, (unsigned const char *)item_name.c_str(), item_name.length()) + 1;
 	return sint32(crc) * -1;
 }
 
-unsigned int GetNameCrc(string name) {
-	const char* src = name.c_str();
+int GetItemNameCrc(const char* item_name) {
+	if (!item_name) return 0;
 	uLong crc = crc32(0L, Z_NULL, 0);
-	crc = crc32(crc, (unsigned const char*)src, strlen(src)) + 1;
+	crc = crc32(crc, (unsigned const char *)item_name, strlen(item_name)) + 1;
+	return sint32(crc) * -1;
+}
+
+unsigned int GetNameCrc(const std::string& name) {
+	uLong crc = crc32(0L, Z_NULL, 0);
+	crc = crc32(crc, (unsigned const char*)name.c_str(), name.length()) + 1;
+	return int32(crc)-1;
+}
+
+unsigned int GetNameCrc(const char* name) {
+	if (!name) return 0;
+	uLong crc = crc32(0L, Z_NULL, 0);
+	crc = crc32(crc, (unsigned const char*)name, strlen(name)) + 1;
 	return int32(crc)-1;
 }
