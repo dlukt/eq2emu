@@ -3053,7 +3053,7 @@ bool World::CheckTempBugCRC(char* msg)
 {
 	MBugReport.writelock();
 
-	sint32 crc = GetItemNameCrc(std::string(msg));
+	sint32 crc = GetItemNameCrc(msg);
 	
 	if (bug_report_crc.count(crc) > 0)
 	{
