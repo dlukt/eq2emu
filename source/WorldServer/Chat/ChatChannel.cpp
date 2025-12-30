@@ -139,7 +139,7 @@ bool ChatChannel::TellChannel(std::string charName, int8 charLanguage, const cha
 			packet_struct->setDataByName("from", charName.c_str());
 		} else {
 			char name3[128];
-			sprintf(name3,"[%s] from discord",name2);
+			snprintf(name3, sizeof(name3), "[%s] from discord", name2);
 			packet_struct->setDataByName("from", name3);
 		}
 
