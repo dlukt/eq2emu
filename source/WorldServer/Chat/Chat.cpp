@@ -365,7 +365,7 @@ int Chat::PushDiscordMsg(const char* msg, const char* from) {
 	char ourmsg[4096];
 
 	//form our message
-	sprintf(ourmsg,"[%s] [%s] Says: %s",from, servername.c_str(), msg);
+	snprintf(ourmsg, sizeof(ourmsg), "[%s] [%s] Says: %s", from, servername.c_str(), msg);
 
 	/* send a message with this webhook */
 	dpp::cluster bot("");
