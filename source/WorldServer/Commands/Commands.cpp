@@ -7589,7 +7589,8 @@ void Commands::Command_LastName(Client* client, Seperator* sep)
 
 		uchar* checkname = (uchar*)sep->arg[0];
 		bool valid_name = true;
-		for (int32 i = 0; i < strlen(sep->arg[0]); i++) {
+		// Bolt: Optimized to avoid calling strlen on every iteration
+		for (int32 i = 0; sep->arg[0][i] != '\0'; i++) {
 			if (!alpha_check(checkname[i])) {
 				valid_name = false;
 				break;
