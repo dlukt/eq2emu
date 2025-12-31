@@ -4978,11 +4978,11 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 				details += "Transport ID:	" + to_string(spawn->GetTransporterID()) + "\n";
 				details += "Location ID:	" + to_string(spawn->GetSpawnLocationID()) + "\n";
 				char x[16];
-				sprintf(x, "%.2f", spawn->GetX());
+				snprintf(x, sizeof(x), "%.2f", spawn->GetX());
 				char y[16];
-				sprintf(y, "%.2f", spawn->GetY());
+				snprintf(y, sizeof(y), "%.2f", spawn->GetY());
 				char z[16];
-				sprintf(z, "%.2f", spawn->GetZ());
+				snprintf(z, sizeof(z), "%.2f", spawn->GetZ());
 				details += "Location:	" + string(x) + ", " + string(y) + ", " + string(z) + "\n";
 
 				string details2;
@@ -5548,7 +5548,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 
 
 				char msg[128];
-				sprintf(msg,"Animation Test ID: %i",animID);
+				snprintf(msg, sizeof(msg), "Animation Test ID: %i", animID);
 				command_packet->setMediumStringByName ( "emote_msg" , msg );
 
 				if(vs != NULL)
@@ -8706,14 +8706,14 @@ void Commands::Command_Random(Client* client, Seperator* sep)
 	if (sep)
 	{
 		if (sep->GetArgNumber() == 0 && sep->IsNumber(0))
-			sprintf(message, "Random: %s rolls 1 to %i on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), atoi(sep->arg[0]), MakeRandomInt(1, atoi(sep->arg[0])));
+			snprintf(message, sizeof(message), "Random: %s rolls 1 to %i on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), atoi(sep->arg[0]), MakeRandomInt(1, atoi(sep->arg[0])));
 		else if (sep->GetArgNumber() > 0 && sep->IsNumber(0) && sep->IsNumber(1))
-			sprintf(message, "Random: %s rolls from %i to %i on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), atoi(sep->arg[0]), atoi(sep->arg[1]), MakeRandomInt(atoi(sep->arg[0]), atoi(sep->arg[1])));
+			snprintf(message, sizeof(message), "Random: %s rolls from %i to %i on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), atoi(sep->arg[0]), atoi(sep->arg[1]), MakeRandomInt(atoi(sep->arg[0]), atoi(sep->arg[1])));
 		else
-			sprintf(message, "Random: %s rolls from 1 to 100 on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), MakeRandomInt(1, 100));
+			snprintf(message, sizeof(message), "Random: %s rolls from 1 to 100 on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), MakeRandomInt(1, 100));
 	}
 	else
-		sprintf(message, "Random: %s rolls from 1 to 100 on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), MakeRandomInt(1, 100));
+		snprintf(message, sizeof(message), "Random: %s rolls from 1 to 100 on the magic dice...and scores a %i!", client->GetPlayer()->GetName(), MakeRandomInt(1, 100));
 			
 	client->GetPlayer()->GetZone()->HandleChatMessage(0, 0, CHANNEL_EMOTE, message);
 }
@@ -10351,7 +10351,7 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 				}
 				int16 offset = atoi(sep->arg[1]);
 				int32 value1 = atol(sep->arg[2]);
-				sprintf(spawn->appearance.name, "Offset %i", offset);
+				snprintf(spawn->appearance.name, sizeof(spawn->appearance.name), "Offset %i", offset);
 				EQ2Packet* ret = spawn->spawn_serialize(client->GetPlayer(), client->GetVersion(), offset, value1);
 				DumpPacket(ret);
 				client->QueuePacket(ret);
@@ -10395,7 +10395,7 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 					offset4 = atoi(sep->arg[6]);
 					value2 = atol(sep->arg[7]);
 				}
-				sprintf(spawn->appearance.name, "Offset %i to %i", offset, offset2);
+				snprintf(spawn->appearance.name, sizeof(spawn->appearance.name), "Offset %i to %i", offset, offset2);
 				spawn->AddPrimaryEntityCommand("attack", 10000, "attack","", 0, 0);
 				EQ2Packet* ret = spawn->spawn_serialize(client->GetPlayer(), client->GetVersion(), offset, value1, offset2, offset3, offset4, value2);
 				DumpPacket(ret);
@@ -10882,8 +10882,8 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 				safe_delete(item);
 				char accept[35] = { 0 };
 				char decline[35] = { 0 };
-				sprintf(accept, "q_accept_pending_quest %u", 0);
-				sprintf(decline, "q_deny_pending_quest %u", 0);
+				snprintf(accept, sizeof(accept), "q_accept_pending_quest %u", 0);
+				snprintf(decline, sizeof(decline), "q_deny_pending_quest %u", 0);
 				packet2->setDataByName("accept_command", accept);
 				packet2->setDataByName("decline_command", decline);
 				EQ2Packet* app = packet2->serialize();
@@ -10927,8 +10927,8 @@ void Commands::Command_Test(Client* client, EQ2_16BitString* command_parms) {
 				safe_delete(item);
 				char accept[35] = { 0 };
 				char decline[35] = { 0 };
-				sprintf(accept, "q_accept_pending_quest %u", 0);
-				sprintf(decline, "q_deny_pending_quest %u", 0);
+				snprintf(accept, sizeof(accept), "q_accept_pending_quest %u", 0);
+				snprintf(decline, sizeof(decline), "q_deny_pending_quest %u", 0);
 				packet2->setDataByName("accept_command", accept);
 				packet2->setDataByName("decline_command", decline);
 				EQ2Packet* app = packet2->serialize();
@@ -12053,7 +12053,7 @@ void Commands::Command_Editor(Client* client, Seperator* sep) {
 				spawn_id = client->GetPlayer()->GetTarget()->GetDatabaseID();
 			}
 
-			sprintf(command, url.c_str(), zone_id, type.c_str(), spawn_id);
+			snprintf(command, sizeof(command), url.c_str(), zone_id, type.c_str(), spawn_id);
 
 			packet->setDataByName("accept_command", command);
 		}
@@ -12061,7 +12061,7 @@ void Commands::Command_Editor(Client* client, Seperator* sep) {
 			char command[255];
 			url = "browser " + url;
 			if (client->GetPlayer()->GetTarget())
-				sprintf(command, url.c_str(), client->GetPlayer()->GetTarget()->GetDatabaseID());
+				snprintf(command, sizeof(command), url.c_str(), client->GetPlayer()->GetTarget()->GetDatabaseID());
 
 			packet->setDataByName("accept_command", command);
 		}
