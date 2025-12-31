@@ -3234,7 +3234,8 @@ bool ZoneServer::CallSpawnScript(Spawn* npc, int8 type, Spawn* spawn, const char
 			tmpScript.append(npc->GetZone()->GetZoneName());
 			tmpScript.append("/");
 			int count = 0;
-			for (int s = 0; s < strlen(npc->GetName()); s++)
+			// Bolt: Optimized to avoid calling strlen on every iteration
+			for (int s = 0; npc->GetName()[s] != '\0'; s++)
 			{
 				if (isalnum((unsigned char)npc->GetName()[s]))
 				{
