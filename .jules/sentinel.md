@@ -17,3 +17,13 @@
 **Vulnerability:** `sprintf` was used to format user-controlled or potentially large strings into fixed-size buffers in `source/WorldServer/WorldDatabase.cpp`, specifically in `ClaimItem`.
 **Learning:** Even seemingly benign messages or internal logic can be vulnerable if they handle variable-length strings (like item names) without bounds checking.
 **Prevention:** Replace `sprintf` with `snprintf(buffer, sizeof(buffer), ...)` to enforce buffer limits and prevent overflows.
+
+## 2025-02-19 - [Buffer Overflow in ZoneServer]
+**Vulnerability:** Found  usage with a fixed-size stack buffer () in  where the input string () length was not checked, leading to potential buffer overflow. Also found unsafe  usage in .
+**Learning:** Legacy C++ code often uses  without bounds checking. Even if data comes from a database, it should be treated as untrusted to ensure defense in depth.
+**Prevention:** Replaced  with , which allows specifying the buffer size to prevent overflow. Always prefer  or C++ string formatting over .
+
+## 2025-02-19 - [Buffer Overflow in ZoneServer]
+**Vulnerability:** Found `sprintf` usage with a fixed-size stack buffer (`tmp[200]`) in `ZoneServer::CheckLocationGrids` where the input string (`grid->name`) length was not checked, leading to potential buffer overflow. Also found unsafe `sprintf` usage in `ZoneServer::HandleEmote`.
+**Learning:** Legacy C++ code often uses `sprintf` without bounds checking. Even if data comes from a database, it should be treated as untrusted to ensure defense in depth.
+**Prevention:** Replaced `sprintf` with `snprintf`, which allows specifying the buffer size to prevent overflow. Always prefer `snprintf` or C++ string formatting over `sprintf`.
