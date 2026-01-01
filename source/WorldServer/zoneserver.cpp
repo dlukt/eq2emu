@@ -6747,7 +6747,7 @@ void ZoneServer::CheckLocationGrids() {
 
 							// if not, process new discovery
 							char tmp[200] = {0};
-							sprintf(tmp, "\\#FFE400You have discovered\12\\#FFF283%s", grid->name.c_str());
+							snprintf(tmp, sizeof(tmp), "\\#FFE400You have discovered\12\\#FFF283%s", grid->name.c_str());
 							client->SendPopupMessage(11, tmp, "ui_discovery", 2.25, 0xFF, 0xFF, 0xFF);
 							LogWrite(ZONE__DEBUG, 0, "Zone", "Player '%s' discovered location '%s' (%u)", player->GetName(), grid->name.c_str(), grid->id);
 
@@ -6974,8 +6974,9 @@ void ZoneServer::HandleEmote(Spawn* originator, string name, Spawn* opt_target, 
 						message.replace(message.find("%g3"), 3, "she");
 				}
 				if(message.length() > 0){
-					emoteResponse = new char[message.length() + strlen(originator->GetName()) + 10];
-					sprintf(emoteResponse,"%s %s", originator->GetName(), message.c_str());
+					size_t allocSize = message.length() + strlen(originator->GetName()) + 10;
+					emoteResponse = new char[allocSize];
+					snprintf(emoteResponse, allocSize, "%s %s", originator->GetName(), message.c_str());
 				}
 			}
 			if(originator->IsPlayer()) {
