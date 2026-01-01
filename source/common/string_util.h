@@ -36,13 +36,13 @@
 #include "types.h"
 
 //std::string based
-const std::string str_tolower(std::string s);
-const std::string str_toupper(std::string s);
-const std::string ucfirst(std::string s);
-std::vector<std::string> split(std::string str_to_split, char delimiter);
-const std::string StringFormat(const char* format, ...);
-const std::string vStringFormat(const char* format, va_list args);
-std::string implode(std::string glue, std::vector<std::string> src);
+std::string str_tolower(std::string s);
+std::string str_toupper(std::string s);
+std::string ucfirst(std::string s);
+std::vector<std::string> split(const std::string &str_to_split, char delimiter);
+std::string StringFormat(const char* format, ...);
+std::string vStringFormat(const char* format, va_list args);
+std::string implode(const std::string &glue, const std::vector<std::string> &src);
 
 /**
  * @param str
