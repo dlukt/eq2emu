@@ -38,7 +38,7 @@
 // original source: 
 // https://github.com/facebook/folly/blob/master/folly/String.cpp
 //
-const std::string vStringFormat(const char* format, va_list args)
+std::string vStringFormat(const char* format, va_list args)
 {
 	std::string output;
 	va_list tmpargs;
@@ -65,7 +65,7 @@ const std::string vStringFormat(const char* format, va_list args)
 	return output;
 }
 
-const std::string str_tolower(std::string s)
+std::string str_tolower(std::string s)
 {
 	std::transform(
 		s.begin(), s.end(), s.begin(),
@@ -74,19 +74,12 @@ const std::string str_tolower(std::string s)
 	return s;
 }
 
-std::vector<std::string> split(std::string str_to_split, char delimiter)
+std::vector<std::string> split(const std::string &str_to_split, char delimiter)
 {
-	std::stringstream        ss(str_to_split);
-	std::string              item;
-	std::vector<std::string> exploded_values;
-	while (std::getline(ss, item, delimiter)) {
-		exploded_values.push_back(item);
-	}
-
-	return exploded_values;
+	return SplitString(str_to_split, delimiter);
 }
 
-const std::string str_toupper(std::string s)
+std::string str_toupper(std::string s)
 {
 	std::transform(
 		s.begin(), s.end(), s.begin(),
@@ -95,7 +88,7 @@ const std::string str_toupper(std::string s)
 	return s;
 }
 
-const std::string ucfirst(std::string s)
+std::string ucfirst(std::string s)
 {
 	std::string output = s;
 	if (!s.empty())
@@ -104,7 +97,7 @@ const std::string ucfirst(std::string s)
 	return output;
 }
 
-const std::string StringFormat(const char *format, ...)
+std::string StringFormat(const char *format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -137,14 +130,14 @@ std::vector<std::string> SplitString(const std::string &str, char delim) {
 	return ret;
 }
 
-std::string implode(std::string glue, std::vector<std::string> src)
+std::string implode(const std::string &glue, const std::vector<std::string> &src)
 {
 	if (src.empty()) {
 		return {};
 	}
 
 	std::ostringstream                 output;
-	std::vector<std::string>::iterator src_iter;
+	std::vector<std::string>::const_iterator src_iter;
 
 	for (src_iter = src.begin(); src_iter != src.end(); src_iter++) {
 		output << *src_iter << glue;
