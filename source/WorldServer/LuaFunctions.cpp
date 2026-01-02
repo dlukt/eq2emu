@@ -653,26 +653,26 @@ int EQ2Emu_lua_GetCoinMessage(lua_State* state) {
 	if (total_coins >= 1000000) {
 		val = total_coins / 1000000;
 		total_coins -= 1000000 * val;
-		sprintf(tmp, " %u Platinum", val);
+		snprintf(tmp, sizeof(tmp), " %u Platinum", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins >= 10000) {
 		val = total_coins / 10000;
 		total_coins -= 10000 * val;
-		sprintf(tmp, " %u Gold", val);
+		snprintf(tmp, sizeof(tmp), " %u Gold", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins >= 100) {
 		val = total_coins / 100;
 		total_coins -= 100 * val;
-		sprintf(tmp, " %u Silver", val);
+		snprintf(tmp, sizeof(tmp), " %u Silver", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins > 0) {
-		sprintf(tmp, " %u Copper", (int32)total_coins);
+		snprintf(tmp, sizeof(tmp), " %u Copper", (int32)total_coins);
 		message.append(tmp);
 	}
 	lua_interface->SetStringValue(state, message.c_str());
@@ -7884,14 +7884,14 @@ int EQ2Emu_lua_SetSuccessTimer(lua_State* state) {
 
 					if (hour > 0) {
 						char temp[10];
-						sprintf(temp, " %i", hour);
+						snprintf(temp, sizeof(temp), " %i", hour);
 						time_msg.append(temp);
 						time_msg.append(" hour");
 						time_msg.append((hour > 1) ? "s" : "");
 					}
 					if (min > 0) {
 						char temp[5];
-						sprintf(temp, " %i", min);
+						snprintf(temp, sizeof(temp), " %i", min);
 						time_msg.append(temp);
 						time_msg.append(" minute");
 						time_msg.append((min > 1) ? "s" : "");
@@ -7899,7 +7899,7 @@ int EQ2Emu_lua_SetSuccessTimer(lua_State* state) {
 					// Only add seconds if minutes and hours are 0
 					if (hour == 0 && min == 0 && sec > 0) {
 						char temp[5];
-						sprintf(temp, " %i", sec);
+						snprintf(temp, sizeof(temp), " %i", sec);
 						time_msg.append(temp);
 						time_msg.append(" second");
 						time_msg.append((sec > 1) ? "s" : "");
@@ -7976,14 +7976,14 @@ int EQ2Emu_lua_SetFailureTimer(lua_State* state) {
 
 					if (hour > 0) {
 						char temp[10];
-						sprintf(temp, " %i", hour);
+						snprintf(temp, sizeof(temp), " %i", hour);
 						time_msg.append(temp);
 						time_msg.append(" hour");
 						time_msg.append((hour > 1) ? "s" : "");
 					}
 					if (min > 0) {
 						char temp[5];
-						sprintf(temp, " %i", min);
+						snprintf(temp, sizeof(temp), " %i", min);
 						time_msg.append(temp);
 						time_msg.append(" minute");
 						time_msg.append((min > 1) ? "s" : "");
@@ -7991,7 +7991,7 @@ int EQ2Emu_lua_SetFailureTimer(lua_State* state) {
 					// Only add seconds if minutes and hours are 0
 					if (hour == 0 && min == 0 && sec > 0) {
 						char temp[5];
-						sprintf(temp, " %i", sec);
+						snprintf(temp, sizeof(temp), " %i", sec);
 						time_msg.append(temp);
 						time_msg.append(" second");
 						time_msg.append((sec > 1) ? "s" : "");
