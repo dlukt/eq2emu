@@ -38,9 +38,15 @@ public:
 		this->maxargnum = in_maxargnum;
 		argplus = new const char *[maxargnum+1];
 		arg = new char *[maxargnum+1];
+
+		// Bolt: Optimized to single allocation for all arguments
+		// This reduces N+1 allocations to 1, significantly improving performance for command parsing
+		int32_t total_buffer_size = (maxargnum + 1) * (arglen + 1);
+		arg_buffer = new char[total_buffer_size];
+		memset(arg_buffer, 0, total_buffer_size);
+
 		for (i=0; i<=maxargnum; i++) {
-			argplus[i]=arg[i] = new char[arglen+1];
-			memset(arg[i], 0, arglen+1);
+			argplus[i]=arg[i] = &arg_buffer[i * (arglen + 1)];
 		}
 
 		int len = strlen(message);
@@ -99,8 +105,9 @@ public:
 		}
 	}
 	~Seperator() {
-		for (int i=0; i<=maxargnum; i++)
-			safe_delete_array(arg[i]);
+		// Bolt: Delete the single buffer instead of individual args
+		safe_delete_array(arg_buffer);
+
 		safe_delete_array(arg);
 		safe_delete_array(argplus);
 		if (msg)
@@ -166,6 +173,7 @@ public:
 	inline int16 GetArgNumber() const { return argnum; }
 private:
 	int16 maxargnum;
+	char* arg_buffer; // Bolt: Single buffer for all args
 };
 
 #endif
