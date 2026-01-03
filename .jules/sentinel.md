@@ -1,4 +1,4 @@
-## 2024-05-23 - Buffer Overflow Prevention in Legacy C++
-**Vulnerability:** Detected multiple usages of `sprintf` with small stack-allocated buffers (e.g., `char temp[5]`) for formatting integers. Large values could overflow these buffers, corrupting the stack.
-**Learning:** Legacy C++ codebases often rely on `sprintf` for string formatting without bounds checking. In high-performance loops or logic (like Lua interface bindings), these small buffers are common optimization attempts but pose significant security risks.
-**Prevention:** Systematically replace `sprintf` with `snprintf`, passing `sizeof(buffer)` as the size argument. This ensures that even if the data exceeds the buffer size, it will be truncated rather than causing an overflow. Verify buffer sizes are adequate for expected data, but rely on `snprintf` for safety.
+## 2024-05-24 - [Buffer Overflow in SendUpdateTitles]
+**Vulnerability:** A critical stack-based buffer overflow was found in `Client::SendUpdateTitles` where `strcpy` was used to copy a `Title` name (256 bytes) into an `AppearanceData` field (128 bytes).
+**Learning:** `memset` was using `strlen` on the destination buffer to determine the size to clear. This is dangerous as the buffer contents are undefined or untrusted.
+**Prevention:** Always use `snprintf` for string copying into fixed-size buffers and ensure `memset` uses `sizeof(destination)` for clearing memory.
