@@ -1444,7 +1444,7 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 				else {
 					for (int8 i = 0; i < count; i++) {
 						char tmp_command[15] = { 0 };
-						sprintf(tmp_command, "command_%i", i);
+						snprintf(tmp_command, sizeof(tmp_command), "command_%i", i);
 						update->push_back(macro_update->getType_EQ2_16BitString_ByName(tmp_command).data);
 					}
 				}
@@ -1693,8 +1693,8 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 				for (int i = 0; i < num_updates; i++) {
 					memset(tmp_spell_id, 0, 15);
 					memset(tmp_slot, 0, 15);
-					sprintf(tmp_spell_id, "spell_id_%i", i);
-					sprintf(tmp_slot, "slot_id_%i", i);
+					snprintf(tmp_spell_id, sizeof(tmp_spell_id), "spell_id_%i", i);
+					snprintf(tmp_slot, sizeof(tmp_slot), "slot_id_%i", i);
 					spell_id = packet->getType_int32_ByName(tmp_spell_id);
 					if (spell_id > 0) {
 						slot_id = packet->getType_int16_ByName(tmp_slot);
@@ -1856,9 +1856,9 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 						int8 num_primary_selected_items = packet->getType_int8_ByName("num_primary_selected_items");
 						for (int8 i = 0; i < num_primary_selected_items; i++) {
 							memset(tmp_item_id, 0, 30);
-							sprintf(tmp_item_id, "primary_selected_item_id_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "primary_selected_item_id_%i", i);
 							item = packet->getType_int32_ByName(tmp_item_id);
-							sprintf(tmp_item_id, "primary_selected_item_qty_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "primary_selected_item_qty_%i", i);
 							qty = packet->getType_int16_ByName(tmp_item_id);
 							if (item > 0)
 								items.push_back(make_pair(item, qty));
@@ -1876,13 +1876,13 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 					if (GetVersion() > 1193) {
 						for (int8 i = 0; i < build_components; i++) {
 							memset(tmp_item_id, 0, 30);
-							sprintf(tmp_item_id, "num_selected_items_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "num_selected_items_%i", i);
 							int8 num_selected_items = packet->getType_int8_ByName(tmp_item_id);
 							for (int8 j = 0; j < num_selected_items; j++) {
 								memset(tmp_item_id, 0, 30);
-								sprintf(tmp_item_id, "selected_id%i_%i", i, j);
+								snprintf(tmp_item_id, sizeof(tmp_item_id), "selected_id%i_%i", i, j);
 								item = packet->getType_int32_ByName(tmp_item_id);
-								sprintf(tmp_item_id, "selected_qty%i_%i", i, j);
+								snprintf(tmp_item_id, sizeof(tmp_item_id), "selected_qty%i_%i", i, j);
 								qty = packet->getType_int16_ByName(tmp_item_id);
 								if (item > 0)
 									items.push_back(make_pair(item, qty));
@@ -1894,9 +1894,9 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 					else {
 						for (int8 i = 0; i < build_components; i++) {
 							memset(tmp_item_id, 0, 30);
-							sprintf(tmp_item_id, "component_id_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "component_id_%i", i);
 							int32 item = packet->getType_int32_ByName(tmp_item_id);
-							sprintf(tmp_item_id, "component_qty_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "component_qty_%i", i);
 							qty = packet->getType_int32_ByName(tmp_item_id);
 							if (item > 0)
 								items.push_back(make_pair(item, qty));
@@ -1906,9 +1906,9 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 						int8 num_fuel_items = packet->getType_int8_ByName("num_fuel_items");
 						for (int8 i = 0; i < num_fuel_items; i++) {
 							memset(tmp_item_id, 0, 30);
-							sprintf(tmp_item_id, "fuel_id_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "fuel_id_%i", i);
 							item = packet->getType_int32_ByName(tmp_item_id);
-							sprintf(tmp_item_id, "fuel_qty_%i", i);
+							snprintf(tmp_item_id, sizeof(tmp_item_id), "fuel_qty_%i", i);
 							qty = packet->getType_int16_ByName(tmp_item_id);
 							if (item > 0)
 								items.push_back(make_pair(item, qty));
@@ -11832,18 +11832,23 @@ void Client::SendUpdateTitles(sint32 prefix, sint32 suffix) {
 	Title* prefix_title = 0;
 	if (suffix != -1) {
 		suffix_title = player->GetPlayerTitles()->GetTitle(suffix);
-		if (suffix_title)
-			strcpy(player->appearance.suffix_title, suffix_title->GetName());
+		if (suffix_title) {
+			snprintf(player->appearance.suffix_title, sizeof(player->appearance.suffix_title), "%s", suffix_title->GetName());
+			player->appearance.suffix_title[sizeof(player->appearance.suffix_title) - 1] = '\0';
+		}
 	}
 	else
-		memset(player->appearance.suffix_title, 0, strlen(player->appearance.suffix_title));
+		memset(player->appearance.suffix_title, 0, sizeof(player->appearance.suffix_title));
+
 	if (prefix != -1) {
 		prefix_title = player->GetPlayerTitles()->GetTitle(prefix);
-		if (prefix_title)
-			strcpy(player->appearance.prefix_title, prefix_title->GetName());
+		if (prefix_title) {
+			snprintf(player->appearance.prefix_title, sizeof(player->appearance.prefix_title), "%s", prefix_title->GetName());
+			player->appearance.prefix_title[sizeof(player->appearance.prefix_title) - 1] = '\0';
+		}
 	}
 	else
-		memset(player->appearance.prefix_title, 0, strlen(player->appearance.prefix_title));
+		memset(player->appearance.prefix_title, 0, sizeof(player->appearance.prefix_title));
 
 	current_zone->SendUpdateTitles(this, suffix_title, prefix_title);
 }
