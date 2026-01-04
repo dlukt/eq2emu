@@ -11446,7 +11446,7 @@ void Client::HandleCollectionAddItem(int32 collection_id, Item* item) {
 	Item* item2 = master_item_list.GetItem(collection_item->item);
 	if (item2) {
 		Message(CHANNEL_COLOR_YELLOW, "You added: %s to %s", item2->name.c_str(), collection->GetName());
-		sprintf(tmp, "You added: %s to %s", item2->name.c_str(), collection->GetName());
+		snprintf(tmp, sizeof(tmp), "You added: %s to %s", item2->name.c_str(), collection->GetName());
 		SendPopupMessage(5, tmp, "quest_item", 3.5, 0x64, 0xFF, 0xFF);
 	}
 	safe_delete(packet);
@@ -11953,16 +11953,16 @@ void Client::SendResurrectionWindow() {
 		return;
 
 	char* tmp = new char[512];
-	sprintf(tmp, "%s would like to cast '%s' on you. Do you accept?", caster->GetName(), current_rez.spell_name.c_str());
+	snprintf(tmp, 512, "%s would like to cast '%s' on you. Do you accept?", caster->GetName(), current_rez.spell_name.c_str());
 
 	packet->setMediumStringByName("text", tmp);
 	packet->setMediumStringByName("accept_text", "Yes");
 	packet->setMediumStringByName("cancel_text", "No");
 
-	sprintf(tmp, "accept_resurrection %u", player->GetID());
+	snprintf(tmp, 512, "accept_resurrection %u", player->GetID());
 	packet->setMediumStringByName("accept_command", tmp);
 
-	sprintf(tmp, "decline_resurrection %u", player->GetID());
+	snprintf(tmp, 512, "decline_resurrection %u", player->GetID());
 	packet->setMediumStringByName("cancel_command", tmp);
 	packet->setDataByName("time", current_rez.expire_timer->GetRemainingTime() / 1000);
 	QueuePacket(packet->serialize());
@@ -12011,7 +12011,7 @@ void Client::SendLastNameConfirmation() {
 	PacketStruct* packet = configReader.getStruct("WS_ChoiceWindow", GetVersion());
 	if (packet) {
 		char* text = new char[128];
-		sprintf(text, "Are you sure you want your last name to be \"%s\"?", pending_last_name->c_str());
+		snprintf(text, 128, "Are you sure you want your last name to be \"%s\"?", pending_last_name->c_str());
 		packet->setDataByName("text", text);
 		packet->setDataByName("accept_text", "Yes");
 		packet->setDataByName("accept_command", "confirmedlastname");
@@ -13243,26 +13243,23 @@ void Client::AwardCoins(int64 total_coins, std::string reason)
 		if (total_coins >= 1000000) {
 			val = total_coins / 1000000;
 			total_coins -= 1000000 * val;
-			sprintf(tmp, "%u Platinum ", val);
+			snprintf(tmp, sizeof(tmp), "%u Platinum ", val);
 			message.append(tmp);
-			memset(tmp, 0, 64);
 		}
 		if (total_coins >= 10000) {
 			val = total_coins / 10000;
 			total_coins -= 10000 * val;
-			sprintf(tmp, "%u Gold ", val);
+			snprintf(tmp, sizeof(tmp), "%u Gold ", val);
 			message.append(tmp);
-			memset(tmp, 0, 64);
 		}
 		if (total_coins >= 100) {
 			val = total_coins / 100;
 			total_coins -= 100 * val;
-			sprintf(tmp, "%u Silver ", val);
+			snprintf(tmp, sizeof(tmp), "%u Silver ", val);
 			message.append(tmp);
-			memset(tmp, 0, 64);
 		}
 		if (total_coins > 0) {
-			sprintf(tmp, "%u Copper ", (int32)total_coins);
+			snprintf(tmp, sizeof(tmp), "%u Copper ", (int32)total_coins);
 			message.append(tmp);
 		}
 		message.append(reason);
