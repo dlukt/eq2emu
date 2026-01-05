@@ -431,7 +431,7 @@ int32 LoginDatabase::SaveCharacter(PacketStruct* create, LoginAccount* acct, int
 		GetAppearanceID(create->getType_EQ2_16BitString_ByName("face_file").data),
 		GetAppearanceID(create->getType_EQ2_16BitString_ByName("soga_race_file").data),
 		GetAppearanceID(create->getType_EQ2_16BitString_ByName("race_file").data));
-	if(query.GetError() && strlen(query.GetError()) > 0){
+	if(query.GetError() && query.GetError()[0] != '\0'){
 		LogWrite(LOGIN__ERROR, 0, "Login", "Error in SaveCharacter query '%s': %s", query.GetQuery(), query.GetError());
 		return 0;
 	}
@@ -765,7 +765,7 @@ char* LoginDatabase::GetServerAccountName(int32 id){
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT name from login_worldservers where id=%lu", id);
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
-		if(strlen(row[0]) > 0){
+		if(row[0] && row[0][0] != '\0'){
 			name = new char[strlen(row[0])+1];
 			strcpy(name, row[0]);
 		}

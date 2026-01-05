@@ -716,11 +716,11 @@ bool LWorld::CheckServerName(const char* name) {
 	return true;
 }
 bool LWorld::SetupWorld(char* in_worldname, char* in_worldaddress, char* in_account, char* in_password, char* in_version) {
-	if (strlen(in_worldaddress) > 3) {
+	if (in_worldaddress[0] != '\0' && in_worldaddress[1] != '\0' && in_worldaddress[2] != '\0' && in_worldaddress[3] != '\0') {
 		isaddressip = false;
 		strcpy(address, in_worldaddress);
 	}
-	if (strlen(in_worldname) > 3) {
+	if (in_worldname[0] != '\0' && in_worldname[1] != '\0' && in_worldname[2] != '\0' && in_worldname[3] != '\0') {
 		char tmpAccount[30];
 		memcpy(tmpAccount, in_account, 29);
 		tmpAccount[29] = '\0';

@@ -733,7 +733,7 @@ void PrintSep(Seperator *sep, const char *name) {
 	if (!sep)
 		LogWrite(MISC__DEBUG, 0, "Misc", "\tSep is null");
 	else {
-		while (sep->arg[i] && strlen(sep->arg[i]) > 0) {
+		while (sep->arg[i] && sep->arg[i][0] != '\0') {
 			LogWrite(MISC__DEBUG, 0, "Misc", "\t%i => %s", i, sep->arg[i]);
 			i++;
 		}

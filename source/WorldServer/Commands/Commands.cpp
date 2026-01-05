@@ -2361,7 +2361,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 				if(client->GetVersion() > 561) {
 					slot_id = atoul(sep->arg[0]);
 				}
-				else if(strlen(sep->argplus[0]) > 0) { // the way that the arguments are pulled the length is truncated, it will always be 2.  So just try to convert what we did get in the string to an integer
+				else if(sep->argplus[0][0] != '\0') { // the way that the arguments are pulled the length is truncated, it will always be 2.  So just try to convert what we did get in the string to an integer
 					const char* bufPtr = sep->argplus[0];
 					slot_id = client->GetPlayer()->ConvertSlotFromClient(atoul(bufPtr), client->GetVersion());
 				}
@@ -2489,7 +2489,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 			// takes 1 param: slot
 			printf("COMMAND_COLLECTION_FILTER_MATCHITEM:\n");
 			int i = 0;
-			while (sep->arg[i] && strlen(sep->arg[i]) > 0) {
+			while (sep->arg[i] && sep->arg[i][0] != '\0') {
 				printf("\t%u: %s\n", i, sep->arg[i]);
 				i++;
 			}
@@ -3262,7 +3262,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 			}
 
 			// name provided with command so it has to be a player, npc not supported here
-			if (sep && sep->arg[0] && strlen(sep->arg[0]) > 0){
+			if (sep && sep->arg[0] && sep->arg[0][0] != '\0'){
 				target_client = zone_list.GetClientByCharName(sep->arg[0]);
 				if (target_client) {
 					if (!target_client->IsConnected() || !target_client->IsReadyForSpawns())
@@ -3362,7 +3362,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 		}
 		case COMMAND_FRIEND_REMOVE:{
 			string name = "";
-			if(sep && sep->arg[0] && strlen(sep->arg[0]) > 1)
+			if(sep && sep->arg[0] && sep->arg[0][0] != '\0' && sep->arg[0][1] != '\0')
 				name = database.GetPlayerName(sep->arg[0]);
 			else if(cmdTarget && cmdTarget->IsPlayer())
 				name = string(cmdTarget->GetName());
@@ -3381,7 +3381,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 		}
 	    case COMMAND_IGNORE_ADD:{
 			string name = "";
-			if(sep && sep->arg[0] && strlen(sep->arg[0]) > 1)
+			if(sep && sep->arg[0] && sep->arg[0][0] != '\0' && sep->arg[0][1] != '\0')
 				name = database.GetPlayerName(sep->arg[0]);
 			else if(cmdTarget && cmdTarget->IsPlayer())
 				name = string(cmdTarget->GetName());
@@ -3405,7 +3405,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 		}
 		case COMMAND_IGNORE_REMOVE:{
 			string name = "";
-			if(sep && sep->arg[0] && strlen(sep->arg[0]) > 1)
+			if(sep && sep->arg[0] && sep->arg[0][0] != '\0' && sep->arg[0][1] != '\0')
 				name = database.GetPlayerName(sep->arg[0]);
 			else if(cmdTarget && cmdTarget->IsPlayer())
 				name = string(cmdTarget->GetName());
