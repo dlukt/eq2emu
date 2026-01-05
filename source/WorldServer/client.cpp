@@ -5508,7 +5508,7 @@ void Client::SkillChanged(Skill* skill, int16 previous_value, int16 new_value) {
 	if (previous_value != new_value) {
 		Message(CHANNEL_SKILL, "You get %s at %s (%i/%i).", new_value > previous_value ? "better" : "worse", skill->name.data.c_str(), new_value, skill->max_val);
 		char tmp[200] = { 0 };
-		sprintf(tmp, "\\#6EFF6EYou get %s at \12\\#C8FFC8%s\\#6EFF6E! (%i/%i)", new_value > previous_value ? "better" : "worse", skill->name.data.c_str(), new_value, skill->max_val);
+		snprintf(tmp, sizeof(tmp), "\\#6EFF6EYou get %s at \12\\#C8FFC8%s\\#6EFF6E! (%i/%i)", new_value > previous_value ? "better" : "worse", skill->name.data.c_str(), new_value, skill->max_val);
 		SendPopupMessage(6, tmp, new_value > previous_value ? "skill_up" : "skill_down", 2.75f, 0xFF, 0xFF, 0xFF);
 	}
 
@@ -6031,26 +6031,26 @@ string Client::GetCoinMessage(int32 total_coins) {
 	if (total_coins >= 1000000) {
 		val = total_coins / 1000000;
 		total_coins -= 1000000 * val;
-		sprintf(tmp, " %u Platinum", val);
+		snprintf(tmp, sizeof(tmp), " %u Platinum", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins >= 10000) {
 		val = total_coins / 10000;
 		total_coins -= 10000 * val;
-		sprintf(tmp, " %u Gold", val);
+		snprintf(tmp, sizeof(tmp), " %u Gold", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins >= 100) {
 		val = total_coins / 100;
 		total_coins -= 100 * val;
-		sprintf(tmp, " %u Silver", val);
+		snprintf(tmp, sizeof(tmp), " %u Silver", val);
 		message.append(tmp);
 		memset(tmp, 0, 64);
 	}
 	if (total_coins > 0) {
-		sprintf(tmp, " %u Copper", (int32)total_coins);
+		snprintf(tmp, sizeof(tmp), " %u Copper", (int32)total_coins);
 		message.append(tmp);
 	}
 
@@ -6642,7 +6642,7 @@ bool Client::BankWithdrawalNoBanker(int64 amount) {
 				GetPlayer()->GetInfoStruct()->set_bank_coin_plat(bank_coins_plat - tmp);
 				GetPlayer()->GetInfoStruct()->add_coin_plat(tmp);
 				amount -= (int64)tmp * 1000000;
-				sprintf(withdrawal_data, "%u Platinum ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Platinum ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
@@ -6661,7 +6661,7 @@ bool Client::BankWithdrawalNoBanker(int64 amount) {
 				else
 					GetPlayer()->GetInfoStruct()->add_coin_gold(tmp);
 				amount -= tmp * 10000;
-				sprintf(withdrawal_data, "%u Gold ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Gold ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
@@ -6680,14 +6680,14 @@ bool Client::BankWithdrawalNoBanker(int64 amount) {
 				else
 					GetPlayer()->GetInfoStruct()->add_coin_silver(tmp);
 				amount -= tmp * 100;
-				sprintf(withdrawal_data, "%u Silver ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Silver ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
 		}
 		if (!cheater) {
 			if (amount > 0) {
-				sprintf(withdrawal_data, "%u Copper ", (int32)amount);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Copper ", (int32)amount);
 				withdrawal.append(withdrawal_data);
 				int32 bank_coin_copper = GetPlayer()->GetInfoStruct()->get_bank_coin_copper();
 
@@ -6701,7 +6701,7 @@ bool Client::BankWithdrawalNoBanker(int64 amount) {
 			}
 			if (withdrawal.length() > 0) {
 				withdrawal.append("withdrawn ");
-				sprintf(withdrawal_data, "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
 					GetPlayer()->GetInfoStruct()->get_bank_coin_gold(), GetPlayer()->GetInfoStruct()->get_bank_coin_silver(), GetPlayer()->GetInfoStruct()->get_bank_coin_copper());
 				withdrawal.append(withdrawal_data);
 				SimpleMessage(CHANNEL_NARRATIVE, withdrawal.c_str());
@@ -6731,7 +6731,7 @@ void Client::BankWithdrawal(int64 amount) {
 				GetPlayer()->GetInfoStruct()->set_bank_coin_plat(bank_coins_plat - tmp);
 				GetPlayer()->GetInfoStruct()->add_coin_plat(tmp);
 				amount -= (int64)tmp * 1000000;
-				sprintf(withdrawal_data, "%u Platinum ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Platinum ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
@@ -6750,7 +6750,7 @@ void Client::BankWithdrawal(int64 amount) {
 				else
 					GetPlayer()->GetInfoStruct()->add_coin_gold(tmp);
 				amount -= tmp * 10000;
-				sprintf(withdrawal_data, "%u Gold ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Gold ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
@@ -6769,14 +6769,14 @@ void Client::BankWithdrawal(int64 amount) {
 				else
 					GetPlayer()->GetInfoStruct()->add_coin_silver(tmp);
 				amount -= tmp * 100;
-				sprintf(withdrawal_data, "%u Silver ", tmp);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Silver ", tmp);
 				withdrawal.append(withdrawal_data);
 				memset(withdrawal_data, 0, sizeof(withdrawal_data));
 			}
 		}
 		if (!cheater) {
 			if (amount > 0) {
-				sprintf(withdrawal_data, "%u Copper ", (int32)amount);
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "%u Copper ", (int32)amount);
 				withdrawal.append(withdrawal_data);
 				int32 bank_coin_copper = GetPlayer()->GetInfoStruct()->get_bank_coin_copper();
 
@@ -6790,7 +6790,7 @@ void Client::BankWithdrawal(int64 amount) {
 			}
 			if (withdrawal.length() > 0) {
 				withdrawal.append("withdrawn ");
-				sprintf(withdrawal_data, "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
+				snprintf(withdrawal_data, sizeof(withdrawal_data), "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
 					GetPlayer()->GetInfoStruct()->get_bank_coin_gold(), GetPlayer()->GetInfoStruct()->get_bank_coin_silver(), GetPlayer()->GetInfoStruct()->get_bank_coin_copper());
 				withdrawal.append(withdrawal_data);
 				SimpleMessage(CHANNEL_NARRATIVE, withdrawal.c_str());
@@ -6819,7 +6819,7 @@ void Client::BankDeposit(int64 amount) {
 				GetPlayer()->GetInfoStruct()->add_bank_coin_plat(tmp);
 				GetPlayer()->GetInfoStruct()->set_coin_plat(GetPlayer()->GetInfoStruct()->get_coin_plat() - tmp);
 				amount -= (int64)tmp * 1000000;
-				sprintf(deposit_data, "%u Platinum ", tmp);
+				snprintf(deposit_data, sizeof(deposit_data), "%u Platinum ", tmp);
 				deposit.append(deposit_data);
 				memset(deposit_data, 0, sizeof(deposit_data));
 			}
@@ -6837,7 +6837,7 @@ void Client::BankDeposit(int64 amount) {
 					GetPlayer()->GetInfoStruct()->add_bank_coin_gold(tmp);
 				GetPlayer()->GetInfoStruct()->set_coin_gold(GetPlayer()->GetInfoStruct()->get_coin_gold() - tmp);
 				amount -= tmp * 10000;
-				sprintf(deposit_data, "%u Gold ", tmp);
+				snprintf(deposit_data, sizeof(deposit_data), "%u Gold ", tmp);
 				deposit.append(deposit_data);
 				memset(deposit_data, 0, sizeof(deposit_data));
 			}
@@ -6855,14 +6855,14 @@ void Client::BankDeposit(int64 amount) {
 					GetPlayer()->GetInfoStruct()->add_bank_coin_silver(tmp);
 				GetPlayer()->GetInfoStruct()->set_coin_silver(GetPlayer()->GetInfoStruct()->get_coin_silver() - tmp);
 				amount -= tmp * 100;
-				sprintf(deposit_data, "%u Silver ", tmp);
+				snprintf(deposit_data, sizeof(deposit_data), "%u Silver ", tmp);
 				deposit.append(deposit_data);
 				memset(deposit_data, 0, sizeof(deposit_data));
 			}
 		}
 		if (!cheater) {
 			if (amount > 0) {
-				sprintf(deposit_data, "%u Copper ", (int32)amount);
+				snprintf(deposit_data, sizeof(deposit_data), "%u Copper ", (int32)amount);
 				deposit.append(deposit_data);
 				if ((GetPlayer()->GetInfoStruct()->get_bank_coin_copper() + amount) > 100) {
 					GetPlayer()->GetInfoStruct()->set_bank_coin_copper((GetPlayer()->GetInfoStruct()->get_bank_coin_copper() + amount) - 100);
@@ -6874,7 +6874,7 @@ void Client::BankDeposit(int64 amount) {
 			}
 			if (deposit.length() > 0) {
 				deposit.append("deposited ");
-				sprintf(deposit_data, "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
+				snprintf(deposit_data, sizeof(deposit_data), "(%u Plat %u Gold %u Silver %u Copper in the bank now.)", GetPlayer()->GetInfoStruct()->get_bank_coin_plat(),
 					GetPlayer()->GetInfoStruct()->get_bank_coin_gold(), GetPlayer()->GetInfoStruct()->get_bank_coin_silver(), GetPlayer()->GetInfoStruct()->get_bank_coin_copper());
 				deposit.append(deposit_data);
 				SimpleMessage(CHANNEL_NARRATIVE, deposit.c_str());
@@ -9567,7 +9567,7 @@ void Client::PlayLotto(int32 price, int32 ticket_item_id) {
 			jackpot = 10000;
 		}
 		char new_jackpot[128] = { 0 };
-		sprintf(new_jackpot, "%llu", jackpot + price);
+		snprintf(new_jackpot, sizeof(new_jackpot), "%llu", jackpot + price);
 		jackpot_var->SetValue(new_jackpot);
 		database.SaveVariable(jackpot_var->GetName(), jackpot_var->GetValue(), jackpot_var->GetComment());
 		world.PickRandomLottoDigits(rolls);
@@ -9599,7 +9599,7 @@ void Client::PlayLotto(int32 price, int32 ticket_item_id) {
 		if (num_matches == 6) {
 			world.PickRandomLottoDigits(lottery_digits);
 			for (int32 i = 0; i < 12; i += 2)
-				sprintf(new_jackpot_str + i, "%02d", lottery_digits[i / 2]);
+				snprintf(new_jackpot_str + i, sizeof(new_jackpot_str) - i, "%02d", lottery_digits[i / 2]);
 			winning_numbers->SetValue(new_jackpot_str);
 			jackpot_var->SetValue("10000");
 			database.SaveVariable(winning_numbers->GetName(), winning_numbers->GetValue(), winning_numbers->GetComment());
