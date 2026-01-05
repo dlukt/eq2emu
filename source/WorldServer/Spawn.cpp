@@ -334,7 +334,7 @@ void Spawn::InitializeVisPacketData(Player* player, PacketStruct* vis_packet) {
 					arrow_color += 7;
 				else {
 					if (primary_command_list.size() > 0) {
-						int16 len = strlen(primary_command_list[0]->command.c_str());
+						int16 len = primary_command_list[0]->command.length();
 						if(len >= 4 && strncmp(primary_command_list[0]->command.c_str(), "bank", 4) == 0)
 							arrow_color += 14;
 						else if (len >= 4 && strncmp(primary_command_list[0]->command.c_str(), "hail", 4) == 0)
@@ -484,7 +484,7 @@ void Spawn::InitializeFooterPacketData(Player* player, PacketStruct* footer) {
 		footer->setDataByName("is_player", 1);
 
 
-	if (strlen(appearance.name) < 1)
+	if (appearance.name[0] == '\0')
 		strncpy(appearance.name,to_string(GetID()).c_str(),128);
 	if(footer->GetVersion() > 561) {
 		footer->setMediumStringByName("name", appearance.name);
