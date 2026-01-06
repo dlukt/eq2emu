@@ -33,6 +33,7 @@
 #include "Rules/Rules.h"
 #include "../common/Log.h"
 #include <math.h>
+#include <cstdlib>
 #include "HeroicOp/HeroicOp.h"
 #include "RaceTypes/RaceTypes.h"
 #include "ClientPacketFunctions.h"
@@ -65,29 +66,51 @@ extern RuleManager rule_manager;
 extern BrokerManager broker;
 
 vector<string> ParseString(string strVal, char delim) {
-	stringstream ss(strVal);
 	vector<string> ret;
-	while (ss.good())
-	{
-		string substr;
-		getline(ss, substr, delim);
-		ret.push_back(substr);
+	if (strVal.empty()) {
+		ret.push_back("");
+		return ret;
 	}
+	ret.reserve(strVal.length() / 5 + 1);
+
+	size_t start = 0;
+	size_t end = strVal.find(delim);
+	while (end != string::npos) {
+		ret.push_back(strVal.substr(start, end - start));
+		start = end + 1;
+		end = strVal.find(delim, start);
+	}
+	ret.push_back(strVal.substr(start));
 	return ret;
 }
 
 vector<unsigned int> ParseStringToInt32(string strVal, char delim) {
-	stringstream ss(strVal);
 	vector<unsigned int> ret;
-	while (ss.good())
-	{
-		string substr;
-		getline(ss, substr, delim);
-		stringstream valss(substr);
-		unsigned int val = 0;
-		valss >> val;
-		ret.push_back(val);
+	if (strVal.empty()) {
+		ret.push_back(0);
+		return ret;
 	}
+	ret.reserve(strVal.length() / 2 + 1);
+
+	size_t start = 0;
+	size_t end = strVal.find(delim);
+	while (end != string::npos) {
+		string sub = strVal.substr(start, end - start);
+		unsigned int val = 0;
+		if (!sub.empty()) {
+			val = (unsigned int)strtoul(sub.c_str(), nullptr, 10);
+		}
+		ret.push_back(val);
+		start = end + 1;
+		end = strVal.find(delim, start);
+	}
+
+	string sub = strVal.substr(start);
+	unsigned int val = 0;
+	if (!sub.empty()) {
+		val = (unsigned int)strtoul(sub.c_str(), nullptr, 10);
+	}
+	ret.push_back(val);
 	return ret;
 }
 
@@ -98,9 +121,10 @@ map<string, signed  int> ParseStringMap(string strVal, char delim) {
 	for (itr = pairs.begin(); itr != pairs.end(); itr++) {
 		vector<string> keyvaluepair = ParseString(*itr, ':');
 		if (keyvaluepair.size() == 2) {
-			stringstream valss(keyvaluepair[1]);
 			int32 val = 0;
-			valss >> val;
+			if (!keyvaluepair[1].empty()) {
+				val = (int32)strtol(keyvaluepair[1].c_str(), nullptr, 10);
+			}
 			ret[keyvaluepair[0]] = val;
 		}
 	}	
@@ -115,17 +139,17 @@ map<unsigned int, unsigned short> ParseIntMap(string strVal, char delim) {
 	for (itr = pairs.begin(); itr != pairs.end(); itr++) {
 		vector<string> keyvaluepair = ParseString(*itr, ':');
 		int32 key = 0;
-		if (keyvaluepair.size() > 0) {
-			stringstream keyss(keyvaluepair[0]);
-			keyss >> key;
+		if (keyvaluepair.size() > 0 && !keyvaluepair[0].empty()) {
+			key = (int32)strtol(keyvaluepair[0].c_str(), nullptr, 10);
 		}
 		if (keyvaluepair.size() == 1) {
 			ret[key] = 1;
 		}
 		else if (keyvaluepair.size() == 2) {
-			stringstream valss(keyvaluepair[1]);
 			unsigned short val = 0;
-			valss >> val;
+			if (!keyvaluepair[1].empty()) {
+				val = (unsigned short)strtoul(keyvaluepair[1].c_str(), nullptr, 10);
+			}
 			ret[key] = val;
 		}
 	}
@@ -139,17 +163,17 @@ map<unsigned int, signed int> ParseSInt32Map(string strVal, char delim) {
 	for (itr = pairs.begin(); itr != pairs.end(); itr++) {
 		vector<string> keyvaluepair = ParseString(*itr, ':');
 		int32 key = 0;
-		if (keyvaluepair.size() > 0) {
-			stringstream keyss(keyvaluepair[0]);
-			keyss >> key;
+		if (keyvaluepair.size() > 0 && !keyvaluepair[0].empty()) {
+			key = (int32)strtol(keyvaluepair[0].c_str(), nullptr, 10);
 		}
 		if (keyvaluepair.size() == 1) {
 			ret[key] = 1;
 		}
 		else if (keyvaluepair.size() == 2) {
-			stringstream valss(keyvaluepair[1]);
 			signed int val = 0;
-			valss >> val;
+			if (!keyvaluepair[1].empty()) {
+				val = (signed int)strtol(keyvaluepair[1].c_str(), nullptr, 10);
+			}
 			ret[key] = val;
 		}
 	}
