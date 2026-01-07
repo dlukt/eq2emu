@@ -165,8 +165,8 @@ string loadInt8String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_8BitStri
 	return ret;
 }
 
-sint16 storeInt32String(uchar* buffer, int16 buffer_size, string in_str){
-	sint16 string_size = in_str.length();
+sint16 storeInt32String(uchar* buffer, int16 buffer_size, const string& in_str){
+	int32 string_size = in_str.length();
 	if((string_size + sizeof(int32)) > buffer_size)
 		return -1;
 	memcpy(buffer, &string_size, sizeof(int32));
@@ -175,7 +175,7 @@ sint16 storeInt32String(uchar* buffer, int16 buffer_size, string in_str){
 	buffer += string_size;
 	return (buffer_size - (string_size + sizeof(int32)));
 }
-sint16 storeInt16String(uchar* buffer, int16 buffer_size, string in_str){
+sint16 storeInt16String(uchar* buffer, int16 buffer_size, const string& in_str){
 	sint16 string_size = in_str.length();
 	if((string_size + sizeof(int16)) > buffer_size)
 		return -1;
@@ -185,7 +185,7 @@ sint16 storeInt16String(uchar* buffer, int16 buffer_size, string in_str){
 	buffer += string_size;
 	return (buffer_size - (string_size + sizeof(int16)));
 }
-sint16 storeInt8String(uchar* buffer, int16 buffer_size, string in_str){
+sint16 storeInt8String(uchar* buffer, int16 buffer_size, const string& in_str){
 	sint16 string_size = in_str.length();
 	if((string_size + sizeof(int8)) > buffer_size)
 		return -1;
@@ -591,17 +591,19 @@ void	SetColor(EQ2_Color* color, long data){
 	memcpy(color, &data, sizeof(EQ2_Color));
 }
 
-string ToUpper(string input){
-	string ret = input;
+string ToUpper(const string& input){
+	string ret;
+	ret.resize(input.length());
 	transform(input.begin(), input.end(), ret.begin(), ::toupper);
 	return ret;
 }
-string ToLower(string input){
-	string ret = input;
+string ToLower(const string& input){
+	string ret;
+	ret.resize(input.length());
 	transform(input.begin(), input.end(), ret.begin(), ::tolower);
 	return ret;
 }
-int32 ParseIntValue(string input){
+int32 ParseIntValue(const string& input){
 	int32 ret = 0xFFFFFFFF;
 	try{
 		if(input.length() > 0){
@@ -612,7 +614,7 @@ int32 ParseIntValue(string input){
 	return ret;
 }
 
-int64 ParseLongLongValue(string input){
+int64 ParseLongLongValue(const string& input){
 	int64 ret = 0xFFFFFFFFFFFFFFFF;
 	try{
 		if(input.length() > 0){
@@ -627,7 +629,7 @@ int64 ParseLongLongValue(string input){
 	return ret;
 }
 
-map<string, string> TranslateBrokerRequest(string request){
+map<string, string> TranslateBrokerRequest(const string& request){
 	map<string, string> ret;
 	string key;
 	string value;
@@ -837,27 +839,27 @@ bool INIReadBool(FILE *f, const char *section, const char *property, bool *out) 
 	return true;
 
 }
-string GetDeviceName(string device) {
+string GetDeviceName(const string& device) {
 	if (device == "chemistry_table") 
-		device = "Chemistry Table";
+		return "Chemistry Table";
 	else if (device == "work_desk")
-		device = "Engraved Desk";
+		return "Engraved Desk";
 	else if (device == "forge") 
-		device = "Forge";
+		return "Forge";
 	else if (device == "stove and keg")
-		device = "Stove & Keg";
+		return "Stove & Keg";
 	else if (device == "sewing_table") 
-		device = "Sewing Table & Mannequin";
+		return "Sewing Table & Mannequin";
 	else if (device == "woodworking_table") 
-		device = "Woodworking Table";
+		return "Woodworking Table";
 	else if (device == "work_bench") 
-		device = "Work Bench";
+		return "Work Bench";
 	else if (device == "crafting_intro_anvil")
-		device = "Mender's Anvil";
+		return "Mender's Anvil";
 	return device;
 }
 
-int32 GetDeviceID(string device) {
+int32 GetDeviceID(const string& device) {
 	if (device == "Chemistry Table") 
 		return 3;
 	else if (device == "Engraved Desk")

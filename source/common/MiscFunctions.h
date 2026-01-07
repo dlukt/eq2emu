@@ -47,9 +47,9 @@ void	CoutTimestamp(bool ms = true);
 string	loadInt32String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_32BitString* eq_string = NULL);
 string	loadInt16String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_16BitString* eq_string = NULL);
 string	 loadInt8String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_8BitString* eq_string = NULL);
-sint16  storeInt32String(uchar* buffer, int16 buffer_size, string in_str);
-sint16  storeInt16String(uchar* buffer, int16 buffer_size, string in_str);
-sint16   storeInt8String(uchar* buffer, int16 buffer_size, string in_str);
+sint16  storeInt32String(uchar* buffer, int16 buffer_size, const string& in_str);
+sint16  storeInt16String(uchar* buffer, int16 buffer_size, const string& in_str);
+sint16   storeInt8String(uchar* buffer, int16 buffer_size, const string& in_str);
 int		MakeRandomInt(int low, int high);
 float	MakeRandomFloat(float low, float high);
 
@@ -68,11 +68,11 @@ int32	Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version = 
 void	Reverse(uchar* input, int32 srcLen);
 void	Encode(uchar* dst, uchar* src, int16 len);
 void	Decode(uchar* dst, uchar* src, int16 len);
-string	ToUpper(string input);
-string	ToLower(string input);
-int32 ParseIntValue(string input);
-int64 ParseLongLongValue(string input);
-map<string, string> TranslateBrokerRequest(string request);
+string	ToUpper(const string& input);
+string	ToLower(const string& input);
+int32 ParseIntValue(const string& input);
+int64 ParseLongLongValue(const string& input);
+map<string, string> TranslateBrokerRequest(const string& request);
 void	MovementDecode(uchar* dst, uchar* newval, uchar* orig, int16 len);
 vector<string>* SplitString(const string& str, char delim);
 int8 DoOverLoad(int32 val, uchar* data);
@@ -80,8 +80,8 @@ int8 CheckOverLoadSize(int32 val);
 int32	CountWordsInString(const char* text);
 bool IsNumber(const char *num);
 void PrintSep(Seperator *sep, const char *name = 0);
-string GetDeviceName(string device);
-int32 GetDeviceID(string device);
+string GetDeviceName(const string& device);
+int32 GetDeviceID(const string& device);
 ///<summary>Gets the packet type for the given version</summary>
 ///<param name='version'>The client version</param>
 int16 GetItemPacketType(int32 version);
