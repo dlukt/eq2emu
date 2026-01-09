@@ -605,27 +605,21 @@ string ToLower(const string& input){
 }
 int32 ParseIntValue(const string& input){
 	int32 ret = 0xFFFFFFFF;
-	try{
-		if(input.length() > 0){
-			ret = atoul(input.c_str());
-		}
+	if(input.length() > 0){
+		ret = atoul(input.c_str());
 	}
-	catch(...){}
 	return ret;
 }
 
 int64 ParseLongLongValue(const string& input){
 	int64 ret = 0xFFFFFFFFFFFFFFFF;
-	try{
-		if(input.length() > 0){
+	if(input.length() > 0){
 #ifdef WIN32
-			ret = _strtoui64(input.c_str(), NULL, 10);
+		ret = _strtoui64(input.c_str(), NULL, 10);
 #else
-			ret = strtoull(input.c_str(), 0, 10);
+		ret = strtoull(input.c_str(), 0, 10);
 #endif
-		}
 	}
-	catch(...){}
 	return ret;
 }
 
@@ -814,12 +808,21 @@ bool INIReadInt(FILE *f, const char *section, const char *property, int *out) {
 	if ((value = INIFindValue(f, section, property)) == NULL)
 		return false;
 
-	if (!IsNumber(value)) {
+	// Bolt: Optimized to use strtol for single-pass check and conversion.
+	// This replaces the O(2N) pattern of IsNumber() + atoi() with O(N) strtol.
+	// It also enables support for negative numbers and leading whitespace.
+	char *endptr = nullptr;
+	long val = strtol(value, &endptr, 10);
+
+	// Check if conversion failed or if the string contained non-digits (excluding trailing whitespace if desired, but IsNumber was strict)
+	// strtol stops at the first invalid character.
+	// If *endptr is not \0, it means there are characters remaining.
+	if (endptr == value || *endptr != '\0') {
 		free(value);
 		return false;
 	}
 
-	*out = atoi(value);
+	*out = (int)val;
 	free(value);
 
 	return true;
