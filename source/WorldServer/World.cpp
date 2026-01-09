@@ -2610,9 +2610,9 @@ void World::CheckLottoPlayers() {
 						memset(coin_message, 0, sizeof(coin_message));
 						memset(message, 0, sizeof(message));
 						memset(announcement, 0, sizeof(announcement));
-						sprintf(coin_message, "%s", client->GetCoinMessage(jackpot).c_str());
-						sprintf(message, "Congratulations! You have won %s!", coin_message);
-						sprintf(announcement, "%s has won the jackpot containing a total of %s!", client->GetPlayer()->GetName(), coin_message);
+						snprintf(coin_message, sizeof(coin_message), "%s", client->GetCoinMessage(jackpot).c_str());
+						snprintf(message, sizeof(message), "Congratulations! You have won %s!", coin_message);
+						snprintf(announcement, sizeof(announcement), "%s has won the jackpot containing a total of %s!", client->GetPlayer()->GetName(), coin_message);
 						client->Message(CHANNEL_COLOR_YELLOW, "You receive %s.", coin_message);
 						client->SendPopupMessage(0, message, "", 2, 0xFF, 0xFF, 0x99);
 						zone_list.TransmitGlobalAnnouncement(announcement);
