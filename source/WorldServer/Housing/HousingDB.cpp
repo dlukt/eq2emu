@@ -127,5 +127,5 @@ void WorldDatabase::AddHistory(PlayerHouse* house, char* name, char* reason, int
 
 	Query query;
 	string insert = string("INSERT INTO character_house_history (timestamp, house_id, instance_id, name, amount, status, reason, pos_flag) VALUES (%u, %u, %u, '%s', %llu, %u, '%s', %u) ");
-	query.RunQuery2(Q_INSERT, insert.c_str(), timestamp, house->house_id, house->instance_id, name, amount, status, reason, pos_flag);
+	query.RunQuery2(Q_INSERT, insert.c_str(), timestamp, house->house_id, house->instance_id, getSafeEscapeString(name).c_str(), amount, status, getSafeEscapeString(reason).c_str(), pos_flag);
 }

@@ -6,3 +6,8 @@
 **Vulnerability:** Extensive use of `sprintf` on fixed-size buffers (stack and heap) without size checks.
 **Learning:** Legacy C++ patterns often rely on manual buffer management. `sprintf` blindly writes to the buffer, leading to overflow if the format string expansion exceeds the buffer size.
 **Prevention:** Always use `snprintf` with explicit buffer size limits. Be careful with pointers vs arrays (use `sizeof` for arrays, explicit size for pointers). Remove redundant `memset` when `snprintf` guarantees null-termination and overwrite.
+
+## 2026-01-09 - SQL Injection in HousingDB
+**Vulnerability:** SQL injection vulnerability in `WorldDatabase::AddHistory` where `name` and `reason` were interpolated directly into a query string.
+**Learning:** Legacy C-style string formatting (`sprintf`-like functions inside `RunQuery2`) in this codebase does not auto-escape.
+**Prevention:** Always use `getSafeEscapeString` when constructing SQL queries with string arguments in this codebase.
