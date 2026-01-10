@@ -739,16 +739,19 @@ void PrintSep(Seperator *sep, const char *name) {
 #define INI_IGNORE(c) (c == '\n' || c == '\r' || c == '#')
 
 static bool INIGoToSection(FILE *f, const char *section) {
-	size_t size = strlen(section) + 3;
-	char line[256], *buf, *tmp;
-	bool found = false;
+	if (!section) return false;
 
-	if ((buf = (char *)malloc(size)) == NULL) {
-		fprintf(stderr, "%s: %u: Unable to allocate %zu bytes\n", __FUNCTION__, __LINE__, size);
+	// Bolt: Optimized to use stack buffer instead of malloc/free for performance.
+	// Also added safety check for section length.
+	size_t section_len = strlen(section);
+	if (section_len > 250) {
 		return false;
 	}
 
-	sprintf(buf, "[%s]", section);
+	char line[256], buf[256], *tmp;
+	bool found = false;
+
+	snprintf(buf, sizeof(buf), "[%s]", section);
 
 	while (fgets(line, sizeof(line), f) != NULL) {
 		if (INI_IGNORE(line[0]))
@@ -767,7 +770,6 @@ static bool INIGoToSection(FILE *f, const char *section) {
 		}
 	}
 
-	free(buf);
 	return found;
 }
 
