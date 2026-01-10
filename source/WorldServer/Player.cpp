@@ -1683,9 +1683,9 @@ vector<EQ2Packet*> Player::EquipItem(int16 index, int16 version, int8 appearance
 		else if (canEquip && item->CheckFlag(ATTUNEABLE)) {
 			PacketStruct* packet = configReader.getStruct("WS_ChoiceWindow", version);
 			char text[255];
-			sprintf(text, "%s must be attuned before it can be equipped. Would you like to attune it now?", item->name.c_str());
+			snprintf(text, sizeof(text), "%s must be attuned before it can be equipped. Would you like to attune it now?", item->name.c_str());
 			char accept_command[25];
-			sprintf(accept_command, "attune_inv %i 1 0 -1", index);
+			snprintf(accept_command, sizeof(accept_command), "attune_inv %i 1 0 -1", index);
 			packet->setDataByName("text", text);
 			packet->setDataByName("accept_text", "Attune");
 			packet->setDataByName("accept_command", accept_command);
