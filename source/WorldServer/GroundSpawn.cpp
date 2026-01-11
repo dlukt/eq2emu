@@ -424,7 +424,7 @@ void GroundSpawn::ProcessHarvest(Client* client) {
 								LogWrite(GROUNDSPAWN__DEBUG, 3, "GSpawn", "Item ID %u is Normal. Qty %i", item_harvested, item->details.count);
 
 								// send Normal harvest message to client
-								sprintf(tmp, "\\#64FFFFYou have %s:\12\\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
+								snprintf(tmp, sizeof(tmp), "\\#64FFFFYou have %s:\12\\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
 								client->SendPopupMessage(10, tmp, "ui_harvested_normal", 2.25, 0xFF, 0xFF, 0xFF);
 								client->GetPlayer()->UpdatePlayerStatistic(STAT_PLAYER_ITEMS_HARVESTED, item->details.count);
 
@@ -439,7 +439,7 @@ void GroundSpawn::ProcessHarvest(Client* client) {
 									LogWrite(GROUNDSPAWN__DEBUG, 3, "GSpawn", "Item ID %u is RARE!", rare_harvested);
 
 									// send Rare harvest message to client
-									sprintf(tmp, "\\#FFFF6ERare item found!\12%s: \\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item_rare->details.count, item_rare->name.c_str());
+									snprintf(tmp, sizeof(tmp), "\\#FFFF6ERare item found!\12%s: \\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item_rare->details.count, item_rare->name.c_str());
 									client->Message(CHANNEL_HARVESTING, "You have found a rare item!");
 									client->SendPopupMessage(11, tmp, "ui_harvested_rare", 2.25, 0xFF, 0xFF, 0xFF);
 									client->GetPlayer()->UpdatePlayerStatistic(STAT_PLAYER_RARES_HARVESTED, item_rare->details.count);
@@ -457,7 +457,7 @@ void GroundSpawn::ProcessHarvest(Client* client) {
 								LogWrite(GROUNDSPAWN__DEBUG, 3, "GSpawn", "Item ID %u is RARE! Qty: %i", item_harvested, item->details.count);
 
 								// send Rare harvest message to client
-								sprintf(tmp, "\\#FFFF6ERare item found!\12%s: \\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
+								snprintf(tmp, sizeof(tmp), "\\#FFFF6ERare item found!\12%s: \\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
 								client->Message(CHANNEL_HARVESTING, "You have found a rare item!");
 								client->SendPopupMessage(11, tmp, "ui_harvested_rare", 2.25, 0xFF, 0xFF, 0xFF);
 								client->GetPlayer()->UpdatePlayerStatistic(STAT_PLAYER_RARES_HARVESTED, item->details.count);
@@ -465,7 +465,7 @@ void GroundSpawn::ProcessHarvest(Client* client) {
 							else {
 								// send Normal harvest message to client
 								LogWrite(GROUNDSPAWN__DEBUG, 3, "GSpawn", "Item ID %u is Normal. Qty %i", item_harvested, item->details.count);
-								sprintf(tmp, "\\#64FFFFYou have %s:\12\\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
+								snprintf(tmp, sizeof(tmp), "\\#64FFFFYou have %s:\12\\#C8FFFF%i %s", GetHarvestMessageName().c_str(), item->details.count, item->name.c_str());
 								client->SendPopupMessage(10, tmp, "ui_harvested_normal", 2.25, 0xFF, 0xFF, 0xFF);
 								client->GetPlayer()->UpdatePlayerStatistic(STAT_PLAYER_ITEMS_HARVESTED, item->details.count);
 							}
