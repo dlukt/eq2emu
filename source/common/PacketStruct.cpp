@@ -363,15 +363,14 @@ string DataStruct::AppendVariable(string orig, const char* val) {
 		return string(val);
 	if (orig.find(",") < 0xFFFFFFFF) { //has more than one already
 		string valstr = string(val);
-		vector<string>* varnames = SplitString(orig, ',');
-		if (varnames) {
-			for (int32 i = 0; i < varnames->size(); i++) {
-				if (valstr.compare(varnames->at(i)) == 0) {
+		vector<string> varnames = SplitString(orig, ',');
+		if (varnames.size() > 0) {
+			for (int32 i = 0; i < varnames.size(); i++) {
+				if (valstr.compare(varnames.at(i)) == 0) {
 					return orig; //already in the variable, no need to append
 				}
 			}
-			safe_delete(varnames);
-		}		
+		}
 	}
 	return orig.append(",").append(val);
 }
@@ -1134,16 +1133,15 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			if (data_struct->GetIfSet() && data_struct->GetIfSetVariable()) {
 				string varname = string(data_struct->GetIfSetVariable());
 				if (varname.find(",") < 0xFFFFFFFF) {
-					vector<string>* varnames = SplitString(varname, ',');
-					if (varnames) {
+					vector<string> varnames = SplitString(varname, ',');
+					if (varnames.size() > 0) {
 						bool should_continue = true;
-						for (int32 i = 0; i < varnames->size(); i++) {
-							if (GetVariableIsSet(varnames->at(i).c_str())) {
+						for (int32 i = 0; i < varnames.size(); i++) {
+							if (GetVariableIsSet(varnames.at(i).c_str())) {
 								should_continue = false;
 								break;
 							}
 						}
-						safe_delete(varnames);
 						if (should_continue)
 							continue;
 					}
@@ -1153,8 +1151,8 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 					// and get the current index from the end of the data struct's name
 					char name[250] = { 0 };
 					if (varname.find("%i") < 0xFFFFFFFF) {
-						vector<string>* varnames = SplitString(data_struct->GetName(), '_');
-						int index = atoi(varnames->at(varnames->size() - 1).c_str());
+						vector<string> varnames = SplitString(data_struct->GetName(), '_');
+						int index = atoi(varnames.at(varnames.size() - 1).c_str());
 						sprintf(name, varname.c_str(), index);
 					}
 					else
@@ -1167,16 +1165,15 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			if (data_struct->GetIfNotSet() && data_struct->GetIfNotSetVariable()) {
 				string varname = string(data_struct->GetIfNotSetVariable());
 				if (varname.find(",") < 0xFFFFFFFF) {
-					vector<string>* varnames = SplitString(varname, ',');
-					if (varnames) {
+					vector<string> varnames = SplitString(varname, ',');
+					if (varnames.size() > 0) {
 						bool should_continue = false;
-						for (int32 i = 0; i < varnames->size(); i++) {
-							if (!GetVariableIsNotSet(varnames->at(i).c_str())) {
+						for (int32 i = 0; i < varnames.size(); i++) {
+							if (!GetVariableIsNotSet(varnames.at(i).c_str())) {
 								should_continue = true;
 								break;
 							}
 						}
-						safe_delete(varnames);
 						if (should_continue)
 							continue;
 					}
@@ -1186,8 +1183,8 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 					// and get the current index from the end of the data struct's name
 					char name[250] = { 0 };
 					if (varname.find("%i") < 0xFFFFFFFF) {
-						vector<string>* varnames = SplitString(data_struct->GetName(), '_');
-						int index = atoi(varnames->at(varnames->size() - 1).c_str());
+						vector<string> varnames = SplitString(data_struct->GetName(), '_');
+						int index = atoi(varnames.at(varnames.size() - 1).c_str());
 						sprintf(name, varname.c_str(), index);
 					}
 					else
@@ -1211,8 +1208,8 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				// index and replace it
 				if (varname.find("%i") < 0xFFFFFFFF) {
 					// Get the current index by getting the number at the end of the name
-					vector<string>* varnames = SplitString(data_struct->GetName(), '_');
-					int index = atoi(varnames->at(varnames->size() - 1).c_str());
+					vector<string> varnames = SplitString(data_struct->GetName(), '_');
+					int index = atoi(varnames.at(varnames.size() - 1).c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
@@ -1224,7 +1221,6 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 						varname = varname.substr(0, 12).append(temp2).append("_%i");
 					}
 					sprintf(name, varname.c_str(), index);
-					safe_delete(varnames);
 				}
 				else
 					strcpy(name, varname.c_str());
@@ -1246,8 +1242,8 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				// index and replace it
 				if (varname.find("%i") < 0xFFFFFFFF) {
 					// Get the current index by getting the number at the end of the name
-					vector<string>* varnames = SplitString(data_struct->GetName(), '_');
-					int index = atoi(varnames->at(varnames->size() - 1).c_str());
+					vector<string> varnames = SplitString(data_struct->GetName(), '_');
+					int index = atoi(varnames.at(varnames.size() - 1).c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
@@ -1259,7 +1255,6 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 						varname = varname.substr(0, 12).append(temp2).append("_%i");
 					}
 					sprintf(name, varname.c_str(), index);
-					safe_delete(varnames);
 				}
 				else
 					strcpy(name, varname.c_str());
@@ -1281,7 +1276,7 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			if (data_struct->GetType2() > 0) {
 				int16 type = 0;
 				char name[250] = { 0 };
-				vector<string>* varnames = SplitString(data_struct->GetName(), '_');
+				vector<string> varnames = SplitString(data_struct->GetName(), '_');
 				string struct_name = data_struct->GetName();
 				if (struct_name.find("set") < 0xFFFFFFFF) {
 					string tmp = "set_stat_type";
@@ -1295,7 +1290,7 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				}
 				else {
 					// set name to stat_type_# (where # is the current index of the array we are in)
-					sprintf(name, "%s_%s", "stat_type", varnames->at(varnames->size() - 1).c_str());
+					sprintf(name, "%s_%s", "stat_type", varnames.at(varnames.size() - 1).c_str());
 				}
 				// Look up the value for stat_type
 				DataStruct* data_struct2 = findStruct(name, 0);
@@ -1303,7 +1298,6 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				// If stat_type == 6 we use a float, else we use sint16
 				if (type != 6 && type != 7)
 					useType2 = true;
-				safe_delete(varnames);
 			}
 			if (!StructLoadData(data_struct, GetStructPointer(data_struct), data_struct->GetLength(), useType2, create_color))
 			{
@@ -1650,16 +1644,15 @@ void PacketStruct::serializePacket(bool clear) {
 			if (data->GetIfSet() && data->GetIfSetVariable()) {
 				string varname = string(data->GetIfSetVariable());
 				if (varname.find(",") < 0xFFFFFFFF) {
-					vector<string>* varnames = SplitString(varname, ',');
-					if (varnames) {
+					vector<string> varnames = SplitString(varname, ',');
+					if (varnames.size() > 0) {
 						bool should_continue = true;
-						for (int32 i = 0; i < varnames->size(); i++) {
-							if (GetVariableIsSet(varnames->at(i).c_str())) {
+						for (int32 i = 0; i < varnames.size(); i++) {
+							if (GetVariableIsSet(varnames.at(i).c_str())) {
 								should_continue = false;
 								break;
 							}
 						}
-						safe_delete(varnames);
 						if (should_continue)
 							continue;
 					}
@@ -1672,16 +1665,15 @@ void PacketStruct::serializePacket(bool clear) {
 			if (data->GetIfNotSet() && data->GetIfNotSetVariable()) {
 				string varname = string(data->GetIfNotSetVariable());
 				if (varname.find(",") < 0xFFFFFFFF) {
-					vector<string>* varnames = SplitString(varname, ',');
-					if (varnames) {
+					vector<string> varnames = SplitString(varname, ',');
+					if (varnames.size() > 0) {
 						bool should_continue = false;
-						for (int32 i = 0; i < varnames->size(); i++) {
-							if (!GetVariableIsNotSet(varnames->at(i).c_str())) {
+						for (int32 i = 0; i < varnames.size(); i++) {
+							if (!GetVariableIsNotSet(varnames.at(i).c_str())) {
 								should_continue = true;
 								break;
 							}
 						}
-						safe_delete(varnames);
 						if (should_continue)
 							continue;
 					}
@@ -1691,11 +1683,11 @@ void PacketStruct::serializePacket(bool clear) {
 					// and get the current index from the end of the data struct's name
 					char name[250] = { 0 };
 					if (varname.find("%i") < 0xFFFFFFFF) {
-						vector<string>* varnames = SplitString(varname, '_');
-						vector<string>* indexes = SplitString(data->GetName(), '_');
+						vector<string> varnames = SplitString(varname, '_');
+						vector<string> indexes = SplitString(data->GetName(), '_');
 						int index = 0;
-						if (indexes->size() > 0)
-							index = atoi(indexes->at(indexes->size() - 1).c_str());
+						if (indexes.size() > 0)
+							index = atoi(indexes.at(indexes.size() - 1).c_str());
 
 						sprintf(name, varname.c_str(), index);
 					}
@@ -1719,8 +1711,8 @@ void PacketStruct::serializePacket(bool clear) {
 				// index and replace it
 				if (varname.find("%i") < 0xFFFFFFFF) {
 					// Get the current index by getting the number at the end of the name
-					vector<string>* varnames = SplitString(data->GetName(), '_');
-					int index = atoi(varnames->at(varnames->size() - 1).c_str());
+					vector<string> varnames = SplitString(data->GetName(), '_');
+					int index = atoi(varnames.at(varnames.size() - 1).c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
@@ -1732,7 +1724,6 @@ void PacketStruct::serializePacket(bool clear) {
 						varname = varname.substr(0, 12).append(temp2).append("_%i");
 					}
 					sprintf(name, varname.c_str(), index);
-					safe_delete(varnames);
 				}
 				else
 					strcpy(name, varname.c_str());
@@ -1754,10 +1745,10 @@ void PacketStruct::serializePacket(bool clear) {
 				// index and replace it
 				if (varname.find("%i") < 0xFFFFFFFF) {
 					// Get the current index by getting the number at the end of the name
-					vector<string>* varnames = SplitString(data->GetName(), '_');
+					vector<string> varnames = SplitString(data->GetName(), '_');
 					int index = 0;
-					if (varnames)
-						index = atoi(varnames->at(varnames->size() - 1).c_str());
+					if (varnames.size() > 0)
+						index = atoi(varnames.at(varnames.size() - 1).c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
@@ -1769,7 +1760,6 @@ void PacketStruct::serializePacket(bool clear) {
 						varname = varname.substr(0, 12).append(temp2).append("_%i");
 					}
 					sprintf(name, varname.c_str(), index);
-					safe_delete(varnames);
 				}
 				else
 					strcpy(name, varname.c_str());
