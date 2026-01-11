@@ -1479,12 +1479,14 @@ void ZoneList::ProcessWhoQuery(const char* query, Client* client){
 	Entity* player = 0;
 	//for now display all clients
 	bool all = false;
-	vector<string>* queries = 0;
+	vector<string> queries_store;
+	vector<string>* queries = nullptr;
 	bool isGM = ((client->GetAdminStatus() >> 4) > 4);
 	if(query){
 		string query_string = string(query);
 		query_string = ToUpper(query_string);
-		queries = SplitString(query_string, ' ');
+		queries_store = SplitString(query_string, ' ');
+		queries = &queries_store;
 	}
 	if(queries && queries->size() > 0 && queries->at(0) == "ALL")
 		all = true;

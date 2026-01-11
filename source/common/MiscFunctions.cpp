@@ -404,23 +404,23 @@ int8 MakeInt8(float* input){
 	return (int8)(input2*255);
 }
 
-vector<string>* SplitString(const string& str, char delim){
-	vector<string>* results = new vector<string>;
+vector<string> SplitString(const string& str, char delim){
+	vector<string> results;
 	// Reserve memory to avoid reallocations.
 	// Heuristic: assume average token length of ~7 chars + 1 delim = 8 bytes.
-	results->reserve(str.length() / 8);
+	results.reserve(str.length() / 8);
 
 	size_t start = 0;
 	size_t end = str.find(delim);
 	while (end != string::npos) {
 		if (end > start) {
-			results->emplace_back(str, start, end - start);
+			results.emplace_back(str, start, end - start);
 		}
 		start = end + 1;
 		end = str.find(delim, start);
 	}
 	if (start < str.length()) {
-		results->emplace_back(str, start);
+		results.emplace_back(str, start);
 	}
 	return results;
 }
