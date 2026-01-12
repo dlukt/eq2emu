@@ -15,3 +15,7 @@
 ## 2024-11-20 - [Stack vs Heap in INI Parsing]
 **Learning:** In highly-frequent but IO-bound operations (like parsing an INI file line-by-line), micro-optimizations like removing `malloc` in favor of stack allocation improve code safety (RAII) and reduce heap fragmentation, even if wall-clock performance is dominated by IO.
 **Action:** When refactoring legacy C-style string formatting, prefer fixed-size stack buffers with `snprintf` over `malloc`/`sprintf` if the data size is bounded (e.g., protocol headers, file sections).
+
+## 2024-11-20 - [Redundant Memset]
+**Learning:** Legacy code often clears buffers with `memset` immediately before overwriting them with `snprintf` or `sprintf`. Since `snprintf` guarantees null-termination (for valid buffer sizes) and overwrites the content, this `memset` is wasted CPU time and cache bandwidth.
+**Action:** Remove `memset(0)` calls on buffers that are immediately and unconditionally overwritten by formatting functions.
