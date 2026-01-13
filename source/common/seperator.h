@@ -123,6 +123,12 @@ public:
 	bool IsNumber(int num) const {
 		return IsNumber(arg[num]);
 	}
+	// Bolt: Optimized integer parsing to avoid double-scanning strings
+	// Returns true if valid number and populates out_val
+	bool GetInt(int index, int32& out_val) const {
+		if (index < 0 || index > argnum) return false;
+		return GetInt(arg[index], out_val);
+	}
 	bool IsHexNumber(int num) const {
 		return IsHexNumber(arg[num]);
 	}
@@ -154,6 +160,31 @@ public:
 				}
 			}
 		}
+		return true;
+	}
+
+	static bool GetInt(const char* check, int32& out_val) {
+		if (!check || !*check) return false;
+
+		char* end;
+		// strtol is base 10 here
+		long val = strtol(check, &end, 10);
+
+		if (check == end) return false;
+
+		if (*end != '\0') {
+			if (*end == '.') {
+				const char* p = end + 1;
+				while (*p) {
+					if (*p < '0' || *p > '9') return false;
+					p++;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		out_val = (int32)val;
 		return true;
 	}
 	static bool IsHexNumber(const char* check) {
