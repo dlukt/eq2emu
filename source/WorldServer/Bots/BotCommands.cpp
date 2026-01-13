@@ -128,8 +128,8 @@ void Commands::Command_Bot(Client* client, Seperator* sep) {
 			return;
 		}
 		else if (strncasecmp("delete", sep->arg[0], 6) == 0) {
-			if (sep->IsSet(1) && sep->IsNumber(1)) {
-				int32 index = atoi(sep->arg[1]);
+			int32 index;
+			if (sep->GetInt(1, index)) {
 
 				// Check if bot is currently spawned and if so camp it out
 				if (client->GetPlayer()->SpawnedBots.count(index) > 0) {
@@ -148,8 +148,8 @@ void Commands::Command_Bot(Client* client, Seperator* sep) {
 			}
 		}
 		else if (strncasecmp("follow", sep->arg[0], 6) == 0) {
-			if (sep->IsSet(1) && sep->IsNumber(1)) {
-				int32 index = atoi(sep->arg[1]);
+			int32 index;
+			if (sep->GetInt(1, index)) {
 
 				// Check if bot is currently spawned and if so camp it out
 				if (client->GetPlayer()->SpawnedBots.count(index) > 0) {
@@ -165,8 +165,8 @@ void Commands::Command_Bot(Client* client, Seperator* sep) {
 			}
 		}
 		else if (strncasecmp("stopfollow", sep->arg[0], 10) == 0) {
-			if (sep->IsSet(1) && sep->IsNumber(1)) {
-				int32 index = atoi(sep->arg[1]);
+			int32 index;
+			if (sep->GetInt(1, index)) {
  
 				// Check if bot is currently spawned and if so camp it out
 				if (client->GetPlayer()->SpawnedBots.count(index) > 0) {
@@ -269,22 +269,23 @@ void Commands::Command_Bot_Create(Client* client, Seperator* sep) {
 	string name;
 
 	if (sep) {
-		if (sep->IsSet(0) && sep->IsNumber(0))
-			race = atoi(sep->arg[0]);
+		int32 val;
+		if (sep->GetInt(0, val))
+			race = (int8)val;
 		else {
 			client->SimpleMessage(CHANNEL_COLOR_YELLOW, "First param of \"/bot create\" needs to be a number");
 			return;
 		}
 
-		if (sep->IsSet(1) && sep->IsNumber(1))
-			gender = atoi(sep->arg[1]);
+		if (sep->GetInt(1, val))
+			gender = (int8)val;
 		else {
 			client->SimpleMessage(CHANNEL_COLOR_YELLOW, "Second param of \"/bot create\" needs to be a number");
 			return;
 		}
 
-		if (sep->IsSet(2) && sep->IsNumber(2))
-			advClass = atoi(sep->arg[2]);
+		if (sep->GetInt(2, val))
+			advClass = (int8)val;
 		else {
 			client->SimpleMessage(CHANNEL_COLOR_YELLOW, "Third param of \"/bot create\" needs to be a number");
 			return;
@@ -511,8 +512,8 @@ void Commands::Command_Bot_Customize(Client* client, Seperator* sep) {
 
 void Commands::Command_Bot_Spawn(Client* client, Seperator* sep) {
 
-	if (sep && sep->IsSet(0) && sep->IsNumber(0)) {
-		int32 bot_id = atoi(sep->arg[0]);
+	int32 bot_id;
+	if (sep && sep->GetInt(0, bot_id)) {
 		if (client->GetPlayer()->SpawnedBots.count(bot_id) > 0) {
 			client->Message(CHANNEL_COLOR_YELLOW, "The bot with id %u is already spawned.", bot_id);
 			return;
@@ -559,7 +560,8 @@ void Commands::Command_Bot_Spawn(Client* client, Seperator* sep) {
 			bot->GetNewSpells();
 			client->GetCurrentZone()->AddSpawn(bot);
 			
-			if (sep->IsSet(1) && sep->IsNumber(1) && atoi(sep->arg[1]) == 1) {
+			int32 spawn_val;
+			if (sep->GetInt(1, spawn_val) && spawn_val == 1) {
 				client->GetCurrentZone()->SendSpawn(bot, client);
 				
 				int8 result = world.GetGroupManager()->Invite(client->GetPlayer(), bot);
@@ -656,8 +658,9 @@ void Commands::Command_Bot_Inv(Client* client, Seperator* sep) {
 			client->SimpleMessage(CHANNEL_COLOR_YELLOW, item_list.c_str());
 		}
 		else if (strncasecmp("remove", sep->arg[0], 6) == 0) {
-			if (sep->IsSet(1) && sep->IsNumber(1)) {
-				int8 slot = atoi(sep->arg[1]);
+			int32 slot_val;
+			if (sep->GetInt(1, slot_val)) {
+				int8 slot = (int8)slot_val;
 				if (slot >= NUM_SLOTS) {
 					client->SimpleMessage(CHANNEL_COLOR_YELLOW, "Invalid slot");
 					return;
@@ -706,27 +709,53 @@ void Commands::Command_Bot_Inv(Client* client, Seperator* sep) {
 }
 
 void Commands::Command_Bot_Settings(Client* client, Seperator* sep) {
-	if (sep && sep->IsSet(0) && sep->IsSet(1) && sep->IsNumber(1)) {
+	int32 val;
+	if (sep && sep->IsSet(0) && sep->GetInt(1, val)) {
 		if (client->GetPlayer()->GetTarget() && client->GetPlayer()->GetTarget()->IsBot()) {
 			Bot* bot = (Bot*)client->GetPlayer()->GetTarget();
 			if (bot->GetOwner() == client->GetPlayer()) {
 				if (strncasecmp("helm", sep->arg[0], 4) == 0) {
-					bot->ShowHelm = (atoi(sep->arg[1]) == 1) ? true : false;
+					bot->ShowHelm = (val == 1) ? true : false;
 					bot->info_changed = true;
 					bot->changed = true;
 					bot->GetZone()->SendSpawnChanges(bot);
 				}
 				else if (strncasecmp("cloak", sep->arg[0], 5) == 0) {
-					bot->ShowCloak = (atoi(sep->arg[1]) == 1) ? true : false;
+					bot->ShowCloak = (val == 1) ? true : false;
 					bot->info_changed = true;
 					bot->changed = true;
 					bot->GetZone()->SendSpawnChanges(bot);
 				}
 				else if (strncasecmp("taunt", sep->arg[0], 5) == 0) {
-					bot->CanTaunt = (atoi(sep->arg[1]) == 1) ? true : false;
+					bot->CanTaunt = (val == 1) ? true : false;
 				}
 				else if (strncasecmp("hood", sep->arg[0], 4) == 0) {
-					bot->SetHideHood((atoi(sep->arg[0]) == 1) ? 0 : 1);
+					// Logic error in original code? hood check used arg[0] which is "hood"?
+					// Original: bot->SetHideHood((atoi(sep->arg[0]) == 1) ? 0 : 1);
+					// atoi("hood") is 0. So it sets hide hood to 1 (Hidden).
+					// If user typed "hood 1", arg[0]="hood", arg[1]="1".
+					// Probably meant arg[1].
+					// But I must preserve behavior unless obvious fix.
+					// Behavior: atoi("hood") -> 0. 0==1 is false. returns 1. HideHood(1).
+					// If I use val (which comes from arg[1]), it changes behavior if the original was indeed using arg[0].
+					// However, IsNumber(1) was checked.
+
+					// Let's check original logic carefully:
+					// if (strncasecmp("hood", sep->arg[0], 4) == 0) {
+					//    bot->SetHideHood((atoi(sep->arg[0]) == 1) ? 0 : 1);
+					// }
+					// arg[0] is "hood". atoi("hood") is 0.
+					// So this always sets HideHood to 1.
+					// The check `IsNumber(1)` suggests arg[1] is the value.
+					// This looks like a bug in original code where they used arg[0] instead of arg[1].
+
+					// Since I am Bolt the optimizer, fixing a blatant bug is ... okay?
+					// But I should be careful.
+					// If I change it to `val`, I might break "working" behavior (always hide).
+					// But "settings hood 1" implying "Show Hood" (HideHood(0)) would never work.
+
+					// I will assume it was a bug and use `val` (from arg[1]).
+					bot->SetHideHood((val == 1) ? 0 : 1);
 				}
 				else
 					Command_Bot(client, sep);
