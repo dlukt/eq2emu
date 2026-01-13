@@ -152,8 +152,9 @@ void Guild::SetEXPCurrent(int64 exp, bool send_packet) {
 void Guild::AddEXPCurrent(sint64 exp, bool send_packet) {
 
 	bool ret = false;
-	char message[128];
+	char message[256];
 	char adjective[16];
+	memset(adjective, 0, sizeof(adjective));
 
 	int8 guild_max_level = rule_manager.GetGlobalRule(R_Guild, MaxLevel)->GetInt8();
 	if (exp > 0 && level < guild_max_level) {
@@ -169,24 +170,24 @@ void Guild::AddEXPCurrent(sint64 exp, bool send_packet) {
 			
 			if (level % 10 == 0) {
 				if (level == 10)
-					strncpy(adjective, "bold", sizeof(adjective));
+					strncpy(adjective, "bold", sizeof(adjective) - 1);
 				else if (level == 20)
-					strncpy(adjective, "daring", sizeof(adjective));
+					strncpy(adjective, "daring", sizeof(adjective) - 1);
 				else if (level == 30)
-					strncpy(adjective, "gallant", sizeof(adjective));
+					strncpy(adjective, "gallant", sizeof(adjective) - 1);
 				else if (level == 40)
-					strncpy(adjective, "noble", sizeof(adjective));
+					strncpy(adjective, "noble", sizeof(adjective) - 1);
 				else if (level == 50)
-					strncpy(adjective, "heroic", sizeof(adjective));
+					strncpy(adjective, "heroic", sizeof(adjective) - 1);
 				else if (level == 60)
-					strncpy(adjective, "lordly", sizeof(adjective));
+					strncpy(adjective, "lordly", sizeof(adjective) - 1);
 				else if (level == 70)
-					strncpy(adjective, "legendary", sizeof(adjective));
+					strncpy(adjective, "legendary", sizeof(adjective) - 1);
 				else if (level == 80)
-					strncpy(adjective, "epic", sizeof(adjective));
+					strncpy(adjective, "epic", sizeof(adjective) - 1);
 				else
 					strncpy(adjective, "too uber for cheerios", sizeof(adjective) - 1);
-				sprintf(message, "The %s guild <%s> has attained level %u", adjective, name, level);
+				snprintf(message, sizeof(message), "The %s guild <%s> has attained level %u", adjective, name, level);
 				zone_list.TransmitGlobalAnnouncement(message);
 			}
 		}
