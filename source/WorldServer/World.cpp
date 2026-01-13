@@ -2609,9 +2609,6 @@ void World::CheckLottoPlayers() {
 						char coin_message[128];
 						char message[512];
 						char announcement[512];
-						memset(coin_message, 0, sizeof(coin_message));
-						memset(message, 0, sizeof(message));
-						memset(announcement, 0, sizeof(announcement));
 						snprintf(coin_message, sizeof(coin_message), "%s", client->GetCoinMessage(jackpot).c_str());
 						snprintf(message, sizeof(message), "Congratulations! You have won %s!", coin_message);
 						snprintf(announcement, sizeof(announcement), "%s has won the jackpot containing a total of %s!", client->GetPlayer()->GetName(), coin_message);
