@@ -1,13 +1,6 @@
-## 2024-05-24 - [Buffer Overflow in SendUpdateTitles]
-**Vulnerability:** A critical stack-based buffer overflow was found in `Client::SendUpdateTitles` where `strcpy` was used to copy a `Title` name (256 bytes) into an `AppearanceData` field (128 bytes).
-**Learning:** `memset` was using `strlen` on the destination buffer to determine the size to clear. This is dangerous as the buffer contents are undefined or untrusted.
-**Prevention:** Always use `snprintf` for string copying into fixed-size buffers and ensure `memset` uses `sizeof(destination)` for clearing memory.
-## 2025-02-18 - Legacy Buffer Overflows
-**Vulnerability:** Extensive use of `sprintf` on fixed-size buffers (stack and heap) without size checks.
-**Learning:** Legacy C++ patterns often rely on manual buffer management. `sprintf` blindly writes to the buffer, leading to overflow if the format string expansion exceeds the buffer size.
-**Prevention:** Always use `snprintf` with explicit buffer size limits. Be careful with pointers vs arrays (use `sizeof` for arrays, explicit size for pointers). Remove redundant `memset` when `snprintf` guarantees null-termination and overwrite.
-
-## 2026-01-09 - SQL Injection in HousingDB
-**Vulnerability:** SQL injection vulnerability in `WorldDatabase::AddHistory` where `name` and `reason` were interpolated directly into a query string.
-**Learning:** Legacy C-style string formatting (`sprintf`-like functions inside `RunQuery2`) in this codebase does not auto-escape.
-**Prevention:** Always use `getSafeEscapeString` when constructing SQL queries with string arguments in this codebase.
+## 2025-02-14 - Buffer Overflow Vulnerabilities in WorldServer
+**Vulnerability:** Unsafe string manipulation using `strncpy` without explicit null termination and `sprintf` without bounds checking in `WorldServer`.
+**Learning:** `strncpy` does not guarantee null termination if the source string length equals or exceeds the buffer size, leading to potential buffer overreads/overflows. `sprintf` is inherently unsafe as it lacks buffer size limits.
+**Prevention:**
+1. Replace `strncpy(dst, src, sizeof(dst))` with `strncpy(dst, src, sizeof(dst) - 1); dst[sizeof(dst) - 1] = '\0';` or use `strlcpy` if available.
+2. Replace `sprintf` with `snprintf` to enforce buffer limits.

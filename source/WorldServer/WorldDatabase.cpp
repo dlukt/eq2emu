@@ -1059,10 +1059,8 @@ void WorldDatabase::LoadNPCs(ZoneServer* zone, bool isInstanceType){
 			if(strncmp(row[36],"<Collector>", 11) == 0) {
 				npc->SetCollector(true);
 			}
-			if(strlen(row[36]) < sizeof(npc->appearance.sub_title))
-				strcpy(npc->appearance.sub_title, row[36]);
-			else
-				strncpy(npc->appearance.sub_title, row[36], sizeof(npc->appearance.sub_title));
+			strncpy(npc->appearance.sub_title, row[36], sizeof(npc->appearance.sub_title) - 1);
+			npc->appearance.sub_title[sizeof(npc->appearance.sub_title) - 1] = '\0';
 		}
 		npc->SetMerchantID(atoul(row[37]));
 		npc->SetMerchantType(atoi(row[38]));
@@ -1212,8 +1210,10 @@ void WorldDatabase::LoadSpiritShards(ZoneServer* zone){
 		shard->appearance.pos.state = atoul(row[22]);
 		shard->appearance.activity_status = atoul(row[23]);
 
-		if(row[24])
-			strncpy(shard->appearance.sub_title, row[24], sizeof(shard->appearance.sub_title));
+		if(row[24]) {
+			strncpy(shard->appearance.sub_title, row[24], sizeof(shard->appearance.sub_title) - 1);
+			shard->appearance.sub_title[sizeof(shard->appearance.sub_title) - 1] = '\0';
+		}
 
 		if(row[25])
 			shard->SetPrefixTitle(row[25]);
@@ -7373,10 +7373,8 @@ bool WorldDatabase::LoadNPC(ZoneServer* zone, int32 spawn_id) {
 			if(sub_title.find("Collector") != std::string::npos) {
 				npc->SetCollector(true);
 			}
-			if(strlen(result.GetString(36)) < sizeof(npc->appearance.sub_title))
-				strcpy(npc->appearance.sub_title, result.GetString(36));
-			else
-				strncpy(npc->appearance.sub_title, result.GetString(36), sizeof(npc->appearance.sub_title));
+			strncpy(npc->appearance.sub_title, result.GetString(36), sizeof(npc->appearance.sub_title) - 1);
+			npc->appearance.sub_title[sizeof(npc->appearance.sub_title) - 1] = '\0';
 		}
 		npc->SetMerchantID(result.GetInt32(37));
 		npc->SetMerchantType(result.GetInt8(38));
