@@ -1229,23 +1229,23 @@ public:
 	/// <summary>Sets a user defined variable</summary>
 	/// <param name='var'>Variable we are setting</param>
 	/// <param name='val'>Value to set the variable to</param>
-	void AddTempVariable(string var, string val);
+	void AddTempVariable(const string& var, const string& val);
 
-	void AddTempVariable(string var, Spawn* val);
-	void AddTempVariable(string var, ZoneServer* val);
-	void AddTempVariable(string var, Quest* val);
-	void AddTempVariable(string var, Item* val);
+	void AddTempVariable(const string& var, Spawn* val);
+	void AddTempVariable(const string& var, ZoneServer* val);
+	void AddTempVariable(const string& var, Quest* val);
+	void AddTempVariable(const string& var, Item* val);
 	/// <summary>Gets the value for the given variable</summary>
 	/// <param name='var'>Variable to check</param>
 	/// <returns>The value for the given variable, "" if variable was not set</returns>
-	string GetTempVariable(string var);
+	string GetTempVariable(const string& var);
 
-	Spawn* GetTempVariableSpawn(string var);
-	ZoneServer* GetTempVariableZone(string var);
-	Item* GetTempVariableItem(string var);
-	Quest* GetTempVariableQuest(string var);
-	int8 GetTempVariableType(string var);
-	void DeleteTempVariable(string var);
+	Spawn* GetTempVariableSpawn(const string& var);
+	ZoneServer* GetTempVariableZone(const string& var);
+	Item* GetTempVariableItem(const string& var);
+	Quest* GetTempVariableQuest(const string& var);
+	int8 GetTempVariableType(const string& var);
+	void DeleteTempVariable(const string& var);
 
 	void SetIllusionModel(int16 val, bool setUpdateFlags = true) {
 		SetInfo(&m_illusionModel, val, setUpdateFlags);
