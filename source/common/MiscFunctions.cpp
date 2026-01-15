@@ -722,6 +722,18 @@ bool IsNumber(const char *num) {
 	return true;
 }
 
+bool IsValidIdentifier(const char *str) {
+	if (!str || !*str || strlen(str) > 64)
+		return false;
+
+	for (const char* p = str; *p; ++p) {
+		if (!isalnum((unsigned char)*p) && *p != '_')
+			return false;
+	}
+
+	return true;
+}
+
 void PrintSep(Seperator *sep, const char *name) {
 	int32 i = 0;
 

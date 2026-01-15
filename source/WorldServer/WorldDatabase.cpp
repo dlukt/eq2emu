@@ -5845,6 +5845,9 @@ void WorldDatabase::LoadFogInit(string zone, PacketStruct* packet)
 }
 
 string WorldDatabase::GetColumnNames(char* name){
+	if (!IsValidIdentifier(name))
+		return "";
+
 	Query query;
 	MYSQL_ROW row;
 	string columns = "";
