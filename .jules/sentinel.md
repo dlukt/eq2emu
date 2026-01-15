@@ -1,6 +1,7 @@
-## 2025-02-14 - Buffer Overflow Vulnerabilities in WorldServer
-**Vulnerability:** Unsafe string manipulation using `strncpy` without explicit null termination and `sprintf` without bounds checking in `WorldServer`.
-**Learning:** `strncpy` does not guarantee null termination if the source string length equals or exceeds the buffer size, leading to potential buffer overreads/overflows. `sprintf` is inherently unsafe as it lacks buffer size limits.
+## 2025-02-14 - SQL Injection in Table Identifiers
+**Vulnerability:** Unsanitized user input (`char* name`) was passed directly to `RunQuery2` in `GetColumnNames` (Login/WorldDatabase), allowing SQL injection via table name interpolation (`show columns FROM %s`).
+**Learning:** `RunQuery2` uses `vsnprintf` internally, which does not escape string arguments. Standard escaping functions (`mysql_real_escape_string`) are insufficient for SQL identifiers (table names) if the placeholder is not quoted.
 **Prevention:**
-1. Replace `strncpy(dst, src, sizeof(dst))` with `strncpy(dst, src, sizeof(dst) - 1); dst[sizeof(dst) - 1] = '\0';` or use `strlcpy` if available.
-2. Replace `sprintf` with `snprintf` to enforce buffer limits.
+1. Avoid dynamic table names from user input if possible.
+2. If dynamic identifiers are necessary, strictly validate them against a whitelist (e.g., alphanumeric + underscore only).
+3. Created `IsValidIdentifier(const char*)` in `MiscFunctions` to perform this validation.

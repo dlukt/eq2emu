@@ -79,6 +79,7 @@ int8 DoOverLoad(int32 val, uchar* data);
 int8 CheckOverLoadSize(int32 val);
 int32	CountWordsInString(const char* text);
 bool IsNumber(const char *num);
+bool IsValidIdentifier(const char *str);
 void PrintSep(Seperator *sep, const char *name = 0);
 string GetDeviceName(const string& device);
 int32 GetDeviceID(const string& device);

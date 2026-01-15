@@ -824,6 +824,9 @@ bool LoginDatabase::VerifyDataTable(char* name){
 	return false;
 }
 string LoginDatabase::GetColumnNames(char* name){
+	if (!IsValidIdentifier(name))
+		return "";
+
 	Query query;
 	MYSQL_ROW row;
 	string columns = "(";
