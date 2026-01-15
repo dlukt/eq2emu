@@ -4258,32 +4258,32 @@ void Spawn::SetFollowTarget(Spawn* spawn, int32 follow_distance) {
 	}
 }
 
-void Spawn::AddTempVariable(string var, string val) {
+void Spawn::AddTempVariable(const string& var, const string& val) {
 	m_tempVariableTypes[var] = 5;
 	m_tempVariables[var] = val;
 }
 
-void Spawn::AddTempVariable(string var, Spawn* val) {
+void Spawn::AddTempVariable(const string& var, Spawn* val) {
 	m_tempVariableTypes[var] = 1;
 	m_tempVariableSpawn[var] = val->GetID();
 }
 
-void Spawn::AddTempVariable(string var, ZoneServer* val) {
+void Spawn::AddTempVariable(const string& var, ZoneServer* val) {
 	m_tempVariableTypes[var] = 2;
 	m_tempVariableZone[var] = val;
 }
 
-void Spawn::AddTempVariable(string var, Item* val) {
+void Spawn::AddTempVariable(const string& var, Item* val) {
 	m_tempVariableTypes[var] = 3;
 	m_tempVariableItem[var] = val;
 }
 
-void Spawn::AddTempVariable(string var, Quest* val) {
+void Spawn::AddTempVariable(const string& var, Quest* val) {
 	m_tempVariableTypes[var] = 4;
 	m_tempVariableQuest[var] = val;
 }
 
-string Spawn::GetTempVariable(string var) {
+string Spawn::GetTempVariable(const string& var) {
 	string ret = "";
 
 	if (m_tempVariables.count(var) > 0)
@@ -4292,7 +4292,7 @@ string Spawn::GetTempVariable(string var) {
 	return ret;
 }
 
-Spawn* Spawn::GetTempVariableSpawn(string var) {
+Spawn* Spawn::GetTempVariableSpawn(const string& var) {
 	Spawn* ret = 0;
 	
 	if (m_tempVariableSpawn.count(var) > 0)
@@ -4301,7 +4301,7 @@ Spawn* Spawn::GetTempVariableSpawn(string var) {
 	return ret;
 }
 
-ZoneServer* Spawn::GetTempVariableZone(string var) {
+ZoneServer* Spawn::GetTempVariableZone(const string& var) {
 	ZoneServer* ret = 0;
 
 	if (m_tempVariableZone.count(var) > 0)
@@ -4310,7 +4310,7 @@ ZoneServer* Spawn::GetTempVariableZone(string var) {
 	return ret;
 }
 
-Item* Spawn::GetTempVariableItem(string var) {
+Item* Spawn::GetTempVariableItem(const string& var) {
 	Item* ret = 0;
 
 	if (m_tempVariableItem.count(var) > 0)
@@ -4319,7 +4319,7 @@ Item* Spawn::GetTempVariableItem(string var) {
 	return ret;
 }
 
-Quest* Spawn::GetTempVariableQuest(string var) {
+Quest* Spawn::GetTempVariableQuest(const string& var) {
 	Quest* ret = 0;
 
 	if (m_tempVariableQuest.count(var) > 0)
@@ -4328,7 +4328,7 @@ Quest* Spawn::GetTempVariableQuest(string var) {
 	return ret;
 }
 
-int8 Spawn::GetTempVariableType(string var) {
+int8 Spawn::GetTempVariableType(const string& var) {
 	int8 ret = 0;
 
 	if (m_tempVariableTypes.count(var) > 0)
@@ -4337,7 +4337,7 @@ int8 Spawn::GetTempVariableType(string var) {
 	return ret;
 }
 
-void Spawn::DeleteTempVariable(string var) {
+void Spawn::DeleteTempVariable(const string& var) {
 	int8 type = GetTempVariableType(var);
 
 	switch (type) {
