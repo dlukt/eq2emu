@@ -33,15 +33,17 @@ void ClientPacketFunctions::SendHousePurchase(Client* client, HouseZone* hz, int
 		if (hz->guild_level > 0) {
 			if (req.length() > 0) {
 				req.append(", and a guild level of ");
-				char temp[5];
-				sprintf(temp, "%i", hz->guild_level);
+				char temp[5] = {0};
+				snprintf(temp, sizeof(temp), "%i", hz->guild_level);
+				temp[sizeof(temp) - 1] = '\0';
 				req.append(temp);
 				//req.append(std::to_string(static_cast<long long>(hz->guild_level)));
 			}
 			else {
 				req.append("Requires a guild of level ");
-				char temp[5];
-				sprintf(temp, "%i", hz->guild_level);
+				char temp[5] = {0};
+				snprintf(temp, sizeof(temp), "%i", hz->guild_level);
+				temp[sizeof(temp) - 1] = '\0';
 				req.append(temp);
 				//req.append(std::to_string(static_cast<long long>(hz->guild_level)))
 				req.append(" or above");
