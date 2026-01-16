@@ -950,8 +950,10 @@ EQ2Packet* Quest::OfferQuest(int16 version, Player* player){
 		}
 		char accept[35] = {0};
 		char decline[35] = {0};
-		sprintf(accept, "q_accept_pending_quest %u", id);
-		sprintf(decline, "q_deny_pending_quest %u", id);
+		snprintf(accept, sizeof(accept), "q_accept_pending_quest %u", id);
+		accept[sizeof(accept) - 1] = '\0';
+		snprintf(decline, sizeof(decline), "q_deny_pending_quest %u", id);
+		decline[sizeof(decline) - 1] = '\0';
 		packet->setDataByName("accept_command", accept);
 		packet->setDataByName("decline_command", decline);
 		EQ2Packet* outapp = packet->serialize();
