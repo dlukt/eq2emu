@@ -175,33 +175,23 @@ public:
 	void setLargeString(DataStruct* data_struct, const char* text, int32 index = 0);
 	void renameSubstructArray(const char* substruct, int32 index);
 	template<class Data> void setSubstructSubstructDataByName(const char* substruct_name1, const char* substruct_name2, const char* name, Data data, int32 substruct_index1 = 0, int32 substruct_index2 = 0, int32 index = 0) {
-		char tmp[15] = { 0 };
-		sprintf(tmp, "_%i_%i", substruct_index1, substruct_index2);
-		string name2 = string(substruct_name1).append("_").append(substruct_name2).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name1).append("_").append(substruct_name2).append("_").append(name).append("_").append(to_string(substruct_index1)).append("_").append(to_string(substruct_index2));
 		setData(findStruct(name2.c_str(), index), data, index);
 	}
 	template<class Data> void setSubstructDataByName(const char* substruct_name, const char* name, Data data, int32 substruct_index = 0, int32 index = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", substruct_index);
-		string name2 = string(substruct_name).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name).append("_").append(name).append("_").append(to_string(substruct_index));
 		setData(findStruct(name2.c_str(), index), data, index);
 	}
 	template<class Data> void setSubstructColorByName(const char* substruct_name, const char* name, Data data, int32 substruct_index = 0, int32 index = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", substruct_index);
-		string name2 = string(substruct_name).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name).append("_").append(name).append("_").append(to_string(substruct_index));
 		setColor(findStruct(name2.c_str(), index), data, index);
 	}
 	template<class Data> void setSubstructArrayDataByName(const char* substruct_name, const char* name, Data data, int32 index = 0, int32 substruct_index = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", substruct_index);
-		string name2 = string(substruct_name).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name).append("_").append(name).append("_").append(to_string(substruct_index));
 		setData(findStruct(name2.c_str(), substruct_index, index), data, index);
 	}
 	template<class Data> void setSubstructArrayColorByName(const char* substruct_name, const char* name, Data data, int32 substruct_index = 0, int32 index = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", substruct_index);
-		string name2 = string(substruct_name).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name).append("_").append(name).append("_").append(to_string(substruct_index));
 		setColor(findStruct(name2.c_str(), index, substruct_index), data, index);
 	}
 	template<class Data> void setDataByName(const char* name, Data data, int32 index = 0, bool use_second_type = false) {
@@ -211,21 +201,15 @@ public:
 		setData(findStruct(name, index), data, index, use_second_type);
 	}
 	template<class Data> void setSubArrayDataByName(const char* name, Data data, int32 index1 = 0, int32 index2 = 0, int32 index3 = 0) {
-		char tmp[20] = { 0 };
-		sprintf(tmp, "%i_%i", index1, index2);
-		string name2 = string(name).append(tmp);
+		string name2 = string(name).append(to_string(index1)).append("_").append(to_string(index2));
 		setData(findStruct(name2.c_str(), index2, index3), data, index3);
 	}
 	template<class Data> void setArrayDataByName(const char* name, Data data, int32 index1 = 0, int32 index2 = 0, bool use_second_type = false) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", index1);
-		string name2 = string(name).append(tmp);
+		string name2 = string(name).append("_").append(to_string(index1));
 		setData(findStruct(name2.c_str(), index1, index2), data, index2, use_second_type);
 	}
 	void setArrayAddToPacketByName(const char* name, bool new_val, int32 index1 = 0, int32 index2 = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", index1);
-		string name2 = string(name).append(tmp);
+		string name2 = string(name).append("_").append(to_string(index1));
 		DataStruct* data = findStruct(name2.c_str(), index2);
 		if (data)
 			data->SetAddToStruct(new_val);
@@ -390,9 +374,7 @@ public:
 	}
 
 	template<class Data> void setSubArrayLengthByName(const char* name, Data data, int32 index1 = 0, int32 index2 = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", index1);
-		string name2 = string(name).append(tmp);
+		string name2 = string(name).append("_").append(to_string(index1));
 		DataStruct* data_struct = findStruct(name2.c_str(), index2);
 		setData(data_struct, data, index2);
 		UpdateArrayByArrayLength(data_struct, index2, data);
@@ -403,9 +385,7 @@ public:
 		UpdateArrayByArrayLength(data_struct, index, data);
 	}
 	template<class Data> void setSubstructArrayLengthByName(const char* substruct_name, const char* name, Data data, int32 substruct_index = 0, int32 index = 0) {
-		char tmp[10] = { 0 };
-		sprintf(tmp, "_%i", substruct_index);
-		string name2 = string(substruct_name).append("_").append(name).append(tmp);
+		string name2 = string(substruct_name).append("_").append(name).append("_").append(to_string(substruct_index));
 
 		DataStruct* data_struct = findStruct(name2.c_str(), index);
 		setData(data_struct, data, index);
