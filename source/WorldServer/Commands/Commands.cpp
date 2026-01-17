@@ -4799,7 +4799,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 			if (sep && sep->arg[0][0]) {
 				if (cmdTarget)
 				{
-					if (ToLower(string(sep->arg[0])) == "los")
+					if (stricmp(sep->arg[0], "los") == 0)
 					{
 						bool hasLOS = client->GetPlayer()->CheckLoS(cmdTarget);
 						if (hasLOS)
@@ -4809,7 +4809,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "bestz")
+					else if (stricmp(sep->arg[0], "bestz") == 0)
 					{
 						glm::vec3 targPos(cmdTarget->GetX(), cmdTarget->GetZ(), cmdTarget->GetY());
 
@@ -4817,7 +4817,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 						client->Message(CHANNEL_COLOR_YELLOW, "Best Z for %s is %f", spawn->GetName(), bestZ);
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "inwater")
+					else if (stricmp(sep->arg[0], "inwater") == 0)
 					{
 						if (cmdTarget->GetRegionMap() == nullptr)
 							client->SimpleMessage(CHANNEL_COLOR_RED, "No water map for zone.");
@@ -4828,7 +4828,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 						}
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "inlava")
+					else if (stricmp(sep->arg[0], "inlava") == 0)
 					{
 						if (cmdTarget->GetRegionMap() == nullptr)
 							client->SimpleMessage(CHANNEL_COLOR_RED, "No region map for zone.");
@@ -4839,7 +4839,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 						}
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "regions")
+					else if (stricmp(sep->arg[0], "regions") == 0)
 					{
 						glm::vec3 targPos(cmdTarget->GetX(), cmdTarget->GetY(), cmdTarget->GetZ());
 
@@ -4851,25 +4851,25 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 						}
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "behind")
+					else if (stricmp(sep->arg[0], "behind") == 0)
 					{
 						bool isBehind = client->GetPlayer()->BehindTarget(cmdTarget);
 						client->Message(CHANNEL_COLOR_YELLOW, "%s %s.", isBehind ? "YOU are behind" : "YOU are NOT behind", cmdTarget->GetName());
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "infront")
+					else if (stricmp(sep->arg[0], "infront") == 0)
 					{
 						bool isBehind = client->GetPlayer()->InFrontSpawn(cmdTarget, client->GetPlayer()->GetX(), client->GetPlayer()->GetZ());
 						client->Message(CHANNEL_COLOR_YELLOW, "%s %s.", isBehind ? "YOU are infront of" : "YOU are NOT infront of", cmdTarget->GetName());
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "flank")
+					else if (stricmp(sep->arg[0], "flank") == 0)
 					{
 						bool isFlanking = client->GetPlayer()->FlankingTarget(cmdTarget);
 						client->Message(CHANNEL_COLOR_YELLOW, "%s is %s.", isFlanking ? "YOU are flanking" : "YOU are NOT flanking", cmdTarget->GetName());
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "aggro")
+					else if (stricmp(sep->arg[0], "aggro") == 0)
 					{
 						if(cmdTarget->IsNPC() && ((NPC*)cmdTarget)->Brain()) {
 							((NPC*)cmdTarget)->Brain()->SendEncounterList(client);
@@ -4880,14 +4880,14 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 						}
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "angle")
+					else if (stricmp(sep->arg[0], "angle") == 0)
 					{
 						float spawnAngle = client->GetPlayer()->GetFaceTarget(cmdTarget->GetX(), cmdTarget->GetZ());
 						
 						client->Message(CHANNEL_COLOR_YELLOW, "Angle %f between player %s and target %s", spawnAngle, client->GetPlayer()->GetTarget() ? client->GetPlayer()->GetTarget()->GetName() : client->GetPlayer()->GetName(), client->GetPlayer()->GetName());
 						break;
 					}
-					else if (ToLower(string(sep->arg[0])) == "hated")
+					else if (stricmp(sep->arg[0], "hated") == 0)
 					{
 						if(client->GetPlayer()->GetTarget() && client->GetPlayer()->GetTarget()->IsEntity()) {
 							Entity* target = (Entity*)client->GetPlayer()->GetTarget();
@@ -5066,7 +5066,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 				int16 response = client->GetCurrentZone()->SetSpawnTargetable(spawn_id);
 				client->Message(CHANNEL_COLOR_YELLOW, "%i spawn(s) in the current zone were reset to targetable.", response);
 			}
-			else if(sep && sep->arg[0][0] && sep->arg[1][0] && sep->IsNumber(1) && ToLower(string(sep->arg[0])) == "radius"){
+			else if(sep && sep->arg[0][0] && sep->arg[1][0] && sep->IsNumber(1) && stricmp(sep->arg[0], "radius") == 0){
 				float distance = atof(sep->arg[1]);
 				int16 response = client->GetCurrentZone()->SetSpawnTargetable(client->GetPlayer(), distance);
 				client->Message(CHANNEL_COLOR_YELLOW, "%i spawn(s) in the current zone were reset to targetable.", response);
@@ -5086,10 +5086,16 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 			if (spawn)
 			{
 				// check if parameters are (location or list or not player and not a 2nd param), and that there is at least 1 value
-				if(sep && ((sep->arg[0][0] && ToLower(string(sep->arg[0])) == "location") || (sep->arg[0][0] && ToLower(string(sep->arg[0])) == "list") || (spawn && spawn->IsPlayer() == false && sep->arg[1][0])) && spawn_set_values.count(ToLower(string(sep->arg[0]))) == 1)
+				if(sep && sep->arg[0][0])
 				{
-					// set the type, which will be 0 if location or list or invalid
-					set_type = spawn_set_values[ToLower(string(sep->arg[0]))];
+					string arg0_lower = sep->arg[0];
+					ToLowerString(arg0_lower);
+
+					if(((arg0_lower == "location") || (arg0_lower == "list") || (spawn && spawn->IsPlayer() == false && sep->arg[1][0])) && spawn_set_values.count(arg0_lower) == 1)
+					{
+						// set the type, which will be 0 if location or list or invalid
+						set_type = spawn_set_values[arg0_lower];
+					}
 				}
 
 				if(set_type > 0)
