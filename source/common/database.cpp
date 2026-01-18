@@ -257,23 +257,30 @@ void Query::AddQueryAsync(int32 queryID, Database* db, QUERY_TYPE type, const ch
 	int buf_len = _vscprintf(format, args) + 1;
 	buffer = new char[buf_len];
 	vsprintf(buffer, format, args);
+	query = string(buffer);
+	safe_delete_array(buffer);
 #else
-	char* buffer;
-	int buf_len;
+	// Bolt: Optimization - Use stack buffer for common small queries to avoid
+	// double-vsnprintf calls and unnecessary heap allocations.
+	char stackBuf[4096];
 	va_list argcopy;
 	va_copy(argcopy, args);
-	buf_len = vsnprintf(NULL, 0, format, argcopy) + 1;
+	int buf_len = vsnprintf(stackBuf, sizeof(stackBuf), format, argcopy);
 	va_end(argcopy);
 
-	buffer = new char[buf_len];
-	vsnprintf(buffer, buf_len, format, args);
+	if (buf_len >= 0 && (size_t)buf_len < sizeof(stackBuf)) {
+		query = string(stackBuf, buf_len);
+	} else {
+		int allocSize = (buf_len >= 0) ? (buf_len + 1) : 65536;
+		char* buffer = new char[allocSize];
+		vsnprintf(buffer, allocSize, format, args);
+		query = string(buffer);
+		safe_delete_array(buffer);
+	}
 #endif
 	va_end(args);
-	query = string(buffer);
 
 	Query* asyncQuery = new Query(this, queryID, query);
-
-	safe_delete_array(buffer);
 
 	db->AddAsyncQuery(asyncQuery);
 }
@@ -291,24 +298,29 @@ MYSQL_RES* Query::RunQuery2(QUERY_TYPE type, const char* format, ...){
 		int buf_len = _vscprintf( format, args ) + 1;
 		buffer = new char[buf_len];
 		vsprintf( buffer, format, args );
+		query = string(buffer);
+		safe_delete_array( buffer );
 	#else
-		char* buffer;
-		int buf_len; 
+		// Bolt: Optimization - Use stack buffer for common small queries to avoid
+		// double-vsnprintf calls and unnecessary heap allocations.
+		char stackBuf[4096];
 		va_list argcopy;
 		va_copy(argcopy, args);
-		buf_len = vsnprintf(NULL, 0, format, argcopy) + 1;
+		int buf_len = vsnprintf(stackBuf, sizeof(stackBuf), format, argcopy);
 		va_end(argcopy);
-		
-		buffer = new char[buf_len];
-		vsnprintf(buffer, buf_len, format, args);
+
+		if (buf_len >= 0 && (size_t)buf_len < sizeof(stackBuf)) {
+			query = string(stackBuf, buf_len);
+		} else {
+			int allocSize = (buf_len >= 0) ? (buf_len + 1) : 65536;
+			char* buffer = new char[allocSize];
+			vsnprintf(buffer, allocSize, format, args);
+			query = string(buffer);
+			safe_delete_array( buffer );
+		}
 	#endif
 	va_end(args);
-	query = string(buffer);
-
 	
-	safe_delete_array( buffer );
-	
-
 	return RunQuery2(query.c_str(), type);
 }
 MYSQL_RES* Query::RunQuery2(string in_query, QUERY_TYPE type){
