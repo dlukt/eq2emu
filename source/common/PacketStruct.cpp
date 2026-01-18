@@ -595,10 +595,9 @@ void PacketStruct::deletePacketArrays(PacketStruct* packet) {
 
 void PacketStruct::renameSubstructArray(const char* substruct, int32 index) {
 	vector<PacketStruct*>::iterator itr;
-	char tmp[10] = { 0 };
-	sprintf(tmp, "%i", index);
+	string indexStr = to_string(index);
 	for (itr = arrays.begin(); itr != arrays.end(); itr++) {
-		(*itr)->SetName(string(substruct).append("_").append((*itr)->GetName()).append("_").append(tmp).c_str());
+		(*itr)->SetName(string(substruct).append("_").append((*itr)->GetName()).append("_").append(indexStr).c_str());
 	}
 }
 
@@ -908,9 +907,7 @@ void PacketStruct::add(DataStruct* data) {
 		string name2 = data->GetStringName();
 		for (int32 i = 1; i < data->GetLength(); i++) {
 			DataStruct* new_data = new DataStruct(data);
-			char blah[10] = { 0 };
-			sprintf(blah, "%i", i);
-			name2.append("_").append(blah);
+			name2.append("_").append(to_string(i));
 			new_data->SetName(name2.c_str());
 			new_data->SetLength(1);
 			EQ2_8BitString* tmp = new EQ2_8BitString;
@@ -928,9 +925,7 @@ void PacketStruct::add(DataStruct* data) {
 		string name2 = data->GetStringName();
 		for (int32 i = 1; i < data->GetLength(); i++) {
 			DataStruct* new_data = new DataStruct(data);
-			char blah[10] = { 0 };
-			sprintf(blah, "%i", i);
-			name2.append("_").append(blah);
+			name2.append("_").append(to_string(i));
 			new_data->SetName(name2.c_str());
 			new_data->SetLength(1);
 			EQ2_16BitString* tmp = new EQ2_16BitString;
@@ -948,9 +943,7 @@ void PacketStruct::add(DataStruct* data) {
 		string name2 = data->GetStringName();
 		for (int32 i = 1; i < data->GetLength(); i++) {
 			DataStruct* new_data = new DataStruct(data);
-			char blah[10] = { 0 };
-			sprintf(blah, "%i", i);
-			name2.append("_").append(blah);
+			name2.append("_").append(to_string(i));
 			new_data->SetName(name2.c_str());
 			new_data->SetLength(1);
 			EQ2_32BitString* tmp = new EQ2_32BitString;
@@ -1020,9 +1013,7 @@ DataStruct* PacketStruct::findStruct(const char* name, int32 index1, int32 index
 	vector<PacketStruct*>::iterator itr2;
 	string name2 = string(name);
 	if (index1 < 0xFFFF) {
-		char blah[10] = { 0 };
-		sprintf(blah, "_%i", index1);
-		name2.append(blah);
+		name2.append("_").append(to_string(index1));
 	}
 	if (struct_map.count(name2) > 0) {
 		data = struct_map[name2];
@@ -1149,16 +1140,25 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				else {
 					// Check to see if the variable contains %i, if it does assume we are in an array
 					// and get the current index from the end of the data struct's name
-					char name[250] = { 0 };
-					if (varname.find("%i") < 0xFFFFFFFF) {
+					string nameStr;
+					if (varname.find("%i") != string::npos) {
 						vector<string> varnames = SplitString(data_struct->GetName(), '_');
-						int index = atoi(varnames.at(varnames.size() - 1).c_str());
-						sprintf(name, varname.c_str(), index);
+						int index = 0;
+						if (!varnames.empty())
+							index = atoi(varnames.back().c_str());
+
+						size_t pos = varname.find("%i");
+						if (pos != string::npos) {
+							nameStr = varname;
+							nameStr.replace(pos, 2, to_string(index));
+						} else {
+							nameStr = varname;
+						}
 					}
 					else
-						strcpy(name, varname.c_str());
+						nameStr = varname;
 
-					if (!GetVariableIsSet(name))
+					if (!GetVariableIsSet(nameStr.c_str()))
 						continue;
 				}
 			}
@@ -1181,16 +1181,25 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 				else {
 					// Check to see if the variable contains %i, if it does assume we are in an array
 					// and get the current index from the end of the data struct's name
-					char name[250] = { 0 };
-					if (varname.find("%i") < 0xFFFFFFFF) {
+					string nameStr;
+					if (varname.find("%i") != string::npos) {
 						vector<string> varnames = SplitString(data_struct->GetName(), '_');
-						int index = atoi(varnames.at(varnames.size() - 1).c_str());
-						sprintf(name, varname.c_str(), index);
+						int index = 0;
+						if (!varnames.empty())
+							index = atoi(varnames.back().c_str());
+
+						size_t pos = varname.find("%i");
+						if (pos != string::npos) {
+							nameStr = varname;
+							nameStr.replace(pos, 2, to_string(index));
+						} else {
+							nameStr = varname;
+						}
 					}
 					else
-						strcpy(name, varname.c_str());
+						nameStr = varname;
 
-					if (!GetVariableIsNotSet(name))
+					if (!GetVariableIsNotSet(nameStr.c_str()))
 						continue;
 				}
 			}
@@ -1203,31 +1212,38 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			if (data_struct->GetIfNotEquals() && data_struct->GetIfNotEqualsVariable()) {
 				// Get the variable name
 				string varname = string(data_struct->GetIfNotEqualsVariable());
-				char name[250] = { 0 };
+				string nameStr;
 				// Check to see if the variable has %i in the name, if it does assume we are in an array and get the current
 				// index and replace it
-				if (varname.find("%i") < 0xFFFFFFFF) {
+				if (varname.find("%i") != string::npos) {
 					// Get the current index by getting the number at the end of the name
 					vector<string> varnames = SplitString(data_struct->GetName(), '_');
-					int index = atoi(varnames.at(varnames.size() - 1).c_str());
+					int index = 0;
+					if (!varnames.empty())
+						index = atoi(varnames.back().c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
 						// adorn_stat_subtype  18 chars
 						string temp = varname.substr(12);
-						char temp2[20] = { 0 };
 						int index2 = atoi(temp.c_str());
-						itoa(index2, temp2, 10);
-						varname = varname.substr(0, 12).append(temp2).append("_%i");
+						varname = varname.substr(0, 12).append(to_string(index2)).append("_%i");
 					}
-					sprintf(name, varname.c_str(), index);
+
+					size_t pos = varname.find("%i");
+					if (pos != string::npos) {
+						nameStr = varname;
+						nameStr.replace(pos, 2, to_string(index));
+					} else {
+						nameStr = varname;
+					}
 				}
 				else
-					strcpy(name, varname.c_str());
+					nameStr = varname;
 
 				// Get the data for the variable
 				int16 value = 0;
-				DataStruct* data_struct2 = findStruct(name, 0);
+				DataStruct* data_struct2 = findStruct(nameStr.c_str(), 0);
 				value = getType_int16(data_struct2);
 				// Hack for items as it is the only struct that currently uses IfVariableNotEquals
 				if (value == 1)
@@ -1237,31 +1253,38 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			if (data_struct->GetIfEquals() && data_struct->GetIfEqualsVariable()) {
 				// Get the variable name
 				string varname = string(data_struct->GetIfEqualsVariable());
-				char name[250] = { 0 };
+				string nameStr;
 				// Check to see if the variable has %i in the name, if it does assume we are in an array and get the current
 				// index and replace it
-				if (varname.find("%i") < 0xFFFFFFFF) {
+				if (varname.find("%i") != string::npos) {
 					// Get the current index by getting the number at the end of the name
 					vector<string> varnames = SplitString(data_struct->GetName(), '_');
-					int index = atoi(varnames.at(varnames.size() - 1).c_str());
+					int index = 0;
+					if (!varnames.empty())
+						index = atoi(varnames.back().c_str());
 
 					string substr = "stat_type";
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
 						// adorn_stat_subtype  18 chars
 						string temp = varname.substr(12);
-						char temp2[20] = { 0 };
 						int index2 = atoi(temp.c_str());
-						itoa(index2, temp2, 10);
-						varname = varname.substr(0, 12).append(temp2).append("_%i");
+						varname = varname.substr(0, 12).append(to_string(index2)).append("_%i");
 					}
-					sprintf(name, varname.c_str(), index);
+
+					size_t pos = varname.find("%i");
+					if (pos != string::npos) {
+						nameStr = varname;
+						nameStr.replace(pos, 2, to_string(index));
+					} else {
+						nameStr = varname;
+					}
 				}
 				else
-					strcpy(name, varname.c_str());
+					nameStr = varname;
 
 				// Get the data for the variable
 				int16 value = 0;
-				DataStruct* data_struct2 = findStruct(name, 0);
+				DataStruct* data_struct2 = findStruct(nameStr.c_str(), 0);
 				value = getType_int16(data_struct2);
 				// Hack for items as it is the only struct that currently uses IfVariableNotEquals
 				if (value != 1)
@@ -1275,25 +1298,26 @@ bool PacketStruct::LoadPacketData(uchar* data, int32 data_len, bool create_color
 			bool useType2 = false;
 			if (data_struct->GetType2() > 0) {
 				int16 type = 0;
-				char name[250] = { 0 };
+				string nameStr;
 				vector<string> varnames = SplitString(data_struct->GetName(), '_');
 				string struct_name = data_struct->GetName();
-				if (struct_name.find("set") < 0xFFFFFFFF) {
+				if (struct_name.find("set") != string::npos) {
 					string tmp = "set_stat_type";
 					struct_name.replace(0, 9, tmp);
-					sprintf(name, "%s", struct_name.c_str());
+					nameStr = struct_name;
 				}
-				else if (struct_name.find("adorn") < 0xFFFFFFFF) {
+				else if (struct_name.find("adorn") != string::npos) {
 					string tmp = "adorn_stat_type";
 					struct_name.replace(0, 9, tmp);
-					sprintf(name, "%s", struct_name.c_str());
+					nameStr = struct_name;
 				}
 				else {
 					// set name to stat_type_# (where # is the current index of the array we are in)
-					sprintf(name, "%s_%s", "stat_type", varnames.at(varnames.size() - 1).c_str());
+					if (!varnames.empty())
+						nameStr = string("stat_type_") + varnames.back();
 				}
 				// Look up the value for stat_type
-				DataStruct* data_struct2 = findStruct(name, 0);
+				DataStruct* data_struct2 = findStruct(nameStr.c_str(), 0);
 				type = getType_int16(data_struct2);
 				// If stat_type == 6 we use a float, else we use sint16
 				if (type != 6 && type != 7)
@@ -1489,34 +1513,38 @@ void PacketStruct::reAddAll(int32 length) {
 		for (packet_itr = orig_packets.begin(); packet_itr != orig_packets.end(); packet_itr++) {
 			ps = *packet_itr;
 			PacketStruct* new_packet = new PacketStruct(ps, true);
-			char tmp[20] = { 0 };
-			sprintf(tmp, "_%i", i);
 			string name = string(new_packet->GetName());
-			name.append(tmp);
+			name.append("_").append(to_string(i));
 			new_packet->SetName(name.c_str());
 			add(new_packet);
 		}
 		for (itr = orig_structs.begin(); itr != orig_structs.end(); itr++) {
 			ds = *itr;
 			DataStruct* new_data = new DataStruct(ds);
-			char tmp[20] = { 0 };
-			sprintf(tmp, "_%i", i);
-			string name = new_data->GetStringName();
+			string suffix;
 			if (IsSubPacket() && parent->IsSubPacket()) {
 				string parent_name = string(GetName());
 				try {
-					if (parent_name.rfind("_") < 0xFFFFFFFF)
-						sprintf(tmp, "%i_%i", atoi(parent_name.substr(parent_name.rfind("_") + 1).c_str()), i);
+					if (parent_name.rfind("_") != string::npos) {
+						int parent_index = atoi(parent_name.substr(parent_name.rfind("_") + 1).c_str());
+						suffix = to_string(parent_index) + "_" + to_string(i);
+					} else {
+						suffix = "_" + to_string(i);
+					}
 				}
 				catch (...) {
-					sprintf(tmp, "_%i", i);
+					suffix = "_" + to_string(i);
 				}
+			} else {
+				suffix = "_" + to_string(i);
 			}
-			name.append(tmp);
+
+			string name = new_data->GetStringName();
+			name.append(suffix);
 			new_data->SetName(name.c_str());
 			if (new_data->GetType() == DATA_STRUCT_ARRAY) {
 				string old_size_arr = string(new_data->GetArraySizeVariable());
-				new_data->SetArraySizeVariable(old_size_arr.append(tmp).c_str());
+				new_data->SetArraySizeVariable(old_size_arr.append(suffix).c_str());
 			}
 			add(new_data);
 		}
@@ -1681,19 +1709,25 @@ void PacketStruct::serializePacket(bool clear) {
 				else {
 					// Check to see if the variable contains %i, if it does assume we are in an array
 					// and get the current index from the end of the data struct's name
-					char name[250] = { 0 };
-					if (varname.find("%i") < 0xFFFFFFFF) {
-						vector<string> varnames = SplitString(varname, '_');
+					string nameStr;
+					if (varname.find("%i") != string::npos) {
 						vector<string> indexes = SplitString(data->GetName(), '_');
 						int index = 0;
 						if (indexes.size() > 0)
 							index = atoi(indexes.at(indexes.size() - 1).c_str());
 
-						sprintf(name, varname.c_str(), index);
+						size_t pos = varname.find("%i");
+						if (pos != string::npos) {
+							nameStr = varname;
+							nameStr.replace(pos, 2, to_string(index));
+						} else {
+							nameStr = varname;
+						}
 					}
 					else
-						strcpy(name, varname.c_str());
-					if (!GetVariableIsNotSet(name))
+						nameStr = varname;
+
+					if (!GetVariableIsNotSet(nameStr.c_str()))
 						continue;
 				}
 			}
@@ -1706,44 +1740,10 @@ void PacketStruct::serializePacket(bool clear) {
 			if (data->GetIfNotEquals() && data->GetIfNotEqualsVariable()) {
 				// Get the variable name
 				string varname = string(data->GetIfNotEqualsVariable());
-				char name[250] = { 0 };
+				string nameStr;
 				// Check to see if the variable has %i in the name, if it does assume we are in an array and get the current
 				// index and replace it
-				if (varname.find("%i") < 0xFFFFFFFF) {
-					// Get the current index by getting the number at the end of the name
-					vector<string> varnames = SplitString(data->GetName(), '_');
-					int index = atoi(varnames.at(varnames.size() - 1).c_str());
-
-					string substr = "stat_type";
-					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
-						// adorn_stat_subtype  18 chars
-						string temp = varname.substr(12);
-						char temp2[20] = { 0 };
-						int index2 = atoi(temp.c_str());
-						itoa(index2, temp2, 10);
-						varname = varname.substr(0, 12).append(temp2).append("_%i");
-					}
-					sprintf(name, varname.c_str(), index);
-				}
-				else
-					strcpy(name, varname.c_str());
-
-				// Get the data for the variable
-				int16 value = 0;
-				DataStruct* data_struct2 = findStruct(name, 0);
-				value = getType_int16(data_struct2);
-				// Hack for items as it is the only struct that currently uses IfVariableNotEquals
-				if (value == 1)
-					continue;
-			}
-			// copy and paste of the code above for IfEquals
-			if (data->GetIfEquals() && data->GetIfEqualsVariable()) {
-				// Get the variable name
-				string varname = string(data->GetIfEqualsVariable());
-				char name[250] = { 0 };
-				// Check to see if the variable has %i in the name, if it does assume we are in an array and get the current
-				// index and replace it
-				if (varname.find("%i") < 0xFFFFFFFF) {
+				if (varname.find("%i") != string::npos) {
 					// Get the current index by getting the number at the end of the name
 					vector<string> varnames = SplitString(data->GetName(), '_');
 					int index = 0;
@@ -1754,19 +1754,65 @@ void PacketStruct::serializePacket(bool clear) {
 					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
 						// adorn_stat_subtype  18 chars
 						string temp = varname.substr(12);
-						char temp2[20] = { 0 };
 						int index2 = atoi(temp.c_str());
-						itoa(index2, temp2, 10);
-						varname = varname.substr(0, 12).append(temp2).append("_%i");
+						varname = varname.substr(0, 12).append(to_string(index2)).append("_%i");
 					}
-					sprintf(name, varname.c_str(), index);
+
+					size_t pos = varname.find("%i");
+					if (pos != string::npos) {
+						nameStr = varname;
+						nameStr.replace(pos, 2, to_string(index));
+					} else {
+						nameStr = varname;
+					}
 				}
 				else
-					strcpy(name, varname.c_str());
+					nameStr = varname;
 
 				// Get the data for the variable
 				int16 value = 0;
-				DataStruct* data_struct2 = findStruct(name, 0);
+				DataStruct* data_struct2 = findStruct(nameStr.c_str(), 0);
+				value = getType_int16(data_struct2);
+				// Hack for items as it is the only struct that currently uses IfVariableNotEquals
+				if (value == 1)
+					continue;
+			}
+			// copy and paste of the code above for IfEquals
+			if (data->GetIfEquals() && data->GetIfEqualsVariable()) {
+				// Get the variable name
+				string varname = string(data->GetIfEqualsVariable());
+				string nameStr;
+				// Check to see if the variable has %i in the name, if it does assume we are in an array and get the current
+				// index and replace it
+				if (varname.find("%i") != string::npos) {
+					// Get the current index by getting the number at the end of the name
+					vector<string> varnames = SplitString(data->GetName(), '_');
+					int index = 0;
+					if (varnames.size() > 0)
+						index = atoi(varnames.at(varnames.size() - 1).c_str());
+
+					string substr = "stat_type";
+					if (strncmp(varname.c_str(), substr.c_str(), strlen(substr.c_str())) == 0) {
+						// adorn_stat_subtype  18 chars
+						string temp = varname.substr(12);
+						int index2 = atoi(temp.c_str());
+						varname = varname.substr(0, 12).append(to_string(index2)).append("_%i");
+					}
+
+					size_t pos = varname.find("%i");
+					if (pos != string::npos) {
+						nameStr = varname;
+						nameStr.replace(pos, 2, to_string(index));
+					} else {
+						nameStr = varname;
+					}
+				}
+				else
+					nameStr = varname;
+
+				// Get the data for the variable
+				int16 value = 0;
+				DataStruct* data_struct2 = findStruct(nameStr.c_str(), 0);
 				value = getType_int16(data_struct2);
 				// Hack for items as it is the only struct that currently uses IfVariableNotEquals
 				if (value != 1)
@@ -2630,9 +2676,7 @@ void PacketStruct::setItemByName(const char* name, Item* item, Player* player, i
 	setItem(findStruct(name, index), item, player, index, offset, loot_item, make_empty_item_packet, inspect);
 }
 void PacketStruct::setItemArrayDataByName(const char* name, Item* item, Player* player, int32 index1, int32 index2, sint8 offset, bool loot_item, bool make_empty_item_packet, bool inspect) {
-	char tmp[10] = { 0 };
-	sprintf(tmp, "_%i", index1);
-	string name2 = string(name).append(tmp);
+	string name2 = string(name).append("_").append(to_string(index1));
 	setItem(findStruct(name2.c_str(), index1, index2), item, player, index2, offset, loot_item, make_empty_item_packet, inspect);
 }
 
