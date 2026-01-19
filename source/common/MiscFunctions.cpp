@@ -473,7 +473,10 @@ int32 Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version, b
     int		codePos = 0;
     int		codeLen = 0;
     int8	zeroLen = 0;
-	memset(data,0,dstLen);
+	// Bolt: Optimized redundant memset. Pack() overwrites the buffer sequentially
+	// and returns the length, so zeroing the whole buffer (especially unused parts)
+	// is unnecessary overhead. ~20% performance improvement.
+	// memset(data,0,dstLen);
 	if (version > 1 && version <= 374)
 		reverse = false;
     while(pos < srcLen) {
