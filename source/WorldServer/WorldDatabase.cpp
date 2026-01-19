@@ -2134,10 +2134,10 @@ bool WorldDatabase::insertCharacterProperty(Client* client, char* propName, char
 	Query query, query2;
 
 	string update_status = string("update character_properties set propvalue='%s' where charid=%i and propname='%s'");
-	query.RunQuery2(Q_UPDATE, update_status.c_str(), propValue, client->GetCharacterID(), propName);
+	query.RunQuery2(Q_UPDATE, update_status.c_str(), getSafeEscapeString(propValue).c_str(), client->GetCharacterID(), getSafeEscapeString(propName).c_str());
 	if (!query.GetAffectedRows())
 	{
-		query2.RunQuery2(Q_UPDATE, "insert into character_properties (charid, propname, propvalue) values(%i, '%s', '%s')", client->GetCharacterID(), propName, propValue);
+		query2.RunQuery2(Q_UPDATE, "insert into character_properties (charid, propname, propvalue) values(%i, '%s', '%s')", client->GetCharacterID(), getSafeEscapeString(propName).c_str(), getSafeEscapeString(propValue).c_str());
 		if (query2.GetErrorNumber() && query2.GetError() && query2.GetErrorNumber() < 0xFFFFFFFF) {
 			LogWrite(WORLD__ERROR, 0, "World", "Error in insertCharacterProperty query '%s': %s", query.GetQuery(), query.GetError());
 			return false;
@@ -2150,10 +2150,10 @@ bool WorldDatabase::insertCharacterProperty(int32 charID, char* propName, char* 
 	Query query, query2;
 
 	string update_status = string("update character_properties set propvalue='%s' where charid=%i and propname='%s'");
-	query.RunQuery2(Q_UPDATE, update_status.c_str(), propValue, charID, propName);
+	query.RunQuery2(Q_UPDATE, update_status.c_str(), getSafeEscapeString(propValue).c_str(), charID, getSafeEscapeString(propName).c_str());
 	if (!query.GetAffectedRows())
 	{
-		query2.RunQuery2(Q_UPDATE, "insert into character_properties (charid, propname, propvalue) values(%i, '%s', '%s')", charID, propName, propValue);
+		query2.RunQuery2(Q_UPDATE, "insert into character_properties (charid, propname, propvalue) values(%i, '%s', '%s')", charID, getSafeEscapeString(propName).c_str(), getSafeEscapeString(propValue).c_str());
 		if (query2.GetErrorNumber() && query2.GetError() && query2.GetErrorNumber() < 0xFFFFFFFF) {
 			LogWrite(WORLD__ERROR, 0, "World", "Error in insertCharacterProperty query '%s': %s", query.GetQuery(), query.GetError());
 			return false;
