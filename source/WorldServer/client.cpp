@@ -1691,8 +1691,6 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 				char tmp_spell_id[15];
 				char tmp_slot[15];
 				for (int i = 0; i < num_updates; i++) {
-					memset(tmp_spell_id, 0, 15);
-					memset(tmp_slot, 0, 15);
 					snprintf(tmp_spell_id, sizeof(tmp_spell_id), "spell_id_%i", i);
 					snprintf(tmp_slot, sizeof(tmp_slot), "slot_id_%i", i);
 					spell_id = packet->getType_int32_ByName(tmp_spell_id);
@@ -1795,7 +1793,6 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 				int32 num_recipes = packet->getType_int32_ByName("num_recipes");
 				// WS_RecipeDetails
 				for (int32 i = 0; i < num_recipes; i++) {
-					memset(recipe_prop_name, 0, 30);
 					snprintf(recipe_prop_name, 30, "recipe_id_%i", i);
 					recipe_id = packet->getType_int32_ByName(recipe_prop_name);
 					if (recipe_id > 0) {
@@ -1855,7 +1852,6 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 					if (GetVersion() > 1193) {
 						int8 num_primary_selected_items = packet->getType_int8_ByName("num_primary_selected_items");
 						for (int8 i = 0; i < num_primary_selected_items; i++) {
-							memset(tmp_item_id, 0, 30);
 							snprintf(tmp_item_id, sizeof(tmp_item_id), "primary_selected_item_id_%i", i);
 							item = packet->getType_int32_ByName(tmp_item_id);
 							snprintf(tmp_item_id, sizeof(tmp_item_id), "primary_selected_item_qty_%i", i);
@@ -1875,11 +1871,9 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 
 					if (GetVersion() > 1193) {
 						for (int8 i = 0; i < build_components; i++) {
-							memset(tmp_item_id, 0, 30);
 							snprintf(tmp_item_id, sizeof(tmp_item_id), "num_selected_items_%i", i);
 							int8 num_selected_items = packet->getType_int8_ByName(tmp_item_id);
 							for (int8 j = 0; j < num_selected_items; j++) {
-								memset(tmp_item_id, 0, 30);
 								snprintf(tmp_item_id, sizeof(tmp_item_id), "selected_id%i_%i", i, j);
 								item = packet->getType_int32_ByName(tmp_item_id);
 								snprintf(tmp_item_id, sizeof(tmp_item_id), "selected_qty%i_%i", i, j);
@@ -1905,7 +1899,6 @@ bool Client::HandlePacket(EQApplicationPacket* app) {
 					if (GetVersion() > 1193) {
 						int8 num_fuel_items = packet->getType_int8_ByName("num_fuel_items");
 						for (int8 i = 0; i < num_fuel_items; i++) {
-							memset(tmp_item_id, 0, 30);
 							snprintf(tmp_item_id, sizeof(tmp_item_id), "fuel_id_%i", i);
 							item = packet->getType_int32_ByName(tmp_item_id);
 							snprintf(tmp_item_id, sizeof(tmp_item_id), "fuel_qty_%i", i);

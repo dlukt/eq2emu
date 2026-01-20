@@ -181,11 +181,11 @@ void ClientPacketFunctions::SendCharacterMacros(Client* client) {
 					macro_packet->setArrayDataByName("name", itr->second[0]->name.c_str(), x);
 				}
 				if (client->GetVersion() > 373) {
-					char tmp_details_count[25] = { 0 };
+					char tmp_details_count[25];
 					snprintf(tmp_details_count, sizeof(tmp_details_count), "macro_details_count_%i", x);
 					macro_packet->setArrayLengthByName(tmp_details_count, itr->second.size());
 					for (int8 i = 0; i < itr->second.size(); i++) {
-						char tmp_command[15] = { 0 };
+						char tmp_command[15];
 						snprintf(tmp_command, sizeof(tmp_command), "command%i", x);
 						LogWrite(PACKET__DEBUG, 5, "Packet", "\tLoading Command %i: %s", itr->first, x, itr->second[i]->text.c_str());
 						macro_packet->setArrayDataByName(tmp_command, itr->second[i]->text.c_str(), i);
