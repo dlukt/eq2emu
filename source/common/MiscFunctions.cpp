@@ -99,7 +99,8 @@ string loadInt32String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_32BitSt
 		return string("");
 	}
 
-	if ((*pos + (int)sizeof(int32) + size) > buffer_size) {
+	// Sentinel: Fix integer overflow vulnerability where large size wraps around
+	if (((int64)*pos + (int64)sizeof(int32) + (int64)size) > (int64)buffer_size) {
 		cout << "Error in loadInt32String: Corrupt packet (string size exceeds buffer).\n";
 		return string("");
 	}

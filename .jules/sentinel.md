@@ -10,3 +10,13 @@
 **Vulnerability:** `sprintf` was used to construct variable names with potentially large integer indices into small fixed-size stack buffers (e.g., `char tmp[15]`), leading to confirmed stack smashing.
 **Learning:** Hardcoded buffer sizes for string formatting are risky even for integers, as max integer string length + delimiters can exceed expectations (e.g. 23 chars vs 15 chars).
 **Prevention:** Use `std::to_string` and `std::string` concatenation in C++ to avoid manual buffer management and overflow risks completely.
+
+## 2025-01-29 - Integer Overflow in Packet Parsing
+**Vulnerability:** Packet parsing logic in `MiscFunctions.cpp` used 32-bit arithmetic to validate string lengths against the buffer size. A specially crafted packet with a very large string length could cause an integer overflow, bypassing the bounds check and leading to a buffer overread (Segfault/DoS).
+**Learning:** `int32` is typedef'd as `unsigned int` in this codebase, making `if (size < 0)` checks useless and allowing 4GB values to wrap around in 32-bit addition.
+**Prevention:** Use 64-bit arithmetic (casting to `int64` or `uint64_t`) when validating lengths, or check conditions like `size > remaining_buffer` directly rather than `current + size > total`.
+
+## 2025-01-29 - Denial of Service in Database Escaping
+**Vulnerability:** `DatabaseNew::EscapeStr` returned `NULL` on memory allocation failure, but the return type is `std::string`. Constructing a `std::string` from `NULL` causes a crash (Undefined Behavior).
+**Learning:** Always ensure return values match the return type's contract. For `std::string`, return `""` on failure, not `NULL`.
+**Prevention:** Review return types carefully, especially when converting legacy C-style pointer code to C++ classes.
