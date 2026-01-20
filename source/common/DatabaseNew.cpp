@@ -267,7 +267,7 @@ char * DatabaseNew::Escape(const char *str, size_t len) {
 
 	if (buf == NULL) {
 		LogWrite(DATABASE__ERROR, 0, "Database", "Out of memory trying to allocate %u bytes in %s:%u\n", len * 2 + 1, __FUNCTION__, __LINE__);
-		return NULL;
+		return "";
 	}
 
 	mysql_real_escape_string(&mysql, buf, str, len);
