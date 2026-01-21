@@ -574,13 +574,14 @@ void Decode(uchar* dst, uchar* src, int16 len) {
 }
 
 void Encode(uchar* dst, uchar* src, int16 len) {
-    uchar* data = new uchar[len];
-    int16 pos = len;
-    while(pos--) 
-		data[pos] = int8(src[pos] ^ dst[pos]);
-    memcpy(src, dst, len);
-    memcpy(dst, data, len);
-	safe_delete_array(data);
+	// Bolt: Optimized to perform in-place swap-XOR, removing heap allocation and memcpy.
+	// This reduces heap fragmentation and improves performance for frequent small packets.
+	// Original behavior: src(new) = dst(old), dst(new) = src(old) ^ dst(old)
+	for (int16 i = 0; i < len; ++i) {
+		uchar temp = dst[i];
+		dst[i] = src[i] ^ dst[i];
+		src[i] = temp;
+	}
 }
 
 float TransformToFloat(sint16 data, int8 bits) {
