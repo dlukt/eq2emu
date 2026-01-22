@@ -2469,7 +2469,7 @@ bool WorldDatabase::UpdateAdminStatus(char* character_name, sint16 flag){
 void WorldDatabase::SaveCharacterFloats(int32 char_id, const char* type, float float1, float float2, float float3, float multiplier){
 	Query query;
 	string create_char = string("insert into char_colors (char_id, type, red, green, blue, signed_value) values(%i,'%s',%i,%i,%i, 1)");
-	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, type, (sint8)(float1*multiplier), (sint8)(float2*multiplier), (sint8)(float3*multiplier));
+	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, getSafeEscapeString(type).c_str(), (sint8)(float1*multiplier), (sint8)(float2*multiplier), (sint8)(float3*multiplier));
 	if(query.GetError() && strlen(query.GetError()) > 0){
 		LogWrite(WORLD__ERROR, 0, "World", "Error in SaveCharacterFloats query '%s': %s", query.GetQuery(), query.GetError());
 	}
@@ -2478,7 +2478,7 @@ void WorldDatabase::SaveCharacterFloats(int32 char_id, const char* type, float f
 void WorldDatabase::SaveCharacterColors(int32 char_id, const char* type, EQ2_Color color){
 	Query query;
 	string create_char = string("insert into char_colors (char_id, type, red, green, blue) values(%i,'%s',%i,%i,%i)");
-	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, type, color.red, color.green, color.blue);
+	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, getSafeEscapeString(type).c_str(), color.red, color.green, color.blue);
 	if(query.GetError() && strlen(query.GetError()) > 0){
 		LogWrite(WORLD__ERROR, 0, "World", "Error in SaveCharacterColors query '%s': %s", query.GetQuery(), query.GetError());
 	}
@@ -2616,7 +2616,7 @@ int32 WorldDatabase::SaveCharacter(PacketStruct* create, int32 loginID){
 	query.RunQuery2(Q_INSERT, create_char.c_str(), 
 						loginID, 
 						create->getType_int32_ByName("server_id"), 
-						create->getType_EQ2_16BitString_ByName("name").data.c_str(), 
+						getSafeEscapeString(create->getType_EQ2_16BitString_ByName("name").data.c_str()).c_str(),
 						race_id, 
 						class_id,
 						gender_id, 
