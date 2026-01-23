@@ -6556,7 +6556,7 @@ int32 WorldDatabase::CreateLocation(int32 zone_id, int32 grid_id, const char* na
 	int32 ret = 0;
 	if (name && strlen(name) > 0) {
 		Query query;
-		query.RunQuery2(Q_INSERT, "INSERT INTO `locations` (`zone_id`, `grid_id`, `name`, `include_y`) VALUES (%u, %u, '%s', %u)", zone_id, grid_id, name, include_y == true ? 1 : 0);
+		query.RunQuery2(Q_INSERT, "INSERT INTO `locations` (`zone_id`, `grid_id`, `name`, `include_y`) VALUES (%u, %u, '%s', %u)", zone_id, grid_id, getSafeEscapeString(name).c_str(), include_y == true ? 1 : 0);
 		ret = query.GetLastInsertedID();
 	}
 	return ret;
