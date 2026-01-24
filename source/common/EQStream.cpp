@@ -1546,7 +1546,6 @@ int socklen;
 int length=0;
 unsigned char buffer[2048];
 EQProtocolPacket *p=NULL;
-char temp[15];
 
 	socklen=sizeof(sockaddr);
 #ifdef WIN32
@@ -1559,11 +1558,12 @@ char temp[15];
 		p=new EQProtocolPacket(buffer[1],&buffer[2],length-2);
 		//printf("Read packet: opcode %i length %u, expected-length: %u\n",buffer[1], length, p->size);
 		uint32 ip=from->sin_addr.s_addr;
-		sprintf(temp,"%d.%d.%d.%d:%d",
+		char temp[32];
+		sprintf(temp, "%d.%d.%d.%d:%d",
 			*(unsigned char *)&ip,
-			*((unsigned char *)&ip+1),
-			*((unsigned char *)&ip+2),
-			*((unsigned char *)&ip+3),
+			*((unsigned char *)&ip + 1),
+			*((unsigned char *)&ip + 2),
+			*((unsigned char *)&ip + 3),
 			ntohs(from->sin_port));
 		//cout << timestamp() << "Data from: " << temp << " OpCode 0x" << hex << setw(2) << setfill('0') << (int)p->opcode << dec << endl;
 		//dump_message(p->pBuffer,p->size,timestamp());
