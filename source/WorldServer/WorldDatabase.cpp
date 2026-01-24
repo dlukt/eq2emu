@@ -6261,11 +6261,11 @@ bool WorldDatabase::DeleteCharacterFromInstance(int32 char_id, int32 instance_id
 bool WorldDatabase::LoadCharacterInstances(Client* client) 
 {
 	DatabaseResult result;
-	DatabaseResult result2;
 
 	bool addedInstance = false;
 
-	database_new.Select(&result, "SELECT `id`, `instance_id`, `instance_zone_name`, `instance_type`, `last_success_timestamp`, `last_failure_timestamp`, `success_lockout_time`, `failure_lockout_time` FROM `character_instances` WHERE `char_id` = %u", client->GetCharacterID());
+	// Bolt: Optimized to use LEFT JOINs to avoid N+1 queries for zone_id resolution
+	database_new.Select(&result, "SELECT ci.`id`, ci.`instance_id`, ci.`instance_zone_name`, ci.`instance_type`, ci.`last_success_timestamp`, ci.`last_failure_timestamp`, ci.`success_lockout_time`, ci.`failure_lockout_time`, i.`zone_id` AS `inst_zone_id`, z.`id` AS `named_zone_id` FROM `character_instances` ci LEFT JOIN `instances` i ON ci.`instance_id` = i.`id` LEFT JOIN `zones` z ON ci.`instance_zone_name` = z.`name` WHERE ci.`char_id` = %u", client->GetCharacterID());
 
 	if( result.GetNumRows() > 0 )
 	{
@@ -6273,15 +6273,15 @@ bool WorldDatabase::LoadCharacterInstances(Client* client)
 		{
 			int32 zone_id = 0;
 			int32 instance_id = result.GetInt32Str("instance_id");
-			// If `instance_id` is greater then 0 then get the zone id with it, else get the zone id from the zone name
+
+			// Try to get zone_id from the instances table join
 			if (instance_id != 0) {
-				if (database_new.Select(&result2, "SELECT `zone_id` FROM `instances` WHERE `id` = %u", instance_id)) {
-					if (result2.Next())
-						zone_id = result2.GetInt32Str("zone_id");
-				}
+				zone_id = result.GetInt32Str("inst_zone_id");
 			}
-			 if (zone_id == 0)
-				zone_id = GetZoneID(result.GetStringStr("instance_zone_name"));
+
+			// Fallback to zone_id from zones table join using instance_zone_name
+			if (zone_id == 0)
+				zone_id = result.GetInt32Str("named_zone_id");
 
 			client->GetPlayer()->GetCharacterInstances()->AddInstance(
 				result.GetInt32Str("id"),
