@@ -115,10 +115,10 @@ void WorldDatabase::PingNewDB()
 }
 
 void WorldDatabase::DeleteBuyBack(int32 char_id, int32 item_id, int16 quantity, int32 price) {
-	LogWrite(MERCHANT__DEBUG, 0, "Merchant", "Deleting Buyback - Player: %u, Item ID: %u, Qty: %i, Price: %u", char_id, item_id, quantity, price);
+	LogWrite(MERCHANT__DEBUG, 0, "Merchant", "Deleting Buyback - Player: %u, Item ID: %u, Qty: %u, Price: %u", char_id, item_id, quantity, price);
 
 	Query query;
-	query.RunQuery2(Q_DELETE, "DELETE FROM character_buyback WHERE char_id = %u AND item_id = %u AND quantity = %i AND price = %u", char_id, item_id, quantity, price);
+	query.RunQuery2(Q_DELETE, "DELETE FROM character_buyback WHERE char_id = %u AND item_id = %u AND quantity = %u AND price = %u", char_id, item_id, quantity, price);
 }
 
 void WorldDatabase::LoadBuyBacks(Client* client) {
@@ -174,10 +174,10 @@ void WorldDatabase::SaveBuyBacks(Client* client)
 
 void WorldDatabase::SaveBuyBack(int32 char_id, int32 item_id, int16 quantity, int32 price) 
 {
-	LogWrite(MERCHANT__DEBUG, 3, "Merchant", "Saving Buyback - Player: %u, Item ID: %u, Qty: %i, Price: %u", char_id, item_id, quantity, price);
+	LogWrite(MERCHANT__DEBUG, 3, "Merchant", "Saving Buyback - Player: %u, Item ID: %u, Qty: %u, Price: %u", char_id, item_id, quantity, price);
 
 	Query query;
-	string insert = string("INSERT INTO character_buyback (char_id, item_id, quantity, price) VALUES (%u, %u, %i, %u) ");
+	string insert = string("INSERT INTO character_buyback (char_id, item_id, quantity, price) VALUES (%u, %u, %u, %u) ");
 	query.AddQueryAsync(char_id, this, Q_INSERT, insert.c_str(), char_id, item_id, quantity, price);
 }
 
@@ -235,8 +235,8 @@ void WorldDatabase::SavePlayerSpells(Client* client)
 		{
 			spell = *itr;
 			Query query;
-			LogWrite(SPELL__DEBUG, 5, "Spells", "\tSaving SpellID: %u, tier: %i, slot: %i", spell->spell_id, spell->tier, spell->slot);
-			query.AddQueryAsync(client->GetCharacterID(), this, Q_INSERT, "INSERT INTO character_spells (char_id, spell_id, tier) SELECT %u, %u, %i ON DUPLICATE KEY UPDATE tier = %i",
+			LogWrite(SPELL__DEBUG, 5, "Spells", "\tSaving SpellID: %u, tier: %u, slot: %u", spell->spell_id, spell->tier, spell->slot);
+			query.AddQueryAsync(client->GetCharacterID(), this, Q_INSERT, "INSERT INTO character_spells (char_id, spell_id, tier) SELECT %u, %u, %u ON DUPLICATE KEY UPDATE tier = %u",
 				client->GetPlayer()->GetCharacterID(), spell->spell_id, spell->tier, spell->tier);
 			spell->save_needed = false;
 		}
@@ -307,7 +307,7 @@ int32 WorldDatabase::LoadSkills()
 				master_skill_list.AddSkill(skill);
 				total++;
 				LogWrite(SKILL__DEBUG, 5, "Skill", "---Loading Skill: %s (%u)", skill->name.data.c_str(), skill->skill_id);
-				LogWrite(SKILL__DEBUG, 7, "Skill", "---short_name: %s, type: %i, display: %i", skill->short_name.data.c_str(), skill->skill_type, skill->display);
+				LogWrite(SKILL__DEBUG, 7, "Skill", "---short_name: %s, type: %u, display: %u", skill->short_name.data.c_str(), skill->skill_type, skill->display);
 			}
 		}
 	}
@@ -344,17 +344,17 @@ map<int8, vector<MacroData*> >*	WorldDatabase::LoadCharacterMacros(int32 char_id
 
 void WorldDatabase::UpdateCharacterMacro(int32 char_id, int8 number, const char* name, int16 icon, vector<string>* updates)
 {
-	LogWrite(PLAYER__DEBUG, 0, "Player", "Update player id %u macro: %i", char_id, number);
+	LogWrite(PLAYER__DEBUG, 0, "Player", "Update player id %u macro: %u", char_id, number);
 
 	Query query;
 	Query query2;
-	query.RunQuery2(Q_DELETE, "delete FROM character_macros where char_id = %u and macro_number = %i", char_id, number);
+	query.RunQuery2(Q_DELETE, "delete FROM character_macros where char_id = %u and macro_number = %u", char_id, number);
 
 	if(name && updates && updates->size() > 0)
 	{
 		for(int8 i=0;i<updates->size();i++)
 		{
-			query2.RunQuery2(Q_INSERT, "insert into character_macros (char_id, macro_number, macro_name, macro_icon, macro_text) values(%u, %i, '%s', %i, '%s')", char_id, number, getSafeEscapeString(name).c_str(), icon, getSafeEscapeString(updates->at(i).c_str()).c_str());
+			query2.RunQuery2(Q_INSERT, "insert into character_macros (char_id, macro_number, macro_name, macro_icon, macro_text) values(%u, %u, '%s', %u, '%s')", char_id, number, getSafeEscapeString(name).c_str(), icon, getSafeEscapeString(updates->at(i).c_str()).c_str());
 			LogWrite(PLAYER__DEBUG, 5, "Player", "\tAdding macro: %s, %s (Player: %u)", name, updates->at(i).c_str(), char_id);
 		}
 	}
@@ -427,7 +427,7 @@ void WorldDatabase::LoadAppearanceMasterList()
 		master_appearance_list.InsertAppearance(a);
 
 		total++;
-		LogWrite(WORLD__DEBUG, 5, "World", "---Loading appearances: '%s' (%i)", appearance_name, appearance_id);
+		LogWrite(WORLD__DEBUG, 5, "World", "---Loading appearances: '%s' (%u)", appearance_name, appearance_id);
 	}
 	LogWrite(WORLD__DEBUG, 3, "World", "--Loaded %u appearances", total);
 }
@@ -467,7 +467,7 @@ void WorldDatabase::LoadVisualStates()
 		
 		range->AddVersionRange(atoul(row2[4]),atoul(row2[5]), row2[0], atoul(row2[1]), row2[2], row2[3]);
 		total++;
-		LogWrite(WORLD__DEBUG, 5, "World", "---Loading emote state: '%s' (%i)", row2[0], atoul(row2[0]));
+		LogWrite(WORLD__DEBUG, 5, "World", "---Loading emote state: '%s' (%u)", row2[0], atoul(row2[0]));
 	}
 	LogWrite(WORLD__DEBUG, 3, "World", "--Loaded %u emote state(s)", total);
 	
@@ -525,7 +525,7 @@ void WorldDatabase::LoadCommandList()
 		commands.GetRemoteCommands()->addCommand(EQ2_RemoteCommandString(row[0], handler, atoi(row[2])));
 		index++;
 	}
-	LogWrite(COMMAND__DEBUG, 3, "Command", "--Loaded %i Command%s", index, index > 0 ? "s" : "");
+	LogWrite(COMMAND__DEBUG, 3, "Command", "--Loaded %u Command%s", index, index > 0 ? "s" : "");
 	LoadSubCommandList();
 }
 
