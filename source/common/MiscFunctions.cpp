@@ -258,14 +258,6 @@ InitWinsock::~InitWinsock() {
 #endif
 
 #ifndef WIN32
-const char * itoa(int value) {
-	static char temp[_ITOA_BUFLEN];
-	memset(temp, 0, _ITOA_BUFLEN);
-	snprintf(temp, _ITOA_BUFLEN,"%d", value);
-	return temp;
-}
-
-
 char * itoa(int value, char *result, int base) {
 	char *ptr1, *ptr2;
 	char c;
@@ -474,6 +466,9 @@ int32 Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version, b
     int		codePos = 0;
     int		codeLen = 0;
     int8	zeroLen = 0;
+
+	if (dstLen < 4) return 0;
+
 	// Bolt: Optimized redundant memset. Pack() overwrites the buffer sequentially
 	// and returns the length, so zeroing the whole buffer (especially unused parts)
 	// is unnecessary overhead. ~20% performance improvement.
@@ -492,14 +487,17 @@ int32 Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version, b
 						codeLen++;
 				}*/
 				if (zeroLen) {
+					if (real_pos >= dstLen) return 0;
 					data[real_pos++] = zeroLen;
 					zeroLen = 0;
 				}
                 codePos = real_pos;
                 code    = 0;
+				if (real_pos >= dstLen) return 0;
                 data[real_pos++] = 0;
             }
             if(src[pos]) {
+				if (real_pos >= dstLen) return 0;
                 data[real_pos++] = src[pos];
                 code |= 0x80;
             }
@@ -512,6 +510,7 @@ int32 Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version, b
             }
         } else {
             if(zeroLen == 0x7F) {
+				if (real_pos >= dstLen) return 0;
                 data[real_pos++] = zeroLen;
                 zeroLen = 0;
 			}
@@ -523,6 +522,7 @@ int32 Pack(uchar* data, uchar* src, int16 srcLen, int16 dstLen, int16 version, b
         code >>= (7 - codeLen);
         data[codePos] = int8(0x80 | code);
     } else if(zeroLen) {
+		if (real_pos >= dstLen) return 0;
         data[real_pos++] = zeroLen;
     }
 	if(reverse)
