@@ -173,7 +173,8 @@ Recipe* MasterRecipeList::GetRecipeByName(const char* name) {
 
 	m_recipes.readlock(__FUNCTION__, __LINE__);
 	for (itr = recipes.begin(); itr != recipes.end(); itr++) {
-		if (::ToLower(string(name)) == ::ToLower(string(itr->second->GetName()))) {
+		// Bolt: Optimized string comparison to avoid 4 allocations per iteration
+		if (strcasecmp(name, itr->second->GetName()) == 0) {
 			ret = itr->second;
 			break;
 		}
@@ -210,7 +211,8 @@ vector<Recipe*> MasterRecipeList::GetRecipes(const char* book_name) {
 
 	m_recipes.writelock(__FUNCTION__, __LINE__);
 	for (itr = recipes.begin(); itr != recipes.end(); itr++) {
-		if (::ToLower(string(book_name)) == ::ToLower(string(itr->second->GetBook())))
+		// Bolt: Optimized string comparison to avoid 4 allocations per iteration
+		if (strcasecmp(book_name, itr->second->GetBook()) == 0)
 			ret.push_back(itr->second);
 	}
 	m_recipes.releasewritelock(__FUNCTION__, __LINE__);
