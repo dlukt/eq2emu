@@ -183,7 +183,6 @@ template<class Type> void AddData(Type input, int32 array_size, string* datastri
 #ifndef WIN32
 #define _ITOA_BUFLEN	25
 
-const char * itoa(int value);
 char * itoa(int value, char *result, int base);
 
 #endif
