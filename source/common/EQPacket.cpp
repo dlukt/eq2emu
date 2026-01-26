@@ -97,10 +97,13 @@ int8 EQ2Packet::PreparePacket(int16 MaxLen) {
 			login_opcode = ntohs(login_opcode);
 	}
 	uchar* new_buffer = new uchar[new_size];
-	memset(new_buffer, 0, new_size);
+	// Bolt: Optimized redundant memset. We write the whole buffer anyway except seq/flag.
+	new_buffer[0] = 0;
+	new_buffer[1] = 0; // sequence is 0
 	uchar* ptr = new_buffer + sizeof(int16); // sequence is first
 	if (login_opcode != 2) {
 		if (oversized) {
+			*ptr = 0; // compressed flag is 0
 			ptr += sizeof(int8); //compressed flag
 			int8 addon = 0xff;
 			memcpy(ptr, &addon, sizeof(int8));
