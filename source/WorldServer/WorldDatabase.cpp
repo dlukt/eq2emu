@@ -996,7 +996,7 @@ void WorldDatabase::LoadNPCs(ZoneServer* zone, bool isInstanceType){
 			npc->SetOmittedByDBFlag(true);
 
 		npc->SetDatabaseID(id);
-		strcpy(npc->appearance.name, row[1]);
+		strlcpy(npc->appearance.name, row[1], sizeof(npc->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[9]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[10]));
 		if(primary_command_list){
@@ -1179,7 +1179,7 @@ void WorldDatabase::LoadSpiritShards(ZoneServer* zone){
 		NPC* shard = new NPC();
 		
 		shard->SetShardCreatedTimestamp(timestamp);
-		strcpy(shard->appearance.name, row[1]);
+		strlcpy(shard->appearance.name, row[1], sizeof(shard->appearance.name));
 
 		shard->appearance.level =	atoul(row[2]);
 		shard->appearance.race = atoul(row[3]);
@@ -1291,7 +1291,7 @@ void WorldDatabase::LoadSigns(ZoneServer* zone, bool isInstanceType){
 			sign->SetOmittedByDBFlag(true);
 
 		sign->SetDatabaseID(id);
-		strcpy(sign->appearance.name, row[1]);
+		strlcpy(sign->appearance.name, row[1], sizeof(sign->appearance.name));
 		sign->appearance.model_type = atoi(row[2]);
 		sign->SetSize(atoi(row[3]));
 		sign->appearance.show_command_icon = atoi(row[4]);
@@ -1396,7 +1396,7 @@ void WorldDatabase::LoadWidgets(ZoneServer* zone, bool isInstanceType){
 			widget->SetOmittedByDBFlag(true);
 
 		widget->SetDatabaseID(id);
-		strcpy(widget->appearance.name, row[1]);
+		strlcpy(widget->appearance.name, row[1], sizeof(widget->appearance.name));
 		widget->appearance.model_type = atoi(row[2]);
 		widget->SetSize(atoi(row[3]));
 		widget->appearance.show_command_icon = atoi(row[4]);
@@ -1516,7 +1516,7 @@ void WorldDatabase::LoadObjects(ZoneServer* zone, bool isInstanceType){
 			object->SetOmittedByDBFlag(true);
 
 		object->SetDatabaseID(id);
-		strcpy(object->appearance.name, row[1]);
+		strlcpy(object->appearance.name, row[1], sizeof(object->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[4]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[5]));
 		if(primary_command_list){
@@ -1608,7 +1608,7 @@ void WorldDatabase::LoadGroundSpawns(ZoneServer* zone, bool isInstanceType){
 		spawn->SetDatabaseID(id);
 		spawn->forceMapCheck = true;
 
-		strcpy(spawn->appearance.name, row[1]);
+		strlcpy(spawn->appearance.name, row[1], sizeof(spawn->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[4]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[5]));
 		if(primary_command_list){
@@ -6875,7 +6875,7 @@ void WorldDatabase::LoadCharacterHistory(int32 char_id, Player *player)
 		HistoryData* hd = new HistoryData;
 		hd->Value = result.GetInt32(2);
 		hd->Value2 = result.GetInt32(3);
-		strcpy(hd->Location, result.GetString(4));
+		strlcpy(hd->Location, result.GetString(4), sizeof(hd->Location));
 		// skipped event id as use for it has not been determined yet
 		hd->EventDate = result.GetInt32(6);
 		hd->needs_save = false;
@@ -6983,7 +6983,7 @@ bool WorldDatabase::LoadSign(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		sign = new Sign();
 		sign->SetDatabaseID(id);
-		strcpy(sign->appearance.name, result.GetString(1));
+		strlcpy(sign->appearance.name, result.GetString(1), sizeof(sign->appearance.name));
 		sign->appearance.model_type = result.GetInt16(2);
 		sign->SetSize(result.GetInt16(3));
 		sign->appearance.show_command_icon = result.GetInt8(4);
@@ -7062,7 +7062,7 @@ bool WorldDatabase::LoadWidget(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		widget = new Widget();
 		widget->SetDatabaseID(id);
-		strcpy(widget->appearance.name, result.GetString(1));
+		strlcpy(widget->appearance.name, result.GetString(1), sizeof(widget->appearance.name));
 		widget->appearance.model_type = result.GetInt16(2);
 		widget->SetSize(result.GetInt16(3));
 		widget->appearance.show_command_icon = result.GetInt8(4);
@@ -7146,7 +7146,7 @@ bool WorldDatabase::LoadObject(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		object = new Object();
 		object->SetDatabaseID(id);
-		strcpy(object->appearance.name, result.GetString(1));
+		strlcpy(object->appearance.name, result.GetString(1), sizeof(object->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(4));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(5));
 		if(primary_command_list){
@@ -7208,7 +7208,7 @@ bool WorldDatabase::LoadGroundSpawn(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		spawn = new GroundSpawn();
 		spawn->SetDatabaseID(id);
-		strcpy(spawn->appearance.name, result.GetString(1));
+		strlcpy(spawn->appearance.name, result.GetString(1), sizeof(spawn->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(4));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(5));
 		if(primary_command_list){
@@ -7315,7 +7315,7 @@ bool WorldDatabase::LoadNPC(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		npc = new NPC();
 		npc->SetDatabaseID(id);
-		strcpy(npc->appearance.name, result.GetString(1));
+		strlcpy(npc->appearance.name, result.GetString(1), sizeof(npc->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(9));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(10));
 		if(primary_command_list){
