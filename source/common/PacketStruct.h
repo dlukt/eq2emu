@@ -305,8 +305,11 @@ public:
 		else {
 			if (data_struct && index == 0 && data_struct->GetLength() > 1) {
 				if (type_to_use == DATA_STRUCT_CHAR) {
-					for (int32 i = 0; data && i < data_struct->GetLength() && i < strlen(data); i++)
-						setData(data_struct, data[i], i);
+					if (data) {
+						size_t data_len = strlen(data);
+						for (int32 i = 0; i < data_struct->GetLength() && i < data_len; i++)
+							setData(data_struct, data[i], i);
+					}
 				}
 				else {
 					for (int32 i = 0; i < data_struct->GetLength(); i++)
