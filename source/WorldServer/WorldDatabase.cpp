@@ -2785,21 +2785,19 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 	return UNKNOWNERROR_REPLY;
 }
 
-char* WorldDatabase::GetCharacterName(int32 character_id){
+string WorldDatabase::GetCharacterName(int32 character_id){
 
 	LogWrite(WORLD__TRACE, 9, "World", "Enter: %s", __FUNCTION__);
 
 	Query query;
-	char* name = 0;
+	string name = "";
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT name FROM characters where id=%u",character_id);
 	if(result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
-		if(row[0] && strlen(row[0]) > 0)
+		if(row[0])
 		{
-			name = new char[strlen(row[0])+1];
-			memset(name,0, strlen(row[0])+1);
-			strcpy(name, row[0]);
+			name = string(row[0]);
 		}
 	}
 	else
@@ -9021,7 +9019,7 @@ int32	WorldDatabase::GetAccountAge(int32 account_id) {
 	return acct_age;
 }
 
-void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, char* char_name, Client* client) {
+void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, const char* char_name, Client* client) {
 
 	if (!database_new.Query("update spawn_signs set char_id=%u, char_name='%s' where widget_id=%u", char_id, database_new.EscapeStr(char_name).c_str(), sign_id)) {
 		LogWrite(SIGN__DEBUG, 0, "Sign", "ERROR in WorldDatabase::SaveSignMark");
@@ -9032,17 +9030,15 @@ void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, char* char_name, 
 string WorldDatabase::GetSignMark(int32 char_id, int32 sign_id, char* char_name) {
 	Query query;
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT char_name from spawn_signs where widget_id=%u", sign_id);
-	char* charname = 0;
+	string ret = "";
 
 	if (result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row = mysql_fetch_row(result);
-
-		charname = new char[strlen(row[0]) + 1];
-		memset(charname, 0, strlen(row[0]) + 1);
-		strcpy(charname, row[0]);
+		if (row[0])
+			ret = string(row[0]);
 	}
 
-	return charname;
+	return ret;
 }
 
 int32 WorldDatabase::GetMysqlExpCurve(int level) {

@@ -20,3 +20,7 @@
 **Vulnerability:** `DatabaseNew::EscapeStr` returned `NULL` on memory allocation failure, but the return type is `std::string`. Constructing a `std::string` from `NULL` causes a crash (Undefined Behavior).
 **Learning:** Always ensure return values match the return type's contract. For `std::string`, return `""` on failure, not `NULL`.
 **Prevention:** Review return types carefully, especially when converting legacy C-style pointer code to C++ classes.
+## 2025-05-23 - [Memory Leak in GetCharacterName]
+**Vulnerability:** WorldDatabase::GetCharacterName returned a heap-allocated char* which was frequently not freed by callers, leading to memory leaks and potential DoS.
+**Learning:** Returning raw pointers ownership transfer is error-prone in C++.
+**Prevention:** Use RAII types like std::string or smart pointers (std::unique_ptr) to manage memory automatically.
