@@ -386,12 +386,11 @@ bool LoginServer::Process() {
 			if ( access_key != 0 )
 			{
 				zone_auth.PurgeInactiveAuth();
-				char* characterName = database.GetCharacterName( utwr->char_id );
-				if(characterName != 0){
-					ZoneAuthRequest* zar = new ZoneAuthRequest(utwr->lsaccountid,characterName,access_key);
+				string characterName = database.GetCharacterName( utwr->char_id );
+				if(!characterName.empty()){
+					ZoneAuthRequest* zar = new ZoneAuthRequest(utwr->lsaccountid,characterName.c_str(),access_key);
 					zar->setFirstLogin ( true );
 					zone_auth.AddAuth(zar);
-					safe_delete_array(characterName);
 				}
 			}
 			break;
@@ -650,13 +649,13 @@ int32 LoginServer::DetermineCharacterLoginRequest ( UsertoWorldRequest_Struct* u
 			std::shared_ptr<Peer> peer = peer_manager.getHealthyPeerWithLeastClients();
 			if(peer != nullptr) {
 				boost::property_tree::ptree root;
-				char* characterName = database.GetCharacterName( utwr->char_id );
-				if(!characterName) {
+				string characterName = database.GetCharacterName( utwr->char_id );
+				if(characterName.empty()) {
 					LogWrite(PEERING__ERROR, 0, "Peering", "%s: AddCharAuth failed to identify character name for char id %u to peer %s:%u", __FUNCTION__, utwr->char_id, peer->webAddr.c_str(), peer->webPort);
 				}
 				else {
 					root.put("account_id", utwr->lsaccountid);
-					root.put("character_name", std::string(characterName));
+					root.put("character_name", characterName);
 					root.put("character_id", std::to_string(utwr->char_id));
 					root.put("zone_id", std::to_string(details->zoneId));
 					root.put("instance_id", std::to_string(details->instanceId));
@@ -668,7 +667,7 @@ int32 LoginServer::DetermineCharacterLoginRequest ( UsertoWorldRequest_Struct* u
 					std::ostringstream jsonStream;
 					boost::property_tree::write_json(jsonStream, root);
 					std::string jsonPayload = jsonStream.str();
-					LogWrite(PEERING__INFO, 0, "Peering", "%s: Sending AddCharAuth for %s to peer %s:%u for new zone %s", __FUNCTION__, characterName, peer->webAddr.c_str(), peer->webPort, details->zoneName.c_str());
+					LogWrite(PEERING__INFO, 0, "Peering", "%s: Sending AddCharAuth for %s to peer %s:%u for new zone %s", __FUNCTION__, characterName.c_str(), peer->webAddr.c_str(), peer->webPort, details->zoneName.c_str());
 					attemptedPeer = true;
 					peer_https_pool.sendPostRequestToPeerAsync(peer->id, peer->webAddr, std::to_string(peer->webPort), "/addcharauth", jsonPayload);
 				}

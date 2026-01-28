@@ -12281,7 +12281,7 @@ Player* player = client->GetPlayer();
 		const char* value = sep->arg[0];
 		InfoStruct* info = player->GetInfoStruct();
 		int32 cid = client->GetCharacterID();
-		char* characterName = database.GetCharacterName(cid);
+		string characterName = database.GetCharacterName(cid);
 		char tmp[1024]; // our emote string "xyz appears zyx"
 		//char properties vals
 		char* pname = "mood";
@@ -12292,7 +12292,7 @@ Player* player = client->GetPlayer();
 		snprintf(tmp, sizeof(tmp), " ");
 		if( strncasecmp(value, "angry", strlen(value)) == 0 ) 
 		{
-			snprintf(tmp, sizeof(tmp), "%s appears angry", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears angry", characterName.c_str());
 			pval = "11852";
 			player->SetMoodState(11852, 1);
 			info->set_mood(11852);
@@ -12300,7 +12300,7 @@ Player* player = client->GetPlayer();
 		}
 		else if( strncasecmp(value, "afraid", strlen(value)) == 0 ) 
 		{
-			snprintf(tmp, sizeof(tmp), "%s appears afraid", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears afraid", characterName.c_str());
 			pval = "11851";
 			player->SetMoodState(11851, 1);
 			info->set_mood(11851);
@@ -12308,14 +12308,14 @@ Player* player = client->GetPlayer();
 		} 
 		else if( strncasecmp(value, "happy", strlen(value)) == 0 ) 
 		{
-			snprintf(tmp, sizeof(tmp), "%s appears happy", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears happy", characterName.c_str());
 			pval = "11854";
 			player->SetMoodState(11854, 1);
 			info->set_mood(11854);
 			pt = database.insertCharacterProperty(client, pname, pval);
 		} 
 		else if( strncasecmp(value, "sad", strlen(value)) == 0 ) {
-			snprintf(tmp, sizeof(tmp), "%s appears sad", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears sad", characterName.c_str());
 			pval = "11856";
 			player->SetMoodState(11856, 1);
 			info->set_mood(11856);
@@ -12323,7 +12323,7 @@ Player* player = client->GetPlayer();
 		}
 		else if( strncasecmp(value, "tired", strlen(value)) == 0 ) 
 		{
-			snprintf(tmp, sizeof(tmp), "%s appears tired", characterName);
+			snprintf(tmp, sizeof(tmp), "%s appears tired", characterName.c_str());
 			pval = "11857";
 			player->SetMoodState(11857, 1);
 			info->set_mood(11857);

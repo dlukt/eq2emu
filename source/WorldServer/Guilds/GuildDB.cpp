@@ -104,13 +104,13 @@ int32 WorldDatabase::LoadGuildMembers(Guild* guild) {
 	int32 num_members = 0;
 	Query query;
 	MYSQL_ROW row;
-	char *name;
 	int32 char_id;
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT `char_id`, `recruiter_id`, `guild_status`, `points`, `rank_id`, `member_flags`, `join_date`, `note`, `officer_note`, `recruiting_message`, `recruiter_picture_data` FROM `guild_members` WHERE `guild_id`=%u", guild->GetID());
 
 	while (result && (row = mysql_fetch_row(result))) {
 		char_id = atoul(row[0]);
-		if (!(name = GetCharacterName(char_id))) {
+		string name = GetCharacterName(char_id);
+		if (name.length() == 0) {
 			LogWrite(GUILD__ERROR, 0, "Guilds", "WorldDatabase::LoadGuildMembers Cannot find guild member with character id %u.", char_id);
 			continue;
 		}
@@ -169,7 +169,7 @@ int32 WorldDatabase::LoadGuildMembers(Guild* guild) {
 			gm->recruiter_picture_data_size = 0;
 			gm->recruiter_picture_data = 0;
 		}
-		strncpy(gm->name, name, sizeof(gm->name));
+		strncpy(gm->name, name.c_str(), sizeof(gm->name));
 		gm->account_id = GetCharacterAccountID(char_id);
 		gm->adventure_class = GetCharacterClass(char_id);
 		gm->adventure_level = GetCharacterLevel(char_id);
@@ -180,7 +180,6 @@ int32 WorldDatabase::LoadGuildMembers(Guild* guild) {
 		gm->recruiting_show_adventure_class = 1;
 		LoadGuildPointsHistory(guild, gm);
 		guild->AddGuildMember(gm);
-		safe_delete_array(name);
 		num_members++;
 	}
 	return num_members;
@@ -578,8 +577,8 @@ bool WorldDatabase::AddNewPlayerToServerGuild(int32 account_id, int32 char_id)
 
 			gm->account_id = account_id;
 			gm->character_id = char_id;
-			char* name = GetCharacterName(gm->character_id);
-			strncpy(gm->name, name, sizeof(gm->name));
+			string name = GetCharacterName(gm->character_id);
+			strncpy(gm->name, name.c_str(), sizeof(gm->name));
 			gm->guild_status = 0;
 			gm->points = 0.0;
 			//gm->adventure_class = player->GetAdventureClass();
