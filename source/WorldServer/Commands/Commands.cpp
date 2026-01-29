@@ -4095,7 +4095,7 @@ void Commands::Process(int32 index, EQ2_16BitString* command_parms, Client* clie
 					Object* obj = new Object();
 					Spawn* spawn = (Spawn*)obj;
 					memset(&spawn->appearance, 0, sizeof(spawn->appearance));
-					strcpy(spawn->appearance.name, item->name.c_str());
+					snprintf(spawn->appearance.name, sizeof(spawn->appearance.name), "%s", item->name.c_str());
 					spawn->SetX(client->GetPlayer()->GetX());
 					spawn->SetY(client->GetPlayer()->GetY());
 					spawn->SetZ(client->GetPlayer()->GetZ());

@@ -20,3 +20,8 @@
 **Vulnerability:** `DatabaseNew::EscapeStr` returned `NULL` on memory allocation failure, but the return type is `std::string`. Constructing a `std::string` from `NULL` causes a crash (Undefined Behavior).
 **Learning:** Always ensure return values match the return type's contract. For `std::string`, return `""` on failure, not `NULL`.
 **Prevention:** Review return types carefully, especially when converting legacy C-style pointer code to C++ classes.
+
+## 2025-05-19 - Buffer Overflow in Commands and ZoneServer
+**Vulnerability:** Unsafe `strcpy` calls were used to copy `item->name` (std::string) and `zone_name` (const char*) into fixed-size buffers (`spawn->appearance.name` [128] and `zone_name` [64]) without length checks.
+**Learning:** Legacy C-style string handling (`strcpy`, `sprintf`) in C++ codebases often lacks bounds checking, leading to stack or heap buffer overflows when source data exceeds destination capacity.
+**Prevention:** Use `snprintf` with `sizeof(dest)` or `std::string` (if applicable) to ensure null-termination and prevent buffer overflows.
