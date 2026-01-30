@@ -3223,7 +3223,7 @@ void Player::AddMaintainedSpell(LuaSpell* luaspell){
 
 	if(effect && luaspell->caster && luaspell->caster->GetZone()){
 		GetMaintainedMutex()->writelock(__FUNCTION__, __LINE__);
-		strcpy(effect->name, spell->GetSpellData()->name.data.c_str());
+		strlcpy(effect->name, spell->GetSpellData()->name.data.c_str(), sizeof(effect->name));
 		effect->target = luaspell->initial_target;
 
 		spawn = luaspell->caster->GetZone()->GetSpawnByID(luaspell->initial_target);
@@ -6547,7 +6547,7 @@ void Player::HandleHistoryDiscovery(int8 subtype, int32 value, int32 value2) {
 		hd->Value = value;
 		hd->Value2 = value2;
 		hd->EventDate = Timer::GetUnixTimeStamp();
-		strcpy(hd->Location, GetZone()->GetZoneName());
+		strlcpy(hd->Location, GetZone()->GetZoneName(), sizeof(hd->Location));
 		hd->needs_save = true;
 
 		m_characterHistory[HISTORY_TYPE_DISCOVERY][HISTORY_SUBTYPE_LOCATION].push_back(hd);
@@ -6568,7 +6568,7 @@ void Player::HandleHistoryXP(int8 subtype, int32 value, int32 value2) {
 		hd->Value = value;
 		hd->Value2 = value2;
 		hd->EventDate = Timer::GetUnixTimeStamp();
-		strcpy(hd->Location, GetZone()->GetZoneName());
+		strlcpy(hd->Location, GetZone()->GetZoneName(), sizeof(hd->Location));
 		hd->needs_save = true;
 
 		m_characterHistory[HISTORY_TYPE_XP][HISTORY_SUBTYPE_ADVENTURE].push_back(hd);
@@ -7073,7 +7073,7 @@ NPC* Player::InstantiateSpiritShard(float origX, float origY, float origZ, float
 		string newName(GetName());
 		newName.append("'s spirit shard");
 
-		strcpy(npc->appearance.name, newName.c_str());
+		strlcpy(npc->appearance.name, newName.c_str(), sizeof(npc->appearance.name));
 		/*vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(9));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(10));
 		if(primary_command_list){
