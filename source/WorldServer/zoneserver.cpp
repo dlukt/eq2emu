@@ -132,7 +132,7 @@ ZoneServer::ZoneServer(const char* name) {
 	repop_zone = false;
 	respawns_allowed = true;
 	instanceID = 0;
-	strcpy(zone_name, name);
+	snprintf(zone_name, sizeof(zone_name), "%s", name);
 	zoneID = 0;
 	rain = 0;
 	cityzone = false;
