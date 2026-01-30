@@ -307,7 +307,7 @@ void Sign::HandleUse(Client* client, string command)
 		if (entity_command && strcmp(entity_command->command.c_str(), "mark") == 0) {
 			LogWrite(SIGN__DEBUG, 0, "Sign", "ActivateMarkReqested Sign - Command: '%s' (Should read mark)", entity_command->command.c_str());
 			int32 char_id = client->GetCharacterID();
-			database.SaveSignMark(char_id, GetWidgetID(), database.GetCharacterName(char_id), client);
+			database.SaveSignMark(char_id, GetWidgetID(), database.GetCharacterName(char_id).c_str(), client);
 			return;
 		}
 

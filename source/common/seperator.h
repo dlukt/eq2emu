@@ -129,6 +129,10 @@ public:
 		if (index < 0 || index > argnum) return false;
 		return GetInt(arg[index], out_val);
 	}
+	bool GetUInt(int index, uint32& out_val) const {
+		if (index < 0 || index > argnum) return false;
+		return GetUInt(arg[index], out_val);
+	}
 	bool IsHexNumber(int num) const {
 		return IsHexNumber(arg[num]);
 	}
@@ -185,6 +189,29 @@ public:
 		}
 
 		out_val = (int32)val;
+		return true;
+	}
+	static bool GetUInt(const char* check, uint32& out_val) {
+		if (!check || !*check) return false;
+
+		char* end;
+		unsigned long val = strtoul(check, &end, 10);
+
+		if (check == end) return false;
+
+		if (*end != '\0') {
+			if (*end == '.') {
+				const char* p = end + 1;
+				while (*p) {
+					if (*p < '0' || *p > '9') return false;
+					p++;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		out_val = (uint32)val;
 		return true;
 	}
 	static bool IsHexNumber(const char* check) {

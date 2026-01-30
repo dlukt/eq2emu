@@ -1401,6 +1401,8 @@ void ZoneList::ProcessWhoQuery(vector<string>* queries, ZoneServer* zone, vector
 			if (find_client == NULL) continue;
 			int flags = find_client->GetPlayer()->GetInfoStruct()->get_flags();
 			int flags2 = find_client->GetPlayer()->GetInfoStruct()->get_flags2();
+			string name;
+			bool name_fetched = false;
 			for(int32 i=0;add_player && queries && i<queries->size();i++){
 				found_match = false;
 				if(queries->at(i) == "ALL")
@@ -1446,9 +1448,13 @@ void ZoneList::ProcessWhoQuery(vector<string>* queries, ZoneServer* zone, vector
 					found_match = true;
 				}
 				if(!found_match){
-					string name = string(player->GetName());
-					name = ToUpper(name);
-					if(name.find(queries->at(i)) == name.npos)
+					// Bolt: Optimization - Lazy load name to avoid allocation if not needed.
+					if (!name_fetched) {
+						name = player->GetName();
+						name_fetched = true;
+					}
+					// Bolt: Optimization - Use icontains to avoid allocating a new upper-case string.
+					if (!boost::algorithm::icontains(name, queries->at(i)))
 						add_player = false;
 				}
 			}

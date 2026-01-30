@@ -25,3 +25,7 @@
 **Vulnerability:** Unsafe `strcpy` calls were used to copy `item->name` (std::string) and `zone_name` (const char*) into fixed-size buffers (`spawn->appearance.name` [128] and `zone_name` [64]) without length checks.
 **Learning:** Legacy C-style string handling (`strcpy`, `sprintf`) in C++ codebases often lacks bounds checking, leading to stack or heap buffer overflows when source data exceeds destination capacity.
 **Prevention:** Use `snprintf` with `sizeof(dest)` or `std::string` (if applicable) to ensure null-termination and prevent buffer overflows.
+## 2025-05-23 - [Memory Leak in GetCharacterName]
+**Vulnerability:** WorldDatabase::GetCharacterName returned a heap-allocated char* which was frequently not freed by callers, leading to memory leaks and potential DoS.
+**Learning:** Returning raw pointers ownership transfer is error-prone in C++.
+**Prevention:** Use RAII types like std::string or smart pointers (std::unique_ptr) to manage memory automatically.

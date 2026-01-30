@@ -115,10 +115,10 @@ void WorldDatabase::PingNewDB()
 }
 
 void WorldDatabase::DeleteBuyBack(int32 char_id, int32 item_id, int16 quantity, int32 price) {
-	LogWrite(MERCHANT__DEBUG, 0, "Merchant", "Deleting Buyback - Player: %u, Item ID: %u, Qty: %i, Price: %u", char_id, item_id, quantity, price);
+	LogWrite(MERCHANT__DEBUG, 0, "Merchant", "Deleting Buyback - Player: %u, Item ID: %u, Qty: %u, Price: %u", char_id, item_id, quantity, price);
 
 	Query query;
-	query.RunQuery2(Q_DELETE, "DELETE FROM character_buyback WHERE char_id = %u AND item_id = %u AND quantity = %i AND price = %u", char_id, item_id, quantity, price);
+	query.RunQuery2(Q_DELETE, "DELETE FROM character_buyback WHERE char_id = %u AND item_id = %u AND quantity = %u AND price = %u", char_id, item_id, quantity, price);
 }
 
 void WorldDatabase::LoadBuyBacks(Client* client) {
@@ -174,10 +174,10 @@ void WorldDatabase::SaveBuyBacks(Client* client)
 
 void WorldDatabase::SaveBuyBack(int32 char_id, int32 item_id, int16 quantity, int32 price) 
 {
-	LogWrite(MERCHANT__DEBUG, 3, "Merchant", "Saving Buyback - Player: %u, Item ID: %u, Qty: %i, Price: %u", char_id, item_id, quantity, price);
+	LogWrite(MERCHANT__DEBUG, 3, "Merchant", "Saving Buyback - Player: %u, Item ID: %u, Qty: %u, Price: %u", char_id, item_id, quantity, price);
 
 	Query query;
-	string insert = string("INSERT INTO character_buyback (char_id, item_id, quantity, price) VALUES (%u, %u, %i, %u) ");
+	string insert = string("INSERT INTO character_buyback (char_id, item_id, quantity, price) VALUES (%u, %u, %u, %u) ");
 	query.AddQueryAsync(char_id, this, Q_INSERT, insert.c_str(), char_id, item_id, quantity, price);
 }
 
@@ -235,8 +235,8 @@ void WorldDatabase::SavePlayerSpells(Client* client)
 		{
 			spell = *itr;
 			Query query;
-			LogWrite(SPELL__DEBUG, 5, "Spells", "\tSaving SpellID: %u, tier: %i, slot: %i", spell->spell_id, spell->tier, spell->slot);
-			query.AddQueryAsync(client->GetCharacterID(), this, Q_INSERT, "INSERT INTO character_spells (char_id, spell_id, tier) SELECT %u, %u, %i ON DUPLICATE KEY UPDATE tier = %i",
+			LogWrite(SPELL__DEBUG, 5, "Spells", "\tSaving SpellID: %u, tier: %u, slot: %u", spell->spell_id, spell->tier, spell->slot);
+			query.AddQueryAsync(client->GetCharacterID(), this, Q_INSERT, "INSERT INTO character_spells (char_id, spell_id, tier) SELECT %u, %u, %u ON DUPLICATE KEY UPDATE tier = %u",
 				client->GetPlayer()->GetCharacterID(), spell->spell_id, spell->tier, spell->tier);
 			spell->save_needed = false;
 		}
@@ -307,7 +307,7 @@ int32 WorldDatabase::LoadSkills()
 				master_skill_list.AddSkill(skill);
 				total++;
 				LogWrite(SKILL__DEBUG, 5, "Skill", "---Loading Skill: %s (%u)", skill->name.data.c_str(), skill->skill_id);
-				LogWrite(SKILL__DEBUG, 7, "Skill", "---short_name: %s, type: %i, display: %i", skill->short_name.data.c_str(), skill->skill_type, skill->display);
+				LogWrite(SKILL__DEBUG, 7, "Skill", "---short_name: %s, type: %u, display: %u", skill->short_name.data.c_str(), skill->skill_type, skill->display);
 			}
 		}
 	}
@@ -344,17 +344,17 @@ map<int8, vector<MacroData*> >*	WorldDatabase::LoadCharacterMacros(int32 char_id
 
 void WorldDatabase::UpdateCharacterMacro(int32 char_id, int8 number, const char* name, int16 icon, vector<string>* updates)
 {
-	LogWrite(PLAYER__DEBUG, 0, "Player", "Update player id %u macro: %i", char_id, number);
+	LogWrite(PLAYER__DEBUG, 0, "Player", "Update player id %u macro: %u", char_id, number);
 
 	Query query;
 	Query query2;
-	query.RunQuery2(Q_DELETE, "delete FROM character_macros where char_id = %u and macro_number = %i", char_id, number);
+	query.RunQuery2(Q_DELETE, "delete FROM character_macros where char_id = %u and macro_number = %u", char_id, number);
 
 	if(name && updates && updates->size() > 0)
 	{
 		for(int8 i=0;i<updates->size();i++)
 		{
-			query2.RunQuery2(Q_INSERT, "insert into character_macros (char_id, macro_number, macro_name, macro_icon, macro_text) values(%u, %i, '%s', %i, '%s')", char_id, number, getSafeEscapeString(name).c_str(), icon, getSafeEscapeString(updates->at(i).c_str()).c_str());
+			query2.RunQuery2(Q_INSERT, "insert into character_macros (char_id, macro_number, macro_name, macro_icon, macro_text) values(%u, %u, '%s', %u, '%s')", char_id, number, getSafeEscapeString(name).c_str(), icon, getSafeEscapeString(updates->at(i).c_str()).c_str());
 			LogWrite(PLAYER__DEBUG, 5, "Player", "\tAdding macro: %s, %s (Player: %u)", name, updates->at(i).c_str(), char_id);
 		}
 	}
@@ -427,7 +427,7 @@ void WorldDatabase::LoadAppearanceMasterList()
 		master_appearance_list.InsertAppearance(a);
 
 		total++;
-		LogWrite(WORLD__DEBUG, 5, "World", "---Loading appearances: '%s' (%i)", appearance_name, appearance_id);
+		LogWrite(WORLD__DEBUG, 5, "World", "---Loading appearances: '%s' (%u)", appearance_name, appearance_id);
 	}
 	LogWrite(WORLD__DEBUG, 3, "World", "--Loaded %u appearances", total);
 }
@@ -467,7 +467,7 @@ void WorldDatabase::LoadVisualStates()
 		
 		range->AddVersionRange(atoul(row2[4]),atoul(row2[5]), row2[0], atoul(row2[1]), row2[2], row2[3]);
 		total++;
-		LogWrite(WORLD__DEBUG, 5, "World", "---Loading emote state: '%s' (%i)", row2[0], atoul(row2[0]));
+		LogWrite(WORLD__DEBUG, 5, "World", "---Loading emote state: '%s' (%u)", row2[0], atoul(row2[0]));
 	}
 	LogWrite(WORLD__DEBUG, 3, "World", "--Loaded %u emote state(s)", total);
 	
@@ -525,7 +525,7 @@ void WorldDatabase::LoadCommandList()
 		commands.GetRemoteCommands()->addCommand(EQ2_RemoteCommandString(row[0], handler, atoi(row[2])));
 		index++;
 	}
-	LogWrite(COMMAND__DEBUG, 3, "Command", "--Loaded %i Command%s", index, index > 0 ? "s" : "");
+	LogWrite(COMMAND__DEBUG, 3, "Command", "--Loaded %u Command%s", index, index > 0 ? "s" : "");
 	LoadSubCommandList();
 }
 
@@ -996,7 +996,7 @@ void WorldDatabase::LoadNPCs(ZoneServer* zone, bool isInstanceType){
 			npc->SetOmittedByDBFlag(true);
 
 		npc->SetDatabaseID(id);
-		strcpy(npc->appearance.name, row[1]);
+		strlcpy(npc->appearance.name, row[1], sizeof(npc->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[9]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[10]));
 		if(primary_command_list){
@@ -1179,7 +1179,7 @@ void WorldDatabase::LoadSpiritShards(ZoneServer* zone){
 		NPC* shard = new NPC();
 		
 		shard->SetShardCreatedTimestamp(timestamp);
-		strcpy(shard->appearance.name, row[1]);
+		strlcpy(shard->appearance.name, row[1], sizeof(shard->appearance.name));
 
 		shard->appearance.level =	atoul(row[2]);
 		shard->appearance.race = atoul(row[3]);
@@ -1291,7 +1291,7 @@ void WorldDatabase::LoadSigns(ZoneServer* zone, bool isInstanceType){
 			sign->SetOmittedByDBFlag(true);
 
 		sign->SetDatabaseID(id);
-		strcpy(sign->appearance.name, row[1]);
+		strlcpy(sign->appearance.name, row[1], sizeof(sign->appearance.name));
 		sign->appearance.model_type = atoi(row[2]);
 		sign->SetSize(atoi(row[3]));
 		sign->appearance.show_command_icon = atoi(row[4]);
@@ -1396,7 +1396,7 @@ void WorldDatabase::LoadWidgets(ZoneServer* zone, bool isInstanceType){
 			widget->SetOmittedByDBFlag(true);
 
 		widget->SetDatabaseID(id);
-		strcpy(widget->appearance.name, row[1]);
+		strlcpy(widget->appearance.name, row[1], sizeof(widget->appearance.name));
 		widget->appearance.model_type = atoi(row[2]);
 		widget->SetSize(atoi(row[3]));
 		widget->appearance.show_command_icon = atoi(row[4]);
@@ -1516,7 +1516,7 @@ void WorldDatabase::LoadObjects(ZoneServer* zone, bool isInstanceType){
 			object->SetOmittedByDBFlag(true);
 
 		object->SetDatabaseID(id);
-		strcpy(object->appearance.name, row[1]);
+		strlcpy(object->appearance.name, row[1], sizeof(object->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[4]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[5]));
 		if(primary_command_list){
@@ -1608,7 +1608,7 @@ void WorldDatabase::LoadGroundSpawns(ZoneServer* zone, bool isInstanceType){
 		spawn->SetDatabaseID(id);
 		spawn->forceMapCheck = true;
 
-		strcpy(spawn->appearance.name, row[1]);
+		strlcpy(spawn->appearance.name, row[1], sizeof(spawn->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(atoul(row[4]));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(atoul(row[5]));
 		if(primary_command_list){
@@ -2469,7 +2469,7 @@ bool WorldDatabase::UpdateAdminStatus(char* character_name, sint16 flag){
 void WorldDatabase::SaveCharacterFloats(int32 char_id, const char* type, float float1, float float2, float float3, float multiplier){
 	Query query;
 	string create_char = string("insert into char_colors (char_id, type, red, green, blue, signed_value) values(%i,'%s',%i,%i,%i, 1)");
-	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, type, (sint8)(float1*multiplier), (sint8)(float2*multiplier), (sint8)(float3*multiplier));
+	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, getSafeEscapeString(type).c_str(), (sint8)(float1*multiplier), (sint8)(float2*multiplier), (sint8)(float3*multiplier));
 	if(query.GetError() && strlen(query.GetError()) > 0){
 		LogWrite(WORLD__ERROR, 0, "World", "Error in SaveCharacterFloats query '%s': %s", query.GetQuery(), query.GetError());
 	}
@@ -2478,7 +2478,7 @@ void WorldDatabase::SaveCharacterFloats(int32 char_id, const char* type, float f
 void WorldDatabase::SaveCharacterColors(int32 char_id, const char* type, EQ2_Color color){
 	Query query;
 	string create_char = string("insert into char_colors (char_id, type, red, green, blue) values(%i,'%s',%i,%i,%i)");
-	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, type, color.red, color.green, color.blue);
+	query.RunQuery2(Q_INSERT, create_char.c_str(), char_id, getSafeEscapeString(type).c_str(), color.red, color.green, color.blue);
 	if(query.GetError() && strlen(query.GetError()) > 0){
 		LogWrite(WORLD__ERROR, 0, "World", "Error in SaveCharacterColors query '%s': %s", query.GetQuery(), query.GetError());
 	}
@@ -2616,7 +2616,7 @@ int32 WorldDatabase::SaveCharacter(PacketStruct* create, int32 loginID){
 	query.RunQuery2(Q_INSERT, create_char.c_str(), 
 						loginID, 
 						create->getType_int32_ByName("server_id"), 
-						create->getType_EQ2_16BitString_ByName("name").data.c_str(), 
+						getSafeEscapeString(create->getType_EQ2_16BitString_ByName("name").data.c_str()).c_str(),
 						race_id, 
 						class_id,
 						gender_id, 
@@ -2785,21 +2785,19 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 	return UNKNOWNERROR_REPLY;
 }
 
-char* WorldDatabase::GetCharacterName(int32 character_id){
+string WorldDatabase::GetCharacterName(int32 character_id){
 
 	LogWrite(WORLD__TRACE, 9, "World", "Enter: %s", __FUNCTION__);
 
 	Query query;
-	char* name = 0;
+	string name = "";
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT name FROM characters where id=%u",character_id);
 	if(result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
-		if(row[0] && strlen(row[0]) > 0)
+		if(row[0])
 		{
-			name = new char[strlen(row[0])+1];
-			memset(name,0, strlen(row[0])+1);
-			strcpy(name, row[0]);
+			name = string(row[0]);
 		}
 	}
 	else
@@ -6261,11 +6259,11 @@ bool WorldDatabase::DeleteCharacterFromInstance(int32 char_id, int32 instance_id
 bool WorldDatabase::LoadCharacterInstances(Client* client) 
 {
 	DatabaseResult result;
-	DatabaseResult result2;
 
 	bool addedInstance = false;
 
-	database_new.Select(&result, "SELECT `id`, `instance_id`, `instance_zone_name`, `instance_type`, `last_success_timestamp`, `last_failure_timestamp`, `success_lockout_time`, `failure_lockout_time` FROM `character_instances` WHERE `char_id` = %u", client->GetCharacterID());
+	// Bolt: Optimized to use LEFT JOINs to avoid N+1 queries for zone_id resolution
+	database_new.Select(&result, "SELECT ci.`id`, ci.`instance_id`, ci.`instance_zone_name`, ci.`instance_type`, ci.`last_success_timestamp`, ci.`last_failure_timestamp`, ci.`success_lockout_time`, ci.`failure_lockout_time`, i.`zone_id` AS `inst_zone_id`, z.`id` AS `named_zone_id` FROM `character_instances` ci LEFT JOIN `instances` i ON ci.`instance_id` = i.`id` LEFT JOIN `zones` z ON ci.`instance_zone_name` = z.`name` WHERE ci.`char_id` = %u", client->GetCharacterID());
 
 	if( result.GetNumRows() > 0 )
 	{
@@ -6273,15 +6271,15 @@ bool WorldDatabase::LoadCharacterInstances(Client* client)
 		{
 			int32 zone_id = 0;
 			int32 instance_id = result.GetInt32Str("instance_id");
-			// If `instance_id` is greater then 0 then get the zone id with it, else get the zone id from the zone name
+
+			// Try to get zone_id from the instances table join
 			if (instance_id != 0) {
-				if (database_new.Select(&result2, "SELECT `zone_id` FROM `instances` WHERE `id` = %u", instance_id)) {
-					if (result2.Next())
-						zone_id = result2.GetInt32Str("zone_id");
-				}
+				zone_id = result.GetInt32Str("inst_zone_id");
 			}
-			 if (zone_id == 0)
-				zone_id = GetZoneID(result.GetStringStr("instance_zone_name"));
+
+			// Fallback to zone_id from zones table join using instance_zone_name
+			if (zone_id == 0)
+				zone_id = result.GetInt32Str("named_zone_id");
 
 			client->GetPlayer()->GetCharacterInstances()->AddInstance(
 				result.GetInt32Str("id"),
@@ -6556,7 +6554,7 @@ int32 WorldDatabase::CreateLocation(int32 zone_id, int32 grid_id, const char* na
 	int32 ret = 0;
 	if (name && strlen(name) > 0) {
 		Query query;
-		query.RunQuery2(Q_INSERT, "INSERT INTO `locations` (`zone_id`, `grid_id`, `name`, `include_y`) VALUES (%u, %u, '%s', %u)", zone_id, grid_id, name, include_y == true ? 1 : 0);
+		query.RunQuery2(Q_INSERT, "INSERT INTO `locations` (`zone_id`, `grid_id`, `name`, `include_y`) VALUES (%u, %u, '%s', %u)", zone_id, grid_id, getSafeEscapeString(name).c_str(), include_y == true ? 1 : 0);
 		ret = query.GetLastInsertedID();
 	}
 	return ret;
@@ -6875,7 +6873,7 @@ void WorldDatabase::LoadCharacterHistory(int32 char_id, Player *player)
 		HistoryData* hd = new HistoryData;
 		hd->Value = result.GetInt32(2);
 		hd->Value2 = result.GetInt32(3);
-		strcpy(hd->Location, result.GetString(4));
+		strlcpy(hd->Location, result.GetString(4), sizeof(hd->Location));
 		// skipped event id as use for it has not been determined yet
 		hd->EventDate = result.GetInt32(6);
 		hd->needs_save = false;
@@ -6983,7 +6981,7 @@ bool WorldDatabase::LoadSign(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		sign = new Sign();
 		sign->SetDatabaseID(id);
-		strcpy(sign->appearance.name, result.GetString(1));
+		strlcpy(sign->appearance.name, result.GetString(1), sizeof(sign->appearance.name));
 		sign->appearance.model_type = result.GetInt16(2);
 		sign->SetSize(result.GetInt16(3));
 		sign->appearance.show_command_icon = result.GetInt8(4);
@@ -7062,7 +7060,7 @@ bool WorldDatabase::LoadWidget(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		widget = new Widget();
 		widget->SetDatabaseID(id);
-		strcpy(widget->appearance.name, result.GetString(1));
+		strlcpy(widget->appearance.name, result.GetString(1), sizeof(widget->appearance.name));
 		widget->appearance.model_type = result.GetInt16(2);
 		widget->SetSize(result.GetInt16(3));
 		widget->appearance.show_command_icon = result.GetInt8(4);
@@ -7146,7 +7144,7 @@ bool WorldDatabase::LoadObject(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		object = new Object();
 		object->SetDatabaseID(id);
-		strcpy(object->appearance.name, result.GetString(1));
+		strlcpy(object->appearance.name, result.GetString(1), sizeof(object->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(4));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(5));
 		if(primary_command_list){
@@ -7208,7 +7206,7 @@ bool WorldDatabase::LoadGroundSpawn(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		spawn = new GroundSpawn();
 		spawn->SetDatabaseID(id);
-		strcpy(spawn->appearance.name, result.GetString(1));
+		strlcpy(spawn->appearance.name, result.GetString(1), sizeof(spawn->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(4));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(5));
 		if(primary_command_list){
@@ -7315,7 +7313,7 @@ bool WorldDatabase::LoadNPC(ZoneServer* zone, int32 spawn_id) {
 		id = result.GetInt32(0);
 		npc = new NPC();
 		npc->SetDatabaseID(id);
-		strcpy(npc->appearance.name, result.GetString(1));
+		strlcpy(npc->appearance.name, result.GetString(1), sizeof(npc->appearance.name));
 		vector<EntityCommand*>* primary_command_list = zone->GetEntityCommandList(result.GetInt32(9));
 		vector<EntityCommand*>* secondary_command_list = zone->GetEntityCommandList(result.GetInt32(10));
 		if(primary_command_list){
@@ -9021,7 +9019,7 @@ int32	WorldDatabase::GetAccountAge(int32 account_id) {
 	return acct_age;
 }
 
-void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, char* char_name, Client* client) {
+void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, const char* char_name, Client* client) {
 
 	if (!database_new.Query("update spawn_signs set char_id=%u, char_name='%s' where widget_id=%u", char_id, database_new.EscapeStr(char_name).c_str(), sign_id)) {
 		LogWrite(SIGN__DEBUG, 0, "Sign", "ERROR in WorldDatabase::SaveSignMark");
@@ -9032,17 +9030,15 @@ void WorldDatabase::SaveSignMark(int32 char_id, int32 sign_id, char* char_name, 
 string WorldDatabase::GetSignMark(int32 char_id, int32 sign_id, char* char_name) {
 	Query query;
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT char_name from spawn_signs where widget_id=%u", sign_id);
-	char* charname = 0;
+	string ret = "";
 
 	if (result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row = mysql_fetch_row(result);
-
-		charname = new char[strlen(row[0]) + 1];
-		memset(charname, 0, strlen(row[0]) + 1);
-		strcpy(charname, row[0]);
+		if (row[0])
+			ret = string(row[0]);
 	}
 
-	return charname;
+	return ret;
 }
 
 int32 WorldDatabase::GetMysqlExpCurve(int level) {

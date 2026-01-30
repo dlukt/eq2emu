@@ -19,3 +19,7 @@
 ## 2024-11-20 - [Redundant Memset]
 **Learning:** Legacy code often clears buffers with `memset` immediately before overwriting them with `snprintf` or `sprintf`. Since `snprintf` guarantees null-termination (for valid buffer sizes) and overwrites the content, this `memset` is wasted CPU time and cache bandwidth.
 **Action:** Remove `memset(0)` calls on buffers that are immediately and unconditionally overwritten by formatting functions.
+
+## 2024-11-20 - [In-Place Transformations]
+**Learning:** Found cryptographic/encoding routines (`ChatDecode`/`ChatEncode`) that allocated temporary buffers with `malloc`, processed data, and `memcpy`'d it back. This incurred heap allocation overhead. In-place transformation is often possible even if the algorithm seems to require the previous state (by caching it in a register/local variable).
+**Action:** When optimizing buffer transformations, check if they can be done in-place to remove `malloc`/`free` and `memcpy` overhead.

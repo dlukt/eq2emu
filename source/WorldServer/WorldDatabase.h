@@ -316,7 +316,7 @@ public:
 	int32   LoadHouseContainers(int32 item_id = 0);
 	void	LoadBrokerItemStats();
 
-	void	SaveSignMark(int32 char_id, int32 sign_id, char* char_name, Client* client);
+	void	SaveSignMark(int32 char_id, int32 sign_id, const char* char_name, Client* client);
 	string	GetSignMark(int32 char_id, int32 sign_id, char* char_name); // returns the string containing the character name
 
 
@@ -361,7 +361,7 @@ public:
 	void GetPetNames(ZoneServer* zone);
 	//void	LoadMerchantMultipliers();
 
-	char*	GetCharacterName(int32 character_id);
+	string	GetCharacterName(int32 character_id);
 	int8	GetCharacterLevel(int32 character_id);
 	int16	GetCharacterModelType(int32 character_id);
 	int8	GetCharacterClass(int32 character_id);
