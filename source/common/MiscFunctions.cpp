@@ -105,7 +105,7 @@ string loadInt32String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_32BitSt
 		return string("");
 	}
 	ptr += sizeof(int32);
-	string ret((char*)ptr, 0, size);
+	string ret((char*)ptr, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
@@ -131,7 +131,7 @@ string loadInt16String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_16BitSt
 		return string("");
 	}
 	ptr += sizeof(int16);
-	string ret((char*)ptr, 0, size);
+	string ret((char*)ptr, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
@@ -157,7 +157,7 @@ string loadInt8String(uchar* buffer, int16 buffer_size, int16* pos, EQ2_8BitStri
 		return string("");
 	}
 	ptr += sizeof(int8);
-	string ret((char*)ptr, 0, size);
+	string ret((char*)ptr, size);
 	if(eq_string){
 		eq_string->size = size;
 		eq_string->data = ret;
