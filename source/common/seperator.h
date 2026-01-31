@@ -49,15 +49,14 @@ public:
 			argplus[i]=arg[i] = &arg_buffer[i * (arglen + 1)];
 		}
 
-		int len = strlen(message);
 		int s = 0, l = 0;
 		bool inarg = (!iSkipEmpty || !(message[0] == div || message[0] == div2 || message[0] == div3));
 		bool inquote = (iObeyQuotes && (message[0] == '\"' || message[0] == '\''));
 		argplus[0] = message;
-		if (len == 0)
+		if (message[0] == '\0')
 			return;
 
-		for (i=0; i<len; i++) {
+		for (i=0; message[i] != '\0'; i++) {
 //			cout << i << ": 0x" << hex << (int) message[i] << dec << " " << message[i] << endl;
 			if (inarg) {
 				if ((inquote == false && (message[i] == div || message[i] == div2 || message[i] == div3)) || (inquote && (message[i] == '\'' || message[i] == '\"') && (message[i+1] == div || message[i+1] == div2 || message[i+1] == div3 || message[i+1] == 0))) {
