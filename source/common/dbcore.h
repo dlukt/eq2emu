@@ -59,7 +59,7 @@ public:
 	
 protected:
 	bool	Open(const char* iHost, const char* iUser, const char* iPassword, const char* iDatabase, int32 iPort, int32* errnum = 0, char* errbuf = 0, bool iCompress = false, bool iSSL = false);
-	bool	ReadDBINI(char *host, char *user, char *pass, char *db, unsigned int* port, bool* compress, bool *items);
+	bool	ReadDBINI(char *host, char *user, char *pass, char *db, unsigned int* port, bool* compress, bool *items, size_t bufSize);
 private:
 	bool	Open(int32* errnum = 0, char* errbuf = 0);
 
