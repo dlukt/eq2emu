@@ -75,7 +75,7 @@ DBcore::~DBcore() {
 }
 
 
-bool DBcore::ReadDBINI(char* host, char* user, char* passwd, char* database, unsigned int* port, bool* compress, bool* items) {
+bool DBcore::ReadDBINI(char* host, char* user, char* passwd, char* database, unsigned int* port, bool* compress, bool* items, size_t bufSize) {
 	char line[256], * key, * val;
 	bool on_database_section = false;
 	FILE* f;
@@ -112,25 +112,25 @@ bool DBcore::ReadDBINI(char* host, char* user, char* passwd, char* database, uns
 			if (val == NULL)
 			{
 				if (strcasecmp(key, "password") == 0) {
-					strcpy(passwd, "");
+					strlcpy(passwd, "", bufSize);
 					items[2] = true;
 				}
 				continue;
 			}
 			if (strcasecmp(key, "host") == 0) {
-				strcpy(host, val);
+				strlcpy(host, val, bufSize);
 				items[0] = true;
 			}
 			else if (strcasecmp(key, "user") == 0) {
-				strcpy(user, val);
+				strlcpy(user, val, bufSize);
 				items[1] = true;
 			}
 			else if (strcasecmp(key, "password") == 0) {
-				strcpy(passwd, val);
+				strlcpy(passwd, val, bufSize);
 				items[2] = true;
 			}
 			else if (strcasecmp(key, "database") == 0) {
-				strcpy(database, val);
+				strlcpy(database, val, bufSize);
 				items[3] = true;
 			}
 			else if (strcasecmp(key, "port") == 0 && port) {

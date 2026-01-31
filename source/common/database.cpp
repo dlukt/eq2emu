@@ -94,7 +94,7 @@ bool Database::Init(bool silentLoad) {
 	bool items[6] = {false, false, false, false, false, false};
 	const char* exampleIni[] = { "[Database]", "host = localhost", "user = root", "password = pass", "database = dbname", "### --- Assure each parameter is on a new line!" };
 
-	if(!ReadDBINI(host, user, passwd, database, &port, &compression, items)) {
+	if(!ReadDBINI(host, user, passwd, database, &port, &compression, items, sizeof(host))) {
 		//exit(1);
 		return false;
 	}
