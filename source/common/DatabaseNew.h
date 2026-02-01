@@ -30,7 +30,7 @@ public:
 	//does not need free()
 	string EscapeStr(const char *str, size_t len);
 	string EscapeStr(const char *str);
-	string EscapeStr(string str);
+	string EscapeStr(const string& str);
 
 	bool QueriesFromFile(const char *file);
 	void SetIgnoredErrno(unsigned int db_errno);
