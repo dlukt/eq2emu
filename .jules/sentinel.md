@@ -29,3 +29,8 @@
 **Vulnerability:** WorldDatabase::GetCharacterName returned a heap-allocated char* which was frequently not freed by callers, leading to memory leaks and potential DoS.
 **Learning:** Returning raw pointers ownership transfer is error-prone in C++.
 **Prevention:** Use RAII types like std::string or smart pointers (std::unique_ptr) to manage memory automatically.
+
+## 2025-05-23 - Wildcard Injection in SQL LIKE Clauses
+**Vulnerability:** User input was correctly escaped with `mysql_real_escape_string` but then used directly in a `LIKE '%%%s%%'` query in `WorldDatabase::GetSpawnNameList`. This allowed users to inject wildcards (`%` or `_`) to bypass search filters (e.g., listing all items instead of matching a name).
+**Learning:** `mysql_real_escape_string` (and by extension `getSafeEscapeString`) does *not* escape wildcard characters (`%`, `_`) which are special in `LIKE` clauses. This can lead to logic bypasses or DoS (expensive queries).
+**Prevention:** When using user input in `LIKE` clauses, perform an additional escaping pass to escape `%` and `_` with backslashes (e.g., `\%`, `\_`), ensuring they are treated as literals.

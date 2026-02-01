@@ -3736,7 +3736,32 @@ vector<string>* WorldDatabase::GetSpawnNameList(const char* in_name){
 	string names = "";
 	vector<string>* ret = 0;
 	string name = getSafeEscapeString(in_name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT concat(spawn.id, ', ', name) FROM spawn where name like '%%%s%%'", name.c_str());
+
+	// Escape wildcards for LIKE query to prevent wildcard injection
+	// Note: We must double-escape backslashes because they are consumed by both C++ string literal
+	// and MySQL parser. \\ -> \\\\ in C++ -> \\ in MySQL value -> matches \ in LIKE.
+	string escaped_name;
+	for (size_t i = 0; i < name.length(); ++i) {
+		if (name[i] == '%' || name[i] == '_') {
+			escaped_name += "\\\\";
+			escaped_name += name[i];
+		} else if (name[i] == '\\') {
+			if (i + 1 < name.length() && name[i + 1] == '\\') {
+				escaped_name += "\\\\\\\\";
+				i++;
+			} else {
+				escaped_name += name[i];
+				if (i + 1 < name.length()) {
+					escaped_name += name[i + 1];
+					i++;
+				}
+			}
+		} else {
+			escaped_name += name[i];
+		}
+	}
+
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT concat(spawn.id, ', ', name) FROM spawn where name like '%%%s%%'", escaped_name.c_str());
 	if(result && mysql_num_rows(result) > 0){
 		ret = new vector<string>;
 		MYSQL_ROW row;
