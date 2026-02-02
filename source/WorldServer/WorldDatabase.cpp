@@ -3209,7 +3209,7 @@ void WorldDatabase::SaveZoneInfo(int32 zone_id, const char* field, float value) 
 
 void WorldDatabase::SaveZoneInfo(int32 zone_id, const char* field, const char* value) {
 	Query query;
-	query.RunQuery2(Q_UPDATE, "UPDATE `zones` SET `%s`='%s' WHERE `id`=%u", field, const_cast<char*>(getEscapeString(value)), zone_id);
+	query.RunQuery2(Q_UPDATE, "UPDATE `zones` SET `%s`='%s' WHERE `id`=%u", field, getSafeEscapeString(value).c_str(), zone_id);
 }
 
 int32 WorldDatabase::GetZoneID(const char* name) {
