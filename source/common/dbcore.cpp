@@ -343,14 +343,14 @@ char* DBcore::getEscapeString(const char* from_string){
 
 string DBcore::getSafeEscapeString(const char* from_string){
 	if(!from_string)
-		from_string ="";
+		return "";
 	int orig_size = strlen(from_string);
-	int escape_size = (orig_size * 2) + 1;
-	char* escaped = new char[escape_size];
-	memset(escaped, 0, escape_size);
-	DoEscapeString(escaped, from_string, orig_size);
-	string ret = string(escaped);
-	safe_delete_array(escaped);
+
+	// Bolt: Optimized to write directly to std::string buffer, avoiding heap allocation and copy.
+	string ret;
+	ret.resize((orig_size * 2) + 1);
+	int32 new_len = DoEscapeString(&ret[0], from_string, orig_size);
+	ret.resize(new_len);
 	return ret;
 }
 
@@ -358,12 +358,12 @@ string DBcore::getSafeEscapeString(string* from_string){
 	if(!from_string)
 		return "";
 	int orig_size = from_string->length();
-	int escape_size = (orig_size * 2) + 1;
-	char* escaped = new char[escape_size];
-	memset(escaped, 0, escape_size);
-	DoEscapeString(escaped, from_string->c_str(), orig_size);
-	string ret = string(escaped);
-	safe_delete_array(escaped);
+
+	// Bolt: Optimized to write directly to std::string buffer.
+	string ret;
+	ret.resize((orig_size * 2) + 1);
+	int32 new_len = DoEscapeString(&ret[0], from_string->c_str(), orig_size);
+	ret.resize(new_len);
 	return ret;
 }
 
