@@ -2456,7 +2456,7 @@ sint16 WorldDatabase::GetCharacterAdminStatus(int32 account_id , int32 char_id){
 bool WorldDatabase::UpdateAdminStatus(char* character_name, sint16 flag){
 	Query query;
 	string update_status = string("update characters set admin_status=%i where name='%s'");
-	query.RunQuery2(Q_UPDATE, update_status.c_str(),flag,character_name);
+	query.RunQuery2(Q_UPDATE, update_status.c_str(),flag,getSafeEscapeString(character_name).c_str());
 	if(!query.GetAffectedRows())
 	{
 		LogWrite(WORLD__ERROR, 0, "World", "Error in UpdateAdminStatus query '%s': %s", query.GetQuery(), query.GetError());
