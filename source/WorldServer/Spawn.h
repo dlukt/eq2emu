@@ -22,6 +22,8 @@
 #define __EQ2_SPAWN__
 
 #include <atomic>
+#include <type_traits>
+#include <cstring>
 
 #include "../common/types.h"
 #include "../common/EQPacket.h"
@@ -324,21 +326,38 @@ public:
 	Spawn();
 	virtual ~Spawn();
 
-	template <class Field, class Value> void Set(Field* field, Value value, bool setUpdateFlags = true){
+    template <typename T>
+    struct is_c_string {
+        using Decayed = std::decay_t<T>;
+        static constexpr bool value = std::is_same_v<Decayed, char*> ||
+                                      std::is_same_v<Decayed, const char*>;
+    };
+
+	template <typename T, typename Value, typename = std::enable_if_t<!is_c_string<Value>::value>>
+    void Set(T&& field, Value value, bool setUpdateFlags = true){
 		if (setUpdateFlags) {
 			changed = true;
 			AddChangedZoneSpawn();
 		}
 		*field = value;
 	}
-	template <class Field> void Set(Field* field, const char* value, bool setUpdateFlags = true){
+
+    template <typename T>
+    void Set(T&& field, const char* value, bool setUpdateFlags = true){
 		if (setUpdateFlags) {
 			changed = true;
 			AddChangedZoneSpawn();
 		}
-		strcpy(field, value);
-	}
-	template <class Field, class Value> void SetPos(Field* field, Value value, bool setUpdateFlags = true){
+        using BareT = std::remove_reference_t<T>;
+        if constexpr (std::is_array_v<BareT>) {
+            strlcpy(field, value, std::extent_v<BareT>);
+        } else {
+            strcpy(field, value);
+        }
+    }
+
+	template <typename T, typename Value>
+    void SetPos(T&& field, Value value, bool setUpdateFlags = true){
 		Set(field, value, false);
 		if(setUpdateFlags){
 			position_changed = true;
@@ -348,27 +367,27 @@ public:
 			AddChangedZoneSpawn();
 		}
 	}
-	template <class Field, class Value> void SetInfo(Field* field, Value value, bool setUpdateFlags = true){
-		if(setUpdateFlags){
-			info_changed = true;
-		}
-		Set(field, value);
-	}
-	template <class Field, class Value> void SetVis(Field* field, Value value, bool setUpdateFlags = true){
-		if(setUpdateFlags)
-			vis_changed = true;
-		Set(field, value);
-	}
-	template <class Field> void SetPos(Field* field, char* value, bool setUpdateFlags = true){
+
+	template <typename T>
+    void SetPos(T&& field, const char* value, bool setUpdateFlags = true){
 		if(setUpdateFlags){
 			position_changed = true;
 		}
 		Set(field, value, setUpdateFlags);
 	}
-	template <class Field> void SetInfo(Field* field, char* value, bool setUpdateFlags = true){
+
+	template <typename T, typename Value>
+    void SetInfo(T&& field, Value value, bool setUpdateFlags = true){
 		if(setUpdateFlags){
 			info_changed = true;
 		}
+		Set(field, value);
+	}
+
+	template <typename T, typename Value>
+    void SetVis(T&& field, Value value, bool setUpdateFlags = true){
+		if(setUpdateFlags)
+			vis_changed = true;
 		Set(field, value);
 	}
 	EntityCommand* CreateEntityCommand(EntityCommand* old_command){
