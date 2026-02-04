@@ -2284,7 +2284,9 @@ EQ2Packet* PacketStruct::serializeCountPacket(int16 version, int8 offset, uchar*
 	uchar* data = (uchar*)packet_data->c_str();
 	int32 size = packet_data->size();
 	uchar* packed_data = new uchar[size + 1000]; // this size + 20 is poorly defined, depending on the packet data, we could use a additional length of 1K+
-	memset(packed_data, 0, size + 1000);
+	// Bolt: Optimized redundant memset. Pack() and memcpy() overwrite the buffer,
+	// so zeroing it beforehand is unnecessary overhead.
+	// memset(packed_data, 0, size + 1000);
 	if (orig_packet && xor_packet) {
 		memcpy(xor_packet, data + 6, size - 6 - offset);
 		Encode(xor_packet, orig_packet, size - 6 - offset);
@@ -2293,7 +2295,8 @@ EQ2Packet* PacketStruct::serializeCountPacket(int16 version, int8 offset, uchar*
 	else
 		size = Pack(packed_data, data + 6, packet_data->size() - 6 - offset, packet_data->size() + 1000, version);
 	uchar* combined = new uchar[size + sizeof(int16) + offset];
-	memset(combined, 0, size + sizeof(int16) + offset);
+	// Bolt: Optimized redundant memset. The buffer is fully overwritten by subsequent memcpy calls.
+	// memset(combined, 0, size + sizeof(int16) + offset);
 	uchar* ptr = combined;
 	memcpy(ptr, data, sizeof(int16));
 	ptr += sizeof(int16);
