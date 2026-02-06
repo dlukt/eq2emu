@@ -32,6 +32,7 @@
 #include "SpellProcess.h"
 #include <algorithm>
 #include <regex>
+#include <set>
 #include "ClientPacketFunctions.h"
 
 extern Classes classes;
@@ -5158,40 +5159,52 @@ int8 Player::CheckQuestFlag(Spawn* spawn){
 	if(spawn->HasProvidedQuests()){
 		vector<int32>* quests = spawn->GetProvidedQuests();
 		Quest* quest = 0;
+		std::set<int32> active_quests;
+
+		// Bolt: Optimize locking by checking all player quests in a single lock block
+		MPlayerQuests.readlock(__FUNCTION__, __LINE__);
 		for(int32 i=0;i<quests->size();i++){
-			MPlayerQuests.readlock(__FUNCTION__, __LINE__);
 			if(player_quests.count(quests->at(i)) > 0){
+				active_quests.insert(quests->at(i));
 				if(player_quests[quests->at(i)] && player_quests[quests->at(i)]->GetCompleted() && player_quests[quests->at(i)]->GetQuestReturnNPC() == spawn->GetDatabaseID()){
 					ret = 2;
-					MPlayerQuests.releasereadlock(__FUNCTION__, __LINE__);
 					break;
 				}
 			}
-			MPlayerQuests.releasereadlock(__FUNCTION__, __LINE__);
-			int8 flag = 0;
-			if (CanReceiveQuest(quests->at(i), &flag)){
-				if(flag) {
-					ret = flag;
-					break;
-				}
-				master_quest_list.LockQuests();
-				quest = master_quest_list.GetQuest(quests->at(i), false);
-				master_quest_list.UnlockQuests();
-				if(quest){
-					int8 color = quest->GetFeatherColor();
-					// purple
-					if (color == 1)
-						ret = 16;
-					// green
-					else if (color == 2)
-						ret = 32;
-					// blue
-					else if (color == 3)
-						ret = 64;
-					// normal
-					else
-						ret = 1;
-					break;
+		}
+		MPlayerQuests.releasereadlock(__FUNCTION__, __LINE__);
+
+		if (ret != 2) {
+			for(int32 i=0;i<quests->size();i++){
+				// Bolt: Skip quests we already have (cached from above)
+				if (active_quests.count(quests->at(i)))
+					continue;
+
+				int8 flag = 0;
+				if (CanReceiveQuest(quests->at(i), &flag)){
+					if(flag) {
+						ret = flag;
+						break;
+					}
+					master_quest_list.LockQuests();
+					quest = master_quest_list.GetQuest(quests->at(i), false);
+					master_quest_list.UnlockQuests();
+					if(quest){
+						int8 color = quest->GetFeatherColor();
+						// purple
+						if (color == 1)
+							ret = 16;
+						// green
+						else if (color == 2)
+							ret = 32;
+						// blue
+						else if (color == 3)
+							ret = 64;
+						// normal
+						else
+							ret = 1;
+						break;
+					}
 				}
 			}
 		}
