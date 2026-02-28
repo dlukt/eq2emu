@@ -501,28 +501,28 @@ public:
 	****************************************************/
 
 	inline const char*	GetZoneName()	{ return zone_name; }
-	void	SetZoneName(char* new_zone) { 
-		if( strlen(new_zone) >= sizeof zone_name )
+	void	SetZoneName(const char* new_zone) {
+		if (snprintf(nullptr, 0, "%s", new_zone) >= sizeof(zone_name))
 			return;
-		strcpy(zone_name, new_zone); 
+		snprintf(zone_name, sizeof(zone_name), "%s", new_zone);
 	}
 	inline const char* GetZoneFile() { return zone_file; }
-	void	SetZoneFile(char* zone) {
-		if (strlen(zone) >= sizeof zone_file)
+	void	SetZoneFile(const char* zone) {
+		if (snprintf(nullptr, 0, "%s", zone) >= sizeof(zone_file))
 			return;
-		strcpy(zone_file, zone);
+		snprintf(zone_file, sizeof(zone_file), "%s", zone);
 	}
 	inline const char* GetZoneSkyFile() { return zonesky_file; }
-	void	SetZoneSkyFile(char* zone) {
-		if (strlen(zone) >= sizeof zonesky_file)
+	void	SetZoneSkyFile(const char* zone) {
+		if (snprintf(nullptr, 0, "%s", zone) >= sizeof(zonesky_file))
 			return;
-		strcpy(zonesky_file, zone);
+		snprintf(zonesky_file, sizeof(zonesky_file), "%s", zone);
 	}
 	inline const char*	GetZoneDescription() { return zone_description; }
-	void	SetZoneDescription(char* desc) { 
-		if( strlen(desc) >= sizeof zone_description )
+	void	SetZoneDescription(const char* desc) {
+		if (snprintf(nullptr, 0, "%s", desc) >= sizeof(zone_description))
 			return;
-		strncpy(zone_description, desc, 255); 
+		snprintf(zone_description, sizeof(zone_description), "%s", desc);
 	}
 	
 	void			SetUnderWorld(float under){ underworld = under; }
