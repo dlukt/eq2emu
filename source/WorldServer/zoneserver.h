@@ -501,19 +501,27 @@ public:
 	****************************************************/
 
 	inline const char*	GetZoneName()	{ return zone_name; }
-	void	SetZoneName(char* new_zone) { 
+	void	SetZoneName(const char* new_zone) {
+		if (snprintf(nullptr, 0, "%s", new_zone) >= sizeof(zone_name))
+			return;
 		snprintf(zone_name, sizeof(zone_name), "%s", new_zone);
 	}
 	inline const char* GetZoneFile() { return zone_file; }
-	void	SetZoneFile(char* zone) {
+	void	SetZoneFile(const char* zone) {
+		if (snprintf(nullptr, 0, "%s", zone) >= sizeof(zone_file))
+			return;
 		snprintf(zone_file, sizeof(zone_file), "%s", zone);
 	}
 	inline const char* GetZoneSkyFile() { return zonesky_file; }
-	void	SetZoneSkyFile(char* zone) {
+	void	SetZoneSkyFile(const char* zone) {
+		if (snprintf(nullptr, 0, "%s", zone) >= sizeof(zonesky_file))
+			return;
 		snprintf(zonesky_file, sizeof(zonesky_file), "%s", zone);
 	}
 	inline const char*	GetZoneDescription() { return zone_description; }
-	void	SetZoneDescription(char* desc) { 
+	void	SetZoneDescription(const char* desc) {
+		if (snprintf(nullptr, 0, "%s", desc) >= sizeof(zone_description))
+			return;
 		snprintf(zone_description, sizeof(zone_description), "%s", desc);
 	}
 	
