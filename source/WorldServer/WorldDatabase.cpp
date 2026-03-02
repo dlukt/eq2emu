@@ -2745,7 +2745,7 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 	}
 	Query query;
 	LogWrite(WORLD__DEBUG, 0, "World", "Name check on: %s", name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT count(*) FROM characters WHERE name='%s'",name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT count(*) FROM characters WHERE name='%s'", getSafeEscapeString(name).c_str());
 	if(result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
@@ -2757,7 +2757,7 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 
 	Query query3;
 	LogWrite(WORLD__DEBUG, 0, "World", "Name check on: %s (Bots table)", name);
-	MYSQL_RES* result3 = query3.RunQuery2(Q_SELECT, "SELECT count(*) FROM bots WHERE name='%s'", name);
+	MYSQL_RES* result3 = query3.RunQuery2(Q_SELECT, "SELECT count(*) FROM bots WHERE name='%s'", getSafeEscapeString(name).c_str());
 	if (result3 && mysql_num_rows(result3) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result3);
@@ -2770,7 +2770,7 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 
 
 	Query query2;
-	MYSQL_RES* result2 = query2.RunQuery2(Q_SELECT, "SELECT count(*) FROM name_filter WHERE '%s' like name",name);
+	MYSQL_RES* result2 = query2.RunQuery2(Q_SELECT, "SELECT count(*) FROM name_filter WHERE '%s' like name", getSafeEscapeString(name).c_str());
 	if(result2 && mysql_num_rows(result2) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result2);
@@ -2780,7 +2780,7 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 			return CREATESUCCESS_REPLY;
 	}
 	else
-		LogWrite(WORLD__ERROR, 0, "World", "Error in CheckNameFilter (name_filter check) query '%s': %s", query.GetQuery(), query.GetError());
+		LogWrite(WORLD__ERROR, 0, "World", "Error in CheckNameFilter (name_filter check) query '%s': %s", query2.GetQuery(), query2.GetError());
 
 	return UNKNOWNERROR_REPLY;
 }
