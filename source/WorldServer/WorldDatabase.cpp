@@ -2780,7 +2780,7 @@ int8 WorldDatabase::CheckNameFilter(const char* name, int8 min_length, int8 max_
 			return CREATESUCCESS_REPLY;
 	}
 	else
-		LogWrite(WORLD__ERROR, 0, "World", "Error in CheckNameFilter (name_filter check) query '%s': %s", query.GetQuery(), query.GetError());
+		LogWrite(WORLD__ERROR, 0, "World", "Error in CheckNameFilter (name_filter check) query '%s': %s", query2.GetQuery(), query2.GetError());
 
 	return UNKNOWNERROR_REPLY;
 }
