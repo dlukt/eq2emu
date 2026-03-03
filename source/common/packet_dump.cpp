@@ -71,7 +71,7 @@ void DumpPacketHex(const uchar* buf, int32 size, int32 cols, int32 skip) {
 		else if ((i-skip)%(cols/2) == 0) {
 			cout << "- ";
 		}
-		sprintf(output, "%02X ", (unsigned char)buf[i]);
+		snprintf(output, sizeof(output), "%02X ", (unsigned char)buf[i]);
 		cout << output;
 
 		if (buf[i] >= 32 && buf[i] < 127) {

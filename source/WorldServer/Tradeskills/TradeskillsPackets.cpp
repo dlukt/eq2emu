@@ -475,7 +475,7 @@ void ClientPacketFunctions::SendItemCreationUI(Client* client, Recipe* recipe) {
 		for (itr = dataStructs.begin(); itr != dataStructs.end(); itr++) {
 			DataStruct* data = *itr;
 			char tmp[20] = {0};
-			sprintf(tmp,"_%i",i);
+			snprintf(tmp, sizeof(tmp), "_%i", i);
 			string name = "unknown3";
 			name.append(tmp);
 			if (strcmp(data->GetName(), name.c_str()) == 0) {

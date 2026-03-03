@@ -1616,7 +1616,7 @@ bool TCPServer::Open(int16 in_port, char* errbuf) {
 #endif
 		sock = 0;
 		if (errbuf)
-			sprintf(errbuf, "bind(): <0");
+			snprintf(errbuf, TCPConnection_ErrorBufferSize, "bind(): <0");
 		return false;
 	}
 

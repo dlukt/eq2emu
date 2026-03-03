@@ -177,7 +177,7 @@ char temp[16];
 union { unsigned long ip; struct { unsigned char a,b,c,d; } octet;} ipoctet;
 
 	ipoctet.ip=ip;
-	sprintf(temp,"%d.%d.%d.%d",ipoctet.octet.a,ipoctet.octet.b,ipoctet.octet.c,ipoctet.octet.d);
+	snprintf(temp, sizeof(temp), "%d.%d.%d.%d", ipoctet.octet.a, ipoctet.octet.b, ipoctet.octet.c, ipoctet.octet.d);
 
 	return string(temp);
 }
