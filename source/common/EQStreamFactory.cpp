@@ -220,7 +220,7 @@ timeval sleep_time;
 				// What do we wanna do?
 			} else {
 				char temp[25];
-				sprintf(temp,"%u.%d",ntohl(from.sin_addr.s_addr),ntohs(from.sin_port));
+				snprintf(temp, sizeof(temp), "%u.%d", ntohl(from.sin_addr.s_addr), ntohs(from.sin_port));
 				MStreams.lock();
 				if ((stream_itr=Streams.find(temp))==Streams.end() || buffer[1]==OP_SessionRequest) {
 					MStreams.unlock();

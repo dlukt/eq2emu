@@ -1559,7 +1559,7 @@ EQProtocolPacket *p=NULL;
 		//printf("Read packet: opcode %i length %u, expected-length: %u\n",buffer[1], length, p->size);
 		uint32 ip=from->sin_addr.s_addr;
 		char temp[32];
-		sprintf(temp, "%d.%d.%d.%d:%d",
+		snprintf(temp, sizeof(temp), "%d.%d.%d.%d:%d",
 			*(unsigned char *)&ip,
 			*((unsigned char *)&ip + 1),
 			*((unsigned char *)&ip + 2),
