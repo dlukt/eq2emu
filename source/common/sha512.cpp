@@ -1,5 +1,6 @@
 #include <cstring>
 #include <fstream>
+#include <cstdio>
 #include "sha512.h"
  
 const unsigned long long SHA512::sha512_k[80] = //ULL = uint64
@@ -150,6 +151,6 @@ std::string sha512(std::string input)
     char buf[2*SHA512::DIGEST_SIZE+1];
     buf[2*SHA512::DIGEST_SIZE] = 0;
     for (int i = 0; i < SHA512::DIGEST_SIZE; i++)
-        snprintf(buf+i*2, 3, "%02x", digest[i]);
+        std::snprintf(buf+i*2, 3, "%02x", static_cast<unsigned int>(digest[i]));
     return std::string(buf);
 }
