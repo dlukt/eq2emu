@@ -53,7 +53,6 @@ public:
 	bool		RunQuery(const char* query, int32 querylen, char* errbuf = 0, MYSQL_RES** result = 0, int32* affected_rows = 0, int32* last_insert_id = 0, int32* errnum = 0, bool retry = true);
 	int32		DoEscapeString(char* tobuf, const char* frombuf, int32 fromlen);
 	void		ping();
-	char*		getEscapeString(const char* from_string);
 	string		getSafeEscapeString(const char* from_string);
 	string		getSafeEscapeString(string* from_string);
 	

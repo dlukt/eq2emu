@@ -102,9 +102,6 @@ public:
 		errnum = 0;
 		row = 0;
 		retry = true;
-		escaped_name = 0;
-		escaped_pass = 0;
-		escaped_data1 = 0;
 		multiple_results = 0;
 		memset(errbuf, 0, sizeof(errbuf));
 		queryID = 0;
@@ -116,9 +113,6 @@ public:
 		errnum = 0;
 		row = 0;
 		retry = true;
-		escaped_name = 0;
-		escaped_pass = 0;
-		escaped_data1 = 0;
 		multiple_results = 0;
 		memset(errbuf, 0, sizeof(errbuf));
 		query = std::move(in_query);
@@ -132,9 +126,6 @@ public:
 		result = 0;
 		safe_delete(affected_rows);
 		safe_delete(last_insert_id);
-		safe_delete_array(escaped_name);
-		safe_delete_array(escaped_pass);
-		safe_delete_array(escaped_data1);
 		if(multiple_results){
 			vector<MYSQL_RES*>::iterator itr;
 			for(itr = multiple_results->begin(); itr != multiple_results->end(); itr++){
@@ -172,9 +163,9 @@ public:
 
 	int32 GetQueryID() { return queryID; }
 
-	char* escaped_name;
-	char* escaped_pass;
-	char* escaped_data1;
+	std::string escaped_name;
+	std::string escaped_pass;
+	std::string escaped_data1;
 private:
 	string query;
 	char errbuf[MYSQL_ERRMSG_SIZE];

@@ -474,15 +474,15 @@ private:
 };
 class TableDataQuery{
 public:
-	TableDataQuery(char* table_name){
-		if( strlen(table_name) >= sizeof(tablename) )
-			return;
-		strcpy(tablename, table_name);
+	TableDataQuery(const char* table_name){
 		num_queries = 0;
 		columns_size = 0;
 		columns = 0;
 		version = 0;
 		table_size = 0;
+		if( strlen(table_name) >= sizeof(tablename) )
+			return;
+		strcpy(tablename, table_name);
 	}
 	TableDataQuery(){
 		num_queries = 0;

@@ -113,8 +113,8 @@ void LoginDatabase::SetZoneInformation(int32 server_id, int32 zone_id, int32 ver
 string LoginDatabase::GetZoneDescription(char* name){
 	string ret;
 	Query query;
-	query.escaped_name = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT description from zones where file=substring_index('%s', '.', 1)", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT description from zones where file=substring_index('%s', '.', 1)", query.escaped_name.c_str());
 	MYSQL_ROW row;
 	if((row = mysql_fetch_row(result))) {
 		ret = string(row[0]);
@@ -211,8 +211,8 @@ int32 LoginDatabase::GetServer(int32 accountID, int32 charID, string name) {
 	int32 id = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name.c_str());
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT server_id from login_characters where account_id=%i and char_id=%i and name='%s'", accountID, charID, query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name.c_str());
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT server_id from login_characters where account_id=%i and char_id=%i and name='%s'", accountID, charID, query.escaped_name.c_str());
 	if (result && mysql_num_rows(result) == 1) {
 		row = mysql_fetch_row(result);
 		id = atoi(row[0]);
@@ -389,8 +389,8 @@ int16 LoginDatabase::GetAppearanceID(string name){
 	int32 id = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name.c_str());
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT appearance_id from appearances where name='%s'", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name.c_str());
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT appearance_id from appearances where name='%s'", query.escaped_name.c_str());
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
 		id = atoi(row[0]);
@@ -634,11 +634,11 @@ bool LoginDatabase::UpdateCharacterName(int32 account_id, int32 character_id, ch
 LoginAccount* LoginDatabase::LoadAccount(const char* name, const char* password, bool attemptAccountCreation){
 	LoginAccount* acct = NULL;
 	Query query;
-	query.escaped_name = getEscapeString(name);
-	query.escaped_pass = getEscapeString(password);
+	query.escaped_name = getSafeEscapeString(name);
+	query.escaped_pass = getSafeEscapeString(password);
 	time_t now = time(0); //get the current epoc time
 	MYSQL_ROW row;
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from account where name='%s' and passwd=sha2('%s',512)", query.escaped_name, query.escaped_pass);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from account where name='%s' and passwd=sha2('%s',512)", query.escaped_name.c_str(), query.escaped_pass.c_str());
 	if(result){
 		if (mysql_num_rows(result) == 1){
 			row = mysql_fetch_row(result);
@@ -653,7 +653,7 @@ LoginAccount* LoginDatabase::LoadAccount(const char* name, const char* password,
 		else if (attemptAccountCreation && !database.GetAccountIDByName(name))
 		{
 			Query newquery;
-			newquery.RunQuery2(Q_INSERT, "insert into account set name='%s',passwd=sha2('%s',512), created_date=%i", query.escaped_name, query.escaped_pass, now);
+			newquery.RunQuery2(Q_INSERT, "insert into account set name='%s',passwd=sha2('%s',512), created_date=%i", query.escaped_name.c_str(), query.escaped_pass.c_str(), now);
 			// re-run the query for select only not account creation
 			return LoadAccount(name, password, false);
 		}
@@ -666,8 +666,8 @@ int32 LoginDatabase::GetAccountIDByName(const char* name) {
 	int32 id = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from account where name='%s'", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from account where name='%s'", query.escaped_name.c_str());
 	if (result && mysql_num_rows(result) == 1) {
 		row = mysql_fetch_row(result);
 		id = atoi(row[0]);
@@ -679,18 +679,18 @@ int32 LoginDatabase::CheckServerAccount(char* name, char* passwd){
 	int32 id = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT lower(password), id from login_worldservers where account='%s' and disabled = 0", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT lower(password), id from login_worldservers where account='%s' and disabled = 0", query.escaped_name.c_str());
 
-	LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccount Account=%s\nSHA=%s", (char*)query.escaped_name, passwd);
+	LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccount Account=%s\nSHA=%s", query.escaped_name.c_str(), passwd);
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
 
-		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResult Account=%s\nPassword=%s", (char*)query.escaped_name, (row && row[0]) ? row[0] : "(NULL)");
+		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResult Account=%s\nPassword=%s", query.escaped_name.c_str(), (row && row[0]) ? row[0] : "(NULL)");
 
 		if (memcmp(row[0], passwd, strnlen(row[0], 256)) == 0)
 		{
-			LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResultMatch Account=%s", (char*)query.escaped_name);
+			LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResultMatch Account=%s", query.escaped_name.c_str());
 			id = atoi(row[1]);
 		}
 	}
@@ -700,14 +700,14 @@ int32 LoginDatabase::CheckServerAccount(char* name, char* passwd){
 bool LoginDatabase::IsServerAccountDisabled(char* name){
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from login_worldservers where account='%s' and disabled = 1", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from login_worldservers where account='%s' and disabled = 1", query.escaped_name.c_str());
 
-	LogWrite(LOGIN__DEBUG, 0, "Login", "WorldServer IsServerAccountDisabled Account=%s", (char*)query.escaped_name);
+	LogWrite(LOGIN__DEBUG, 0, "Login", "WorldServer IsServerAccountDisabled Account=%s", query.escaped_name.c_str());
 	if(result && mysql_num_rows(result) > 0){
 		row = mysql_fetch_row(result);
 
-		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer IsServerAccountDisabled Match Account=%s", (char*)query.escaped_name);
+		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer IsServerAccountDisabled Match Account=%s", query.escaped_name.c_str());
 
 		return true;
 	}
@@ -745,14 +745,14 @@ void LoginDatabase::GetServerAccounts(vector<LWorld*>* server_list){
 }
 void LoginDatabase::SaveClientLog(const char* type, const char* message, const char* player_name, int16 version){
 	Query query;
-	query.escaped_data1 = getEscapeString(message);
-	query.escaped_name = getEscapeString(player_name);
-	query.RunQuery2(Q_INSERT, "insert into log_messages (type, message, name, version) values('%s', '%s', '%s', %i)", type, query.escaped_data1, query.escaped_name, version); 
+	query.escaped_data1 = getSafeEscapeString(message);
+	query.escaped_name = getSafeEscapeString(player_name);
+	query.RunQuery2(Q_INSERT, "insert into log_messages (type, message, name, version) values('%s', '%s', '%s', %i)", type, query.escaped_data1.c_str(), query.escaped_name.c_str(), version);
 }
 bool  LoginDatabase::VerifyDelete(int32 account_id, int32 character_id, const char* name){
 	Query query;
-	query.escaped_name = getEscapeString(name);
-	query.RunQuery2(Q_UPDATE, "update login_characters set deleted = 1 where char_id=%i and account_id=%i and name='%s'", character_id, account_id, query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	query.RunQuery2(Q_UPDATE, "update login_characters set deleted = 1 where char_id=%i and account_id=%i and name='%s'", character_id, account_id, query.escaped_name.c_str());
 	if(query.GetAffectedRows() == 1)
 		return true;
 	else
@@ -776,24 +776,24 @@ int32 LoginDatabase::GetRaceID(char* name){
 	int32 ret = 1487;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT race_type from login_races where name='%s'", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT race_type from login_races where name='%s'", query.escaped_name.c_str());
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
 		ret = atol(row[0]);
 	}
 	else if(!result || mysql_num_rows(result) == 0)
-		UpdateRaceID(query.escaped_name);
+		UpdateRaceID(query.escaped_name.c_str());
 	return ret;
 }
-void LoginDatabase::UpdateRaceID(char* name){
+void LoginDatabase::UpdateRaceID(const char* name){
 	Query query;
 	query.RunQuery2(Q_UPDATE, "insert into login_races (name) values('%s')", name);
 }
 bool LoginDatabase::CheckVersion(char* in_version){
 	Query query;
-	query.escaped_data1 = getEscapeString(in_version);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from login_versions where version='%s' or version='*'", query.escaped_data1);
+	query.escaped_data1 = getSafeEscapeString(in_version);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from login_versions where version='%s' or version='*'", query.escaped_data1.c_str());
 	if(result && mysql_num_rows(result) > 0)
 		return true;
 	else
@@ -816,14 +816,14 @@ void LoginDatabase::GetLatestTableVersions(LatestTableVersions* table_versions){
 			table_versions->AddTable(row[0], atoi(row[1]), 0);
 	}
 }
-bool LoginDatabase::VerifyDataTable(char* name){
+bool LoginDatabase::VerifyDataTable(const char* name){
 	Query query;
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT table_name from download_tables where table_name='%s'", name);
 	if(result && mysql_num_rows(result) > 0)
 		return true;
 	return false;
 }
-string LoginDatabase::GetColumnNames(char* name){
+string LoginDatabase::GetColumnNames(const char* name){
 	if (!IsValidIdentifier(name))
 		return "";
 
@@ -848,21 +848,21 @@ string LoginDatabase::GetColumnNames(char* name){
 TableDataQuery* LoginDatabase::GetTableDataQuery(int32 server_ip, char* name, int16 version){
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
+	query.escaped_name = getSafeEscapeString(name);
 	TableDataQuery* table_query = 0;
 	MYSQL_RES* result = 0;
 	string columns;
 
-	if(VerifyDataTable(query.escaped_name)){
-		result = query.RunQuery2(Q_SELECT, "SELECT * from %s where table_data_version > %i", query.escaped_name, version);
-		columns = GetColumnNames(query.escaped_name);
+	if(VerifyDataTable(query.escaped_name.c_str())){
+		result = query.RunQuery2(Q_SELECT, "SELECT * from %s where table_data_version > %i", query.escaped_name.c_str(), version);
+		columns = GetColumnNames(query.escaped_name.c_str());
 	}
 	if(result && mysql_num_rows(result) > 0){
-		table_query = new TableDataQuery(query.escaped_name);
+		table_query = new TableDataQuery(query.escaped_name.c_str());
 		table_query->num_queries = mysql_num_rows(result);
 		table_query->columns_size = columns.length() + 1;
 		table_query->columns = new char[table_query->columns_size + 1];
-		table_query->version = GetDataVersion(query.escaped_name);
+		table_query->version = GetDataVersion(query.escaped_name.c_str());
 		strcpy(table_query->columns, (char*)columns.c_str());
 		string query_data;
 		MYSQL_FIELD* field;
@@ -882,7 +882,7 @@ TableDataQuery* LoginDatabase::GetTableDataQuery(int32 server_ip, char* name, in
 					if(i>0)
 						query_data.append(",");
 					if(!int_list[i]){
-						query_data.append("'").append(getEscapeString(row[i])).append("'");
+						query_data.append("'").append(getSafeEscapeString(row[i])).append("'");
 					}
 					else
 						query_data.append(row[i]);
@@ -898,7 +898,7 @@ TableDataQuery* LoginDatabase::GetTableDataQuery(int32 server_ip, char* name, in
 		safe_delete_array(int_list);
 	}
 	else{
-		string query2 = string("The user tried to download the following table: ").append(query.escaped_name);
+		string query2 = string("The user tried to download the following table: ").append(query.escaped_name.c_str());
 		SaveClientLog("Possible Hacking Attempt",  (char*)query2.c_str(), "Hacking Data", server_ip);
 	}
 	return table_query;	
@@ -906,9 +906,9 @@ TableDataQuery* LoginDatabase::GetTableDataQuery(int32 server_ip, char* name, in
 TableQuery* LoginDatabase::GetLatestTableQuery(int32 server_ip, char* name, int16 version){
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name);
+	query.escaped_name = getSafeEscapeString(name);
 	TableQuery* table_query = 0;
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT query, version from login_table_versions where name = '%s' and version>=%i order by version", query.escaped_name, version + 1);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT query, version from login_table_versions where name = '%s' and version>=%i order by version", query.escaped_name.c_str(), version + 1);
 	if(result && mysql_num_rows(result) > 0){
 		int16 i = 0;
 		table_query = new TableQuery;
@@ -936,7 +936,7 @@ TableQuery* LoginDatabase::GetLatestTableQuery(int32 server_ip, char* name, int1
 	}
 	return table_query;
 }
-sint16 LoginDatabase::GetDataVersion(char* name){
+sint16 LoginDatabase::GetDataVersion(const char* name){
 	Query query;
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT max(table_data_version) from %s", name);
 	sint16 ret_version = 0;
