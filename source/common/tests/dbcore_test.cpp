@@ -2,6 +2,7 @@
 #include <string>
 #include <cassert>
 #include <cstring>
+#include <cstdint>
 
 // Dummy mock for DBcore to test DoEscapeString and getSafeEscapeString logic without a real DB connection
 class DBcoreMock {
@@ -68,7 +69,9 @@ void test_getSafeEscapeString() {
     std::cout << "All getSafeEscapeString tests passed!" << std::endl;
 }
 
+#ifdef DBCORE_TEST_STANDALONE
 int main() {
     test_getSafeEscapeString();
     return 0;
 }
+#endif // DBCORE_TEST_STANDALONE

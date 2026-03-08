@@ -682,15 +682,15 @@ int32 LoginDatabase::CheckServerAccount(char* name, char* passwd){
 	query.escaped_name = getSafeEscapeString(name);
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT lower(password), id from login_worldservers where account='%s' and disabled = 0", query.escaped_name.c_str());
 
-	LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccount Account=%s\nSHA=%s", (char*)query.escaped_name.c_str(), passwd);
+	LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccount Account=%s\nSHA=%s", query.escaped_name.c_str(), passwd);
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
 
-		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResult Account=%s\nPassword=%s", (char*)query.escaped_name.c_str(), (row && row[0]) ? row[0] : "(NULL)");
+		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResult Account=%s\nPassword=%s", query.escaped_name.c_str(), (row && row[0]) ? row[0] : "(NULL)");
 
 		if (memcmp(row[0], passwd, strnlen(row[0], 256)) == 0)
 		{
-			LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResultMatch Account=%s", (char*)query.escaped_name.c_str());
+			LogWrite(LOGIN__INFO, 0, "Login", "WorldServer CheckServerAccountResultMatch Account=%s", query.escaped_name.c_str());
 			id = atoi(row[1]);
 		}
 	}
@@ -703,11 +703,11 @@ bool LoginDatabase::IsServerAccountDisabled(char* name){
 	query.escaped_name = getSafeEscapeString(name);
 	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id from login_worldservers where account='%s' and disabled = 1", query.escaped_name.c_str());
 
-	LogWrite(LOGIN__DEBUG, 0, "Login", "WorldServer IsServerAccountDisabled Account=%s", (char*)query.escaped_name.c_str());
+	LogWrite(LOGIN__DEBUG, 0, "Login", "WorldServer IsServerAccountDisabled Account=%s", query.escaped_name.c_str());
 	if(result && mysql_num_rows(result) > 0){
 		row = mysql_fetch_row(result);
 
-		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer IsServerAccountDisabled Match Account=%s", (char*)query.escaped_name.c_str());
+		LogWrite(LOGIN__INFO, 0, "Login", "WorldServer IsServerAccountDisabled Match Account=%s", query.escaped_name.c_str());
 
 		return true;
 	}
