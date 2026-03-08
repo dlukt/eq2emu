@@ -474,7 +474,7 @@ private:
 };
 class TableDataQuery{
 public:
-	TableDataQuery(char* table_name){
+	TableDataQuery(const char* table_name){
 		if( strlen(table_name) >= sizeof(tablename) )
 			return;
 		strcpy(tablename, table_name);

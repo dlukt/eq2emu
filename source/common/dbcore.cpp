@@ -330,17 +330,6 @@ bool DBcore::Open(int32* errnum, char* errbuf) {
 	}
 }
 
-char* DBcore::getEscapeString(const char* from_string){
-	if(!from_string)
-		from_string ="";
-	int orig_size = strlen(from_string);
-	int escape_size = (orig_size * 2) + 1;
-	char* escaped = new char[escape_size];
-	memset(escaped, 0, escape_size);
-	DoEscapeString(escaped, from_string, orig_size);
-	return escaped;
-}
-
 string DBcore::getSafeEscapeString(const char* from_string){
 	if(!from_string)
 		return "";

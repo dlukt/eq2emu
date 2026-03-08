@@ -63,17 +63,17 @@ public:
 	bool UpdateCharacterZone(int32 account_id, int32 character_id, int32 zone_id, int32 server_id);
 	bool UpdateCharacterGender(int32 account_id, int32 character_id, int8 in_gender, int32 server_id);
 	int32 GetRaceID(char* name);
-	void UpdateRaceID(char* name);
+	void UpdateRaceID(const char* name);
 	bool DeleteCharacter(int32 account_id, int32 character_id, int32 server_id);
 	void SaveClientLog(const char* type, const char* message, const char* player_name, int16 version);
 	bool CheckVersion(char* version);
 	void GetLatestTableVersions(LatestTableVersions* table_versions);
 	TableQuery* GetLatestTableQuery(int32 server_ip, char* name, int16 version);
-	bool VerifyDataTable(char* name);
-	sint16 GetDataVersion(char* name);
+	bool VerifyDataTable(const char* name);
+	sint16 GetDataVersion(const char* name);
 	void SetZoneInformation(int32 server_id, int32 zone_id, int32 version, PacketStruct* packet);
 	string GetZoneDescription(char* name);
-	string GetColumnNames(char* name);
+	string GetColumnNames(const char* name);
 	TableDataQuery* GetTableDataQuery(int32 server_ip, char* name, int16 version);
 
 	void UpdateWorldServerStats( LWorld* world, sint32 status);

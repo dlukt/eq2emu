@@ -1831,8 +1831,8 @@ bool WorldDatabase::loadCharacter(const char* ch_name, int32 account_id, Client*
 	Query query, query4;
 	MYSQL_ROW row, row4;
 	int32 id = 0;
-	query.escaped_name = getEscapeString(ch_name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id, current_zone_id, x, y, z, heading, admin_status, race, model_type, class, deity, level, gender, tradeskill_class, tradeskill_level, wing_type, hair_type, chest_type, legs_type, soga_wing_type, soga_hair_type, soga_chest_type, soga_legs_type, 0xFFFFFFFF - crc32(name), facial_hair_type, soga_facial_hair_type, instance_id, group_id, last_saved, DATEDIFF(curdate(), created_date) as accage, alignment, first_world_login, zone_duplicating_id, grid_id FROM characters where name='%s' and account_id=%i AND deleted = 0", query.escaped_name, account_id);
+	query.escaped_name = getSafeEscapeString(ch_name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT id, current_zone_id, x, y, z, heading, admin_status, race, model_type, class, deity, level, gender, tradeskill_class, tradeskill_level, wing_type, hair_type, chest_type, legs_type, soga_wing_type, soga_hair_type, soga_chest_type, soga_legs_type, 0xFFFFFFFF - crc32(name), facial_hair_type, soga_facial_hair_type, instance_id, group_id, last_saved, DATEDIFF(curdate(), created_date) as accage, alignment, first_world_login, zone_duplicating_id, grid_id FROM characters where name='%s' and account_id=%i AND deleted = 0", query.escaped_name.c_str(), account_id);
 	// no character found
 	if ( result == NULL ) {
 		LogWrite(PLAYER__ERROR, 0, "Player", "Error loading character for '%s'", ch_name);
@@ -2525,8 +2525,8 @@ int16 WorldDatabase::GetAppearanceID(string name){
 	int32 id = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name.c_str());
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT appearance_id FROM appearances where name='%s'", query.escaped_name);
+	query.escaped_name = getSafeEscapeString(name.c_str());
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT appearance_id FROM appearances where name='%s'", query.escaped_name.c_str());
 	if(result && mysql_num_rows(result) == 1){
 		row = mysql_fetch_row(result);
 		id = atoi(row[0]);
@@ -2538,12 +2538,12 @@ vector<int16>* WorldDatabase::GetAppearanceIDsLikeName(string name, bool filtere
 	vector<int16>* ids = 0;
 	Query query;
 	MYSQL_ROW row;
-	query.escaped_name = getEscapeString(name.c_str());
+	query.escaped_name = getSafeEscapeString(name.c_str());
 	MYSQL_RES* result;
 	if (filtered)
-		result = query.RunQuery2(Q_SELECT, "SELECT `appearance_id` FROM `appearances` WHERE `name` RLIKE '%s' AND `name` NOT RLIKE 'ghost' AND `name` NOT RLIKE 'headless' AND `name` NOT RLIKE 'elemental' AND `name` NOT RLIKE 'test' AND `name` NOT RLIKE 'zombie' AND `name` NOT RLIKE 'vampire'", query.escaped_name);
+		result = query.RunQuery2(Q_SELECT, "SELECT `appearance_id` FROM `appearances` WHERE `name` RLIKE '%s' AND `name` NOT RLIKE 'ghost' AND `name` NOT RLIKE 'headless' AND `name` NOT RLIKE 'elemental' AND `name` NOT RLIKE 'test' AND `name` NOT RLIKE 'zombie' AND `name` NOT RLIKE 'vampire'", query.escaped_name.c_str());
 	else
-		result = query.RunQuery2(Q_SELECT, "SELECT `appearance_id` FROM `appearances` WHERE `name` RLIKE '%s' AND `name` NOT RLIKE 'ghost' AND `name`", query.escaped_name);
+		result = query.RunQuery2(Q_SELECT, "SELECT `appearance_id` FROM `appearances` WHERE `name` RLIKE '%s' AND `name` NOT RLIKE 'ghost' AND `name`", query.escaped_name.c_str());
 	while (result && (row = mysql_fetch_row(result))) {
 		if (!ids)
 			ids = new vector<int16>;
@@ -3073,13 +3073,13 @@ void WorldDatabase::LoadZoneInfo(ZoneServer* zone, int32 minLevel, int32 maxLeve
 	int32 ruleset_id;
 	zone->setGroupRaidLevels(minLevel, maxLevel, avgLevel, firstLevel);
 	
-	char* escaped = getEscapeString(zone->GetZoneName());
-	std::shared_ptr<ZoneInfoMemory> zoneInfo = world.GetZoneInfoByName(escaped);
+	std::string escaped = getSafeEscapeString(zone->GetZoneName());
+	std::shared_ptr<ZoneInfoMemory> zoneInfo = world.GetZoneInfoByName(escaped.c_str());
 	
 	MYSQL_RES* result = nullptr;
 	
 	if(zoneInfo == nullptr)
-		result = query.RunQuery2(Q_SELECT, "SELECT id, file, description, underworld, safe_x, safe_y, safe_z, min_status, min_level, max_level, instance_type+0, shutdown_timer, zone_motd, default_reenter_time, default_reset_time, default_lockout_time, force_group_to_zone, safe_heading, xp_modifier, ruleset_id, expansion_id, weather_allowed, sky_file, can_bind, can_gate, city_zone, can_evac, lua_script FROM zones where name='%s'",escaped);
+		result = query.RunQuery2(Q_SELECT, "SELECT id, file, description, underworld, safe_x, safe_y, safe_z, min_status, min_level, max_level, instance_type+0, shutdown_timer, zone_motd, default_reenter_time, default_reset_time, default_lockout_time, force_group_to_zone, safe_heading, xp_modifier, ruleset_id, expansion_id, weather_allowed, sky_file, can_bind, can_gate, city_zone, can_evac, lua_script FROM zones where name='%s'",escaped.c_str());
 	if((zoneInfo || (result && mysql_num_rows(result) > 0))) {
 		if(result && zoneInfo == nullptr) 
 		{	
@@ -3092,11 +3092,10 @@ void WorldDatabase::LoadZoneInfo(ZoneServer* zone, int32 minLevel, int32 maxLeve
 		}
 		
 		if(!result && !zoneInfo) {
-			LogWrite(ZONE__ERROR, 0, "Zones", "Failed to get zone info for %s.", escaped);
-			safe_delete_array(escaped);
+			LogWrite(ZONE__ERROR, 0, "Zones", "Failed to get zone info for %s.", escaped.c_str());
 			return;
 		}
-		zone->SetZoneName(escaped);
+		zone->SetZoneName(escaped.c_str());
 		zone->SetZoneID(zoneInfo->zoneID);
 		zone->SetZoneFile((char*)zoneInfo->zoneFile.c_str());
 		zone->SetZoneDescription((char*)zoneInfo->zoneDescription.c_str());
@@ -3140,7 +3139,6 @@ void WorldDatabase::LoadZoneInfo(ZoneServer* zone, int32 minLevel, int32 maxLeve
 		zone->SetCityZone(zoneInfo->cityZone);
 		zone->SetCanEvac(zoneInfo->canEvac);
 	}
-	safe_delete_array(escaped);
 }
 
 
@@ -3215,21 +3213,20 @@ void WorldDatabase::SaveZoneInfo(int32 zone_id, const char* field, const char* v
 int32 WorldDatabase::GetZoneID(const char* name) {
 	int32 zone_id = 0;
 	Query query;
-	char* escaped = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT `id` FROM zones WHERE `name`=\"%s\"", escaped);
+	std::string escaped = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT `id` FROM zones WHERE `name`=\"%s\"", escaped.c_str());
 	if (result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
 		zone_id = atoi(row[0]);
 	}
-	safe_delete_array(escaped);
 	return zone_id;
 }
 
 bool WorldDatabase::GetZoneRequirements(const char* zoneName, sint16* minStatus, int16* minLevel, int16* maxLevel, int16* minVersion) {	
 	Query query;
-	char* escaped = getEscapeString(zoneName);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT min_status, min_level, max_level, expansion_id FROM zones where name='%s'",escaped);
+	std::string escaped = getSafeEscapeString(zoneName);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT min_status, min_level, max_level, expansion_id FROM zones where name='%s'",escaped.c_str());
 	if(result && mysql_num_rows(result) > 0) {
 		MYSQL_ROW row;
 		row = mysql_fetch_row(result);
@@ -3246,12 +3243,8 @@ bool WorldDatabase::GetZoneRequirements(const char* zoneName, sint16* minStatus,
 			*minVersion = GetMinimumClientVersion(expansion_id);
 		else
 			*minVersion = 0;
-
-		safe_delete_array(escaped);
 		return true;
 	}
-	safe_delete_array(escaped);
-
 	return false;
 }
 
@@ -4511,9 +4504,8 @@ string WorldDatabase::GetZoneName(int32 id){
 
 bool WorldDatabase::VerifyZone(const char* name){
 	Query query;
-	char* escaped = getEscapeString(name);
-	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT name FROM zones where name='%s'",escaped);
-	safe_delete_array(escaped);
+	std::string escaped = getSafeEscapeString(name);
+	MYSQL_RES* result = query.RunQuery2(Q_SELECT, "SELECT name FROM zones where name='%s'",escaped.c_str());
 	if(result && mysql_num_rows(result) > 0)
 		return true;
 	else
@@ -7873,7 +7865,7 @@ void WorldDatabase::LoadCharacterLUAHistory(int32 char_id, Player* player) {
 void WorldDatabase::FindSpell(Client* client, char* findString)
 {
 	
-	char* find_escaped = getEscapeString(findString);
+	std::string find_escaped = getSafeEscapeString(findString);
 	
 	DatabaseResult result;
 		if (!database_new.Select(&result, "SELECT s.`id`, ts.spell_id, ts.index, `name`, `tier` "
@@ -7881,7 +7873,7 @@ void WorldDatabase::FindSpell(Client* client, char* findString)
 			"LEFT JOIN spell_ts_ability_index ts "
 			"ON s.`id` = ts.spell_id "
 			"WHERE s.id = st.spell_id and s.name like '%%%s%%' AND s.is_active = 1 "
-			"ORDER BY s.`id`, `tier` limit 50", find_escaped))
+			"ORDER BY s.`id`, `tier` limit 50", find_escaped.c_str()))
 		{
 			// error
 		}
@@ -7895,10 +7887,8 @@ void WorldDatabase::FindSpell(Client* client, char* findString)
 				int8 tier = result.GetInt8Str("tier");
 				client->Message(CHANNEL_COLOR_YELLOW, "%i (%i): %s", spell_id, tier, spell_name.c_str());
 			}
-			client->Message(CHANNEL_COLOR_YELLOW, "End Spell Results for %s", find_escaped);
+			client->Message(CHANNEL_COLOR_YELLOW, "End Spell Results for %s", find_escaped.c_str());
 		}
-		
-	safe_delete_array(find_escaped);
 }
 
 void WorldDatabase::LoadChestTraps() {
@@ -8147,27 +8137,23 @@ int32 WorldDatabase::CreateSpiritShard(const char* name, int32 level, int8 race,
 	LogWrite(WORLD__INFO, 3, "World", "Saving Spirit Shard %s %u", name, charid);
 
 	Query query;
-	char* name_escaped = getEscapeString(name);
+	std::string name_escaped = getSafeEscapeString(name);
 	
 	if(!sub_title)
 		sub_title = "";
-	char* subtitle_escaped = getEscapeString(sub_title);
-	char* prefix_escaped = getEscapeString(prefix_title);
-	char* suffix_escaped = getEscapeString(suffix_title);
-	char* lastname_escaped = getEscapeString(lastname);
+	std::string subtitle_escaped = getSafeEscapeString(sub_title);
+	std::string prefix_escaped = getSafeEscapeString(prefix_title);
+	std::string suffix_escaped = getSafeEscapeString(suffix_title);
+	std::string lastname_escaped = getSafeEscapeString(lastname);
 	string insert = string("INSERT INTO character_spirit_shards (name, level, race, gender, adventure_class, model_type, soga_model_type, hair_type, hair_face_type, wing_type, chest_type, legs_type, soga_hair_type, soga_hair_face_type, hide_hood, size, collision_radius, action_state, visual_state, mood_state, emote_state, pos_state, activity_status, sub_title, prefix_title, suffix_title, lastname, x, y, z, heading, gridid, charid, zoneid, instanceid) VALUES ('%s', %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, %u, '%s', '%s', '%s', '%s', %f, %f, %f, %f, %u, %u, %u, %u)");
-	query.RunQuery2(Q_INSERT, insert.c_str(), name_escaped, level, race, gender, adventure_class, model_type, soga_model_type, 
+	query.RunQuery2(Q_INSERT, insert.c_str(), name_escaped.c_str(), level, race, gender, adventure_class, model_type, soga_model_type,
 																hair_type, hair_face_type, wing_type, chest_type, legs_type, soga_hair_type, 
 																soga_hair_face_type, hide_hood, size, collision_radius, action_state, visual_state, 
-																mood_state, emote_state, pos_state, activity_status, subtitle_escaped, prefix_escaped, suffix_escaped, 
-																lastname_escaped, x, y, z, heading, gridid, charid, zoneid, instanceid);
+																mood_state, emote_state, pos_state, activity_status, subtitle_escaped.c_str(), prefix_escaped.c_str(), suffix_escaped.c_str(),
+																lastname_escaped.c_str(), x, y, z, heading, gridid, charid, zoneid, instanceid);
 
-	
-	safe_delete_array(name_escaped);
-	safe_delete_array(subtitle_escaped);
-	safe_delete_array(prefix_escaped);
-	safe_delete_array(suffix_escaped);
-	safe_delete_array(lastname_escaped);
+
+
 
 	return query.GetLastInsertedID();
 }
