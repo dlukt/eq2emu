@@ -13,6 +13,7 @@
 #include "../common/linked_list.h"
 #include "PacketHeaders.h"
 #include "../common/PacketStruct.h"
+#include "../common/MiscFunctions.h"
 
 using namespace std;
 class LoginAccount {
@@ -20,14 +21,14 @@ public:
 	LoginAccount();
 	LoginAccount(int32 id, const char* in_name, const char* in_pass){ 
 		account_id = id;
-		strcpy(name, in_name);
-		strcpy(password, in_pass);
+		strlcpy(name, in_name, sizeof(name));
+		strlcpy(password, in_pass, sizeof(password));
 	}
 	~LoginAccount();
 	bool SaveAccount(LoginAccount* acct);
 	vector<CharSelectProfile*> charlist;
-	void setName(const char* in_name) { strcpy(name, in_name); }
-	void setPassword(const char* in_pass) { strcpy(password, in_pass); }
+	void setName(const char* in_name) { strlcpy(name, in_name, sizeof(name)); }
+	void setPassword(const char* in_pass) { strlcpy(password, in_pass, sizeof(password)); }
 	void setAuthenticated(bool in_auth) { authenticated=in_auth; }
 	void setAccountID(int32 id){ account_id = id; }
 	void addCharacter(CharSelectProfile* profile){
