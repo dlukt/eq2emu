@@ -13,6 +13,7 @@
 #include "login_structs.h"
 #include "LoginAccount.h"
 #include "../common/PacketStruct.h"
+#include "../common/MiscFunctions.h"
 #include <string>
 #include <vector>
 
@@ -45,7 +46,7 @@ public:
 	}
 	int16	GetVersion(){ return version; }
 	char*	GetKey()   { return key; }
-	void	SetKey(char* in_key) { strcpy(key,in_key); }
+	void	SetKey(const char* in_key) { strlcpy(key, in_key, sizeof(key)); }
 	int32	GetIP()    { return ip; }
 	int16	GetPort()  { return port; }
 	int32	GetAccountID() { return account_id; }
