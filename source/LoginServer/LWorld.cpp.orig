@@ -1,4 +1,4 @@
-/*  
+/*
 	EQ2Emulator:  Everquest II Server Emulator
 	Copyright (C) 2007  EQ2EMulator Development Team (http://www.eq2emulator.net)
 
@@ -39,7 +39,6 @@ extern int errno;
 #include "LoginDatabase.h"
 #include "PacketHeaders.h"
 #include "../common/ConfigReader.h"
-#include "../common/MiscFunctions.h"
 
 #ifdef WIN32
 #define snprintf	_snprintf
@@ -159,7 +158,7 @@ LWorld::LWorld(TCPConnection* in_RemoteLink, int32 in_ip, int32 in_RemoteID, int
 	RemoteID = in_RemoteID;
 	LinkWorldID = iLinkWorldID;
 	ip = in_ip;
-	
+
 	struct in_addr  in;
 	if(in_RemoteLink)
 		in.s_addr = in_RemoteLink->GetrIP();
@@ -254,7 +253,7 @@ bool LWorld::Process() {
 	if(pStatsTimer && pStatsTimer->Check())
 	{
 		if(isAuthenticated && (database.IsServerAccountDisabled(account) || database.IsIPBanned(IPAddr)))
-		{	
+		{
 			this->Kick(ERROR_BADPASSWORD);
 			return false;
 		}
@@ -417,7 +416,7 @@ bool LWorld::Process() {
 				{
 					if(cdu->update_field == 1)
 						database.DeleteCharacter(cdu->account_id,cdu->char_id,this->GetAccountID());
-					break;			
+					break;
 				}
 			}
 			break;
@@ -432,7 +431,7 @@ bool LWorld::Process() {
 
 					// Null-terminate the string just in case
 					name_buffer[cnu->name_length] = '\0';
-					
+
 					database.UpdateCharacterName(cnu->account_id,cnu->char_id,name_buffer,this->GetAccountID());
 				}
 				break;
@@ -732,7 +731,7 @@ bool LWorld::SetupWorld(char* in_worldname, char* in_worldaddress, char* in_acco
 			return false;
 		if(database.IsServerAccountDisabled(tmpAccount) || database.IsIPBanned(IPAddr) || (isaddressip && database.IsIPBanned(address)))
 			return false;
-		
+
 		LWorld* world = world_list.FindByID(id);
 		if(world)
 			world->Kick("Ghost Kick!");
@@ -760,7 +759,7 @@ bool LWorld::SetupWorld(char* in_worldname, char* in_worldaddress, char* in_acco
 		IsInit = false;
 		return false;
 	}
-	
+
 	database.UpdateWorldVersion(GetAccountID(), in_version);
 	pStatsTimer = new Timer ( 60000 );
 	pStatsTimer->Start ( 60000 );
@@ -1334,7 +1333,7 @@ void LWorldList::RemoveByID(int32 in_id) {
 }
 
 bool LWorldList::Init() {
-	
+
 	database.ResetWorldStats ( );
 
 	if (!tcplistener->IsOpen()) {
@@ -1376,7 +1375,7 @@ void LWorldList::ListWorldsToConsole() {
 	struct in_addr in;
 
 	cout << "World List:" << endl;
-	cout << "============================" << endl;	
+	cout << "============================" << endl;
 	map<int32,LWorld*>::iterator map_list;
 	for( map_list = worldmap.begin(); map_list != worldmap.end(); map_list++) {
 		LWorld* world = map_list->second;
@@ -1440,7 +1439,7 @@ void LWorldList::AddServerEquipmentUpdates(LWorld* world, map<int32, LoginEquipm
 
 void LWorldList::RequestServerUpdates(LWorld* world){
 	if(world){
-		ServerPacket* pack = new ServerPacket(ServerOP_ZoneUpdates, sizeof(ZoneUpdateRequest_Struct));			
+		ServerPacket* pack = new ServerPacket(ServerOP_ZoneUpdates, sizeof(ZoneUpdateRequest_Struct));
 		ZoneUpdateRequest_Struct* request = (ZoneUpdateRequest_Struct*)pack->pBuffer;
 		request->max_per_batch = MAX_UPDATE_COUNT;
 		world->SendPacket(pack);
@@ -1449,12 +1448,12 @@ void LWorldList::RequestServerUpdates(LWorld* world){
 	}
 }
 
-void LWorldList::ProcessServerUpdates(){	
+void LWorldList::ProcessServerUpdates(){
 	MutexMap<int32, map<int32, LoginZoneUpdate> >::iterator itr = server_zone_updates.begin();
 	while(itr.Next()){
 		if(itr->second.size() > 0){
-			database.SetServerZoneDescriptions(itr->first, itr->second);			
-			if(itr->second.size() == MAX_UPDATE_COUNT)			
+			database.SetServerZoneDescriptions(itr->first, itr->second);
+			if(itr->second.size() == MAX_UPDATE_COUNT)
 				awaiting_zone_update.Put(itr->first, Timer::GetCurrentTime2() + 10000); //only process 20 updates in a 10 second period to avoid network problems
 			server_zone_updates.erase(itr->first);
 		}
@@ -1476,7 +1475,7 @@ void LWorldList::ProcessServerUpdates(){
 			}
 			if(awaiting_zone_update.count(world->GetID()) > 0 && awaiting_zone_update.Get(world->GetID()) <= Timer::GetCurrentTime2()){
 				awaiting_zone_update.erase(world->GetID());
-				RequestServerUpdates(world);				
+				RequestServerUpdates(world);
 			}
 		}
 	}
@@ -1508,7 +1507,7 @@ void LWorldList::ProcessLSEquipUpdates()
 		{
 			LogWrite(LOGIN__DEBUG, 1, "Login", "Setting Login Appearances...");
 			database.SetServerEquipmentAppearances(itr_equip->first, itr_equip->second);
-			if(itr_equip->second.size() == MAX_LOGIN_APPEARANCE_COUNT)			
+			if(itr_equip->second.size() == MAX_LOGIN_APPEARANCE_COUNT)
 				awaiting_equip_update.Put(itr_equip->first, Timer::GetCurrentTime2() + 10000); //only process 100 updates in a 10 second period to avoid network problems
 			server_equip_updates.erase(itr_equip->first);
 		}

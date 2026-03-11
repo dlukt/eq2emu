@@ -1,4 +1,4 @@
-/*  
+/*
     EQ2Emulator:  Everquest II Server Emulator
     Copyright (C) 2007  EQ2EMulator Development Team (http://www.eq2emulator.net)
 
@@ -29,7 +29,6 @@ using namespace std;
 #include "../common/version.h"
 #include "../common/GlobalHeaders.h"
 #include "../common/sha512.h"
-#include "../common/MiscFunctions.h"
 
 #ifdef WIN32
 #include <process.h>
@@ -184,7 +183,7 @@ bool LoginServer::Process() {
 				//net.ReadLoginINI(); // can't properly support with command line args now
 				break;
 			}
-		case ServerOP_CharTimeStamp: 
+		case ServerOP_CharTimeStamp:
 			{
 				LogWrite(OPCODE__DEBUG, 1, "Opcode", "Opcode 0x%X (%i): ServerOP_CharTimeStamp", pack->opcode, pack->opcode);
 
@@ -280,9 +279,7 @@ bool LoginServer::Process() {
 					MutexMap<int32, LoginZoneUpdate>::iterator itr = zone_updates->begin();
 					while(itr.Next() && count < max){
 						send_map[itr->first] = itr->second;
-						uint8 name_len = itr->second.name.length() > 255 ? 255 : itr->second.name.length();
-						uint8 desc_len = itr->second.description.length() > 255 ? 255 : itr->second.description.length();
-						size += sizeof(ZoneUpdate_Struct) + name_len + desc_len;
+						size += sizeof(ZoneUpdate_Struct) + itr->second.name.length() + itr->second.description.length();
 						zone_updates->erase(itr->first);
 						count++;
 					}
@@ -334,7 +331,7 @@ bool LoginServer::Process() {
 					resp = database.CheckNameFilter(name.data.c_str());
 					acct_id = packet->getType_int32_ByName("account_id");
 					LogWrite(WORLD__DEBUG, 0, "World", "Response: %i", (int)resp);
-					
+
 					sint16 lowestStatus = database.GetLowestCharacterAdminStatus(acct_id);
 					if(lowestStatus == -2)
 						resp = UNKNOWNERROR_REPLY2;
@@ -365,7 +362,7 @@ bool LoginServer::Process() {
 				{
 					LogWrite(WORLD__DEBUG, 0, "World", "Delete character request: %i %i",cdu->account_id,cdu->char_id );
 					database.DeleteCharacter(cdu->account_id,cdu->char_id);
-					break;			
+					break;
 				}
 			}
 			break;
@@ -373,7 +370,7 @@ bool LoginServer::Process() {
 		case ServerOP_UsertoWorldReq:{
 			LogWrite(OPCODE__DEBUG, 0, "Opcode", "Opcode 0x%X (%i): ServerOP_UsertoWorldReq", pack->opcode, pack->opcode);
 
-			UsertoWorldRequest_Struct* utwr = (UsertoWorldRequest_Struct*) pack->pBuffer;	
+			UsertoWorldRequest_Struct* utwr = (UsertoWorldRequest_Struct*) pack->pBuffer;
 			/*int32 id = database.GetAccountIDFromLSID(utwr->lsaccountid);
 			sint16 status = database.CheckStatus(id);
 			*/
@@ -452,7 +449,7 @@ bool InitLoginServer() {
 	return true;
 }
 
-void LoginServer::InitLoginServerVariables() 
+void LoginServer::InitLoginServerVariables()
 {
 	minLockedStatus		= rule_manager.GetGlobalRule(R_World, ServerLockedOverrideStatus)->GetSInt16();
 	maxPlayers			= rule_manager.GetGlobalRule(R_World, MaxPlayers)->GetSInt16();
@@ -579,7 +576,7 @@ int32 LoginServer::DetermineCharacterLoginRequest ( UsertoWorldRequest_Struct* u
 	sint16 lowestStatus = database.GetLowestCharacterAdminStatus( utwr->lsaccountid );
 
 	sint16 status = 0;
-	
+
 	if(lowestStatus == -2)
 		status = -1;
 	else
@@ -679,7 +676,7 @@ int32 LoginServer::DetermineCharacterLoginRequest ( UsertoWorldRequest_Struct* u
 					LogWrite(PEERING__WARNING, 0, "Peering", "%s: AddCharAuth failed to find healthy peer for char id %u", __FUNCTION__, utwr->char_id);
 			}
 	}
-	
+
 	/*sint32 x = database.CommandRequirement("$MAXCLIENTS");
 	if( (sint32)numplayers >= x && x != -1 && x != 255 && status < 80)
 	utwrs->response = -3;
@@ -690,7 +687,7 @@ int32 LoginServer::DetermineCharacterLoginRequest ( UsertoWorldRequest_Struct* u
 	utwrs->response = -2;
 	*/
 	//printf("Response is %i for %i\n",utwrs->response,id);struct sockaddr_in sa;
-	
+
 	if(!attemptedPeer) {
 		SendCharApprovedLogin(response, "", "", std::string(utwr->ip_address), 0, utwr->lsaccountid, utwr->char_id, key, utwr->worldid, utwr->FromID);
 	}
@@ -712,7 +709,7 @@ void LoginServer::SendCharApprovedLogin(int8 response, std::string peerAddress, 
 	utwrs->char_id = char_id;
 	utwrs->ToID = from_id;
 	utwrs->access_key = key;
-	
+
 	int32 ipv4addr = 0;
 	int result = 0;
 	#ifdef WIN32
@@ -727,7 +724,7 @@ void LoginServer::SendCharApprovedLogin(int8 response, std::string peerAddress, 
 		if(result)
 			ipv4addr = ntohl(ipv4addr);
 	#endif
-	
+
 	std::string internalAddress = std::string(net.GetInternalWorldAddress());
 	std::string address = std::string(net.GetWorldAddress());
 	int16 worldport = net.GetWorldPort();
@@ -740,7 +737,7 @@ void LoginServer::SendCharApprovedLogin(int8 response, std::string peerAddress, 
 		strlcpy(utwrs->ip_address, internalAddress.c_str(), sizeof(utwrs->ip_address));
 	else
 		strlcpy(utwrs->ip_address, address.c_str(), sizeof(utwrs->ip_address));
-	
+
 	LogWrite(CCLIENT__INFO, 0, "World", "New client login attempt from %s, providing %s:%u as the world server address.",clientIP.c_str(), utwrs->ip_address, worldport );
 
 	utwrs->port = worldport;
