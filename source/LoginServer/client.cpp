@@ -346,7 +346,7 @@ bool Client::Process() {
 
 						struct in_addr in;
 						in.s_addr = GetIP();
-						strcpy(req->ip_address, inet_ntoa(in));
+						strlcpy(req->ip_address, inet_ntoa(in), sizeof(req->ip_address));
 						world->SendPacket(outpack);
 						delete outpack;
 
@@ -485,7 +485,7 @@ void Client::CharacterApproved(int32 server_id,int32 char_id)
 
 				struct in_addr in;
 				in.s_addr = GetIP();
-				strcpy(req->ip_address, inet_ntoa(in));
+				strlcpy(req->ip_address, inet_ntoa(in), sizeof(req->ip_address));
 				world_server->SendPacket(outpack);
 				delete outpack;
 			}

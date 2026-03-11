@@ -293,8 +293,8 @@ bool LoginServer::Process() {
 						update->zone_id = send_itr->first;
 						update->zone_name_length = send_itr->second.name.length();
 						update->zone_desc_length = send_itr->second.description.length();
-						strcpy(update->data, send_itr->second.name.c_str());
-						strcpy(update->data + send_itr->second.name.length(), send_itr->second.description.c_str());
+						memcpy(update->data, send_itr->second.name.c_str(), update->zone_name_length);
+						memcpy(update->data + update->zone_name_length, send_itr->second.description.c_str(), update->zone_desc_length);
 						pos += sizeof(ZoneUpdate_Struct) + send_itr->second.name.length() + send_itr->second.description.length();
 					}
 					SendPacket(outpack);
@@ -508,17 +508,17 @@ void LoginServer::SendInfo() {
 	pack->pBuffer = new uchar[pack->size];
 	memset(pack->pBuffer, 0, pack->size);
 	ServerLSInfo_Struct* lsi = (ServerLSInfo_Struct*) pack->pBuffer;
-	strcpy(lsi->protocolversion, EQEMU_PROTOCOL_VERSION);
-	strcpy(lsi->serverversion, CURRENT_VERSION);
-	strcpy(lsi->name, net.GetWorldName());
-	strcpy(lsi->account, net.GetWorldAccount());
+	strlcpy(lsi->protocolversion, EQEMU_PROTOCOL_VERSION, sizeof(lsi->protocolversion));
+	strlcpy(lsi->serverversion, CURRENT_VERSION, sizeof(lsi->serverversion));
+	strlcpy(lsi->name, net.GetWorldName(), sizeof(lsi->name));
+	strlcpy(lsi->account, net.GetWorldAccount(), sizeof(lsi->account));
 	lsi->dbversion = CURRENT_DATABASE_MAJORVERSION*100 + CURRENT_DATABASE_MINORVERSION;
 #ifdef _DEBUG
 	lsi->servertype = 4;
 #endif
 	string passwdSha512 = sha512(net.GetWorldPassword());
 	memcpy(lsi->password, (char*)passwdSha512.c_str(), passwdSha512.length());
-	strcpy(lsi->address, net.GetWorldAddress());
+	strlcpy(lsi->address, net.GetWorldAddress(), sizeof(lsi->address));
 	SendPacket(pack);
 	delete pack;
 }
@@ -734,9 +734,9 @@ void LoginServer::SendCharApprovedLogin(int8 response, std::string peerAddress, 
 		worldport = peerPort;
 	}
 		if (((result > 0 && IsPrivateAddress(ipv4addr)) || (strcmp(address.c_str(), clientIP.c_str()) == 0)) && (internalAddress.size() > 0))
-		strcpy(utwrs->ip_address, internalAddress.c_str());
+		strlcpy(utwrs->ip_address, internalAddress.c_str(), sizeof(utwrs->ip_address));
 	else
-		strcpy(utwrs->ip_address, address.c_str());
+		strlcpy(utwrs->ip_address, address.c_str(), sizeof(utwrs->ip_address));
 	
 	LogWrite(CCLIENT__INFO, 0, "World", "New client login attempt from %s, providing %s:%u as the world server address.",clientIP.c_str(), utwrs->ip_address, worldport );
 
