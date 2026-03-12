@@ -55,6 +55,7 @@ extern ConfigReader configReader;
 extern volatile bool RunLoops;
 
 #include "../common/Log.h"
+#include "../common/MiscFunctions.h"
 using namespace std;
 LWorld::LWorld(TCPConnection* in_con, bool in_OutgoingLoginUplink, int32 iIP, int16 iPort, bool iNeverKick) {
 	Link = in_con;
@@ -108,7 +109,7 @@ LWorld::LWorld(TCPConnection* in_con, bool in_OutgoingLoginUplink, int32 iIP, in
 	}
 
 	in.s_addr = GetIP();
-	strcpy(address, inet_ntoa(in));
+	strlcpy(address, inet_ntoa(in), sizeof(address));
 	isaddressip = true;
 
 	num_players = 0;
@@ -121,7 +122,7 @@ LWorld::LWorld(int32 in_accountid, char* in_accountname, char* in_worldname, int
 	ip = 0;
 	port = 0;
 	ID = 0;
-	strcpy(IPAddr,"");
+	strlcpy(IPAddr,"", sizeof(IPAddr));
 	pClientPort = 0;
 	memset(account, 0, sizeof(account));
 	memset(address, 0, sizeof(address));
@@ -142,10 +143,10 @@ LWorld::LWorld(int32 in_accountid, char* in_accountname, char* in_worldname, int
 	pStatsTimer = NULL;
 
 	ptype = World;
-	strcpy(account, in_accountname);
-	strcpy(worldname, in_worldname);
+	strlcpy(account, in_accountname, sizeof(account));
+	strlcpy(worldname, in_worldname, sizeof(worldname));
 
-	strcpy(address, "none");
+	strlcpy(address, "none", sizeof(address));
 
 	isaddressip = true;
 
@@ -188,10 +189,10 @@ LWorld::LWorld(TCPConnection* in_RemoteLink, int32 in_ip, int32 in_RemoteID, int
 	pStatsTimer = NULL;
 
 	ptype = World;
-	strcpy(account, in_accountname);
-	strcpy(worldname, in_worldname);
+	strlcpy(account, in_accountname, sizeof(account));
+	strlcpy(worldname, in_worldname, sizeof(worldname));
 
-	strcpy(address, in_address);
+	strlcpy(address, in_address, sizeof(address));
 
 	isaddressip = false;
 
@@ -686,7 +687,7 @@ void LWorld::Message(const char* to, const char* message, ...) {
 
 	ServerPacket* pack = new ServerPacket(ServerOP_EmoteMessage, sizeof(ServerEmoteMessage_Struct) + strlen(buffer) + 1);
 	ServerEmoteMessage_Struct* sem = (ServerEmoteMessage_Struct*) pack->pBuffer;
-	strcpy(sem->to, to);
+	strlcpy(sem->to, to, sizeof(sem->to));
 	strcpy(sem->message, buffer);
 	SendPacket(pack);
 	delete pack;
@@ -718,7 +719,7 @@ bool LWorld::CheckServerName(const char* name) {
 bool LWorld::SetupWorld(char* in_worldname, char* in_worldaddress, char* in_account, char* in_password, char* in_version) {
 	if (in_worldaddress[0] != '\0' && in_worldaddress[1] != '\0' && in_worldaddress[2] != '\0' && in_worldaddress[3] != '\0') {
 		isaddressip = false;
-		strcpy(address, in_worldaddress);
+		strlcpy(address, in_worldaddress, sizeof(address));
 	}
 	if (in_worldname[0] != '\0' && in_worldname[1] != '\0' && in_worldname[2] != '\0' && in_worldname[3] != '\0') {
 		char tmpAccount[30];
@@ -800,8 +801,8 @@ void LWorld::SetRemoteInfo(int32 in_ip, int32 in_accountid, char* in_account, ch
 	ip = in_ip;
 	accountid = in_accountid;
 //	strcpy(account, in_account);
-	strcpy(worldname, in_name);
-	strcpy(address, in_address);
+	strlcpy(worldname, in_name, sizeof(worldname));
+	strlcpy(address, in_address, sizeof(address));
 	status = in_status;
 	admin_id = in_adminid;
 	num_players = in_players;
