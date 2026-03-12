@@ -34,3 +34,7 @@
 **Vulnerability:** User input was correctly escaped with `mysql_real_escape_string` but then used directly in a `LIKE '%%%s%%'` query in `WorldDatabase::GetSpawnNameList`. This allowed users to inject wildcards (`%` or `_`) to bypass search filters (e.g., listing all items instead of matching a name).
 **Learning:** `mysql_real_escape_string` (and by extension `getSafeEscapeString`) does *not* escape wildcard characters (`%`, `_`) which are special in `LIKE` clauses. This can lead to logic bypasses or DoS (expensive queries).
 **Prevention:** When using user input in `LIKE` clauses, perform an additional escaping pass to escape `%` and `_` with backslashes (e.g., `\%`, `\_`), ensuring they are treated as literals.
+## 2024-06-25 - [LWorld Constructor Vulnerabilities]
+**Vulnerability:** Widespread buffer overflows in `LWorld` initialization. Unvalidated string lengths for world name, account, and IP addresses were passed to fixed-size array copies using `strcpy`.
+**Learning:** `LWorld` directly interacts with network packets, unpacking variables such as server names, IP addresses, and custom emotes dynamically. Unbounded copies into standard `char[x]` buffers via `strcpy` in high-velocity networking classes bypass any runtime safety.
+**Prevention:** Use `strlcpy` systematically on any network input mapped directly into a fixed-size `char` array within class fields to prevent stack/heap memory corruption.
