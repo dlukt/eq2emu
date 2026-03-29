@@ -28,6 +28,7 @@ using namespace std;
 #include <stdlib.h>
 #include "../common/version.h"
 #include "../common/GlobalHeaders.h"
+#include "../common/MiscFunctions.h"
 #include "../common/sha512.h"
 
 #ifdef WIN32
@@ -508,17 +509,18 @@ void LoginServer::SendInfo() {
 	pack->pBuffer = new uchar[pack->size];
 	memset(pack->pBuffer, 0, pack->size);
 	ServerLSInfo_Struct* lsi = (ServerLSInfo_Struct*) pack->pBuffer;
-	strcpy(lsi->protocolversion, EQEMU_PROTOCOL_VERSION);
-	strcpy(lsi->serverversion, CURRENT_VERSION);
-	strcpy(lsi->name, net.GetWorldName());
-	strcpy(lsi->account, net.GetWorldAccount());
+	// Security: bound all packet field copies to prevent fixed-buffer overflows.
+	strlcpy(lsi->protocolversion, EQEMU_PROTOCOL_VERSION, sizeof(lsi->protocolversion));
+	strlcpy(lsi->serverversion, CURRENT_VERSION, sizeof(lsi->serverversion));
+	strlcpy(lsi->name, net.GetWorldName(), sizeof(lsi->name));
+	strlcpy(lsi->account, net.GetWorldAccount(), sizeof(lsi->account));
 	lsi->dbversion = CURRENT_DATABASE_MAJORVERSION*100 + CURRENT_DATABASE_MINORVERSION;
 #ifdef _DEBUG
 	lsi->servertype = 4;
 #endif
 	string passwdSha512 = sha512(net.GetWorldPassword());
 	memcpy(lsi->password, (char*)passwdSha512.c_str(), passwdSha512.length());
-	strcpy(lsi->address, net.GetWorldAddress());
+	strlcpy(lsi->address, net.GetWorldAddress(), sizeof(lsi->address));
 	SendPacket(pack);
 	delete pack;
 }
