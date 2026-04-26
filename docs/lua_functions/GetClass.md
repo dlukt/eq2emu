@@ -6,7 +6,7 @@ Gets the adventure class of the Spawn.
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.
 
-**Returns:** UInt32 adventure class id for the Spawn.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/classes.md for the ID numbers.
+**Returns:** UInt32 adventure class id for the Spawn.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/classes.md for the ID numbers.
 
 **Example:**
 

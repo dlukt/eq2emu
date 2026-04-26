@@ -1,7 +1,7 @@
 ### Function: SetInfoStructSInt(spawn, field, value)
 
 **Description:**
-Sets the signed integer field to the value provided.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/info_struct.md for field types.
+Sets the signed integer field to the value provided.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/info_struct.md for field types.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.

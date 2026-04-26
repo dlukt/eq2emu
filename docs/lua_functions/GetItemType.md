@@ -1,7 +1,7 @@
 ### Function: GetItemType(item)
 
 **Description:**
-Gets the defined type of the item described in the database.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/item_types.md for item types.
+Gets the defined type of the item described in the database.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/item_types.md for item types.
 
 **Parameters:**
 - `item` (Item) - Item object representing `item`.

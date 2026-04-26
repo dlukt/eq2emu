@@ -2,7 +2,7 @@
 
 **Description:**
 
-Adds a spell bonus of the type specified.  The types are defined on https://github.com/emagi/eq2emu/blob/main/docs/data_types/item_stat_types.md
+Adds a spell bonus of the type specified.  The types are defined on https://github.com/dlukt/eq2emu/blob/main/docs/data_types/item_stat_types.md
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object reference `spawn`.

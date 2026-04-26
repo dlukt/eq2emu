@@ -1,7 +1,7 @@
 ### Function: DamageSpawn(attacker, victim, type, dmg_type, low_damage, high_damage, spell_name, crit_mod)
 
 **Description:**
-Damages the victim by the attacker.  `type` represents damage packet types listed here https://github.com/emagi/eq2emu/blob/main/docs/data_types/damage_packet_types.md converted from hex to decimal.
+Damages the victim by the attacker.  `type` represents damage packet types listed here https://github.com/dlukt/eq2emu/blob/main/docs/data_types/damage_packet_types.md converted from hex to decimal.
 
 **Parameters:**
 - `attacker` (Spawn) - Spawn object representing `attacker`.

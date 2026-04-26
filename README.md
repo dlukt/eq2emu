@@ -17,7 +17,7 @@ This guide walks you through compiling, installing, and running an **EverQuest I
 
 1. **Download the Linux compile script:**
    ```bash
-   wget https://raw.githubusercontent.com/emagi/eq2emu/main/linux_compile.sh
+   wget https://raw.githubusercontent.com/dlukt/eq2emu/main/linux_compile.sh
    ```
 
 2. **Edit configuration (optional):**

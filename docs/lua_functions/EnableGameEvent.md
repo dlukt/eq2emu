@@ -1,7 +1,7 @@
 ### Function: EnableGameEvent(player, event_name, enabled)
 
 **Description:**
-Triggers a game event on the Player's interface/UI, all behavior depends on the event_name.  The `event_name` options are defined in https://github.com/emagi/eq2emu/blob/main/docs/data_types/game_events.md
+Triggers a game event on the Player's interface/UI, all behavior depends on the event_name.  The `event_name` options are defined in https://github.com/dlukt/eq2emu/blob/main/docs/data_types/game_events.md
 
 **Parameters:**
 - `player` (Spawn) - Spawn object representing `player`.

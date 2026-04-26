@@ -1,7 +1,7 @@
 ### Function: GetInfoStructFloat(spawn, field)
 
 **Description:**
-Retrieves a floating-point field from a spawn’s info data. Could be used for precise position, speed multipliers, etc. if stored there.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
+Retrieves a floating-point field from a spawn’s info data. Could be used for precise position, speed multipliers, etc. if stored there.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.

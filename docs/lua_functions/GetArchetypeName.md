@@ -1,12 +1,12 @@
 ### Function: GetArchetypeName(spawn)
 
 **Description:**
-Gets the base class of the Spawn and then determines the archetype name of the Spawn.  The C++ code calls GetClassNameCase which changes the case sensitivity in that only the first letter is upper case for the classname.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/classes.md and use the Display Name.
+Gets the base class of the Spawn and then determines the archetype name of the Spawn.  The C++ code calls GetClassNameCase which changes the case sensitivity in that only the first letter is upper case for the classname.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/classes.md and use the Display Name.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.
 
-**Returns:** The class name in string format.  As listed under Display Name in classes https://github.com/emagi/eq2emu/blob/main/docs/data_types/classes.md
+**Returns:** The class name in string format.  As listed under Display Name in classes https://github.com/dlukt/eq2emu/blob/main/docs/data_types/classes.md
 
 **Example:**
 

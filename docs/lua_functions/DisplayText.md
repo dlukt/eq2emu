@@ -1,7 +1,7 @@
 ### Function: DisplayText(player, type, text)
 
 **Description:**
-Displays Channel Text on the Player's screen (without a Spawn attributed with a name, just a plain message).  The `type` are based on channel types in https://github.com/emagi/eq2emu/blob/main/docs/data_types/channel_types.md and support will vary on client version.
+Displays Channel Text on the Player's screen (without a Spawn attributed with a name, just a plain message).  The `type` are based on channel types in https://github.com/dlukt/eq2emu/blob/main/docs/data_types/channel_types.md and support will vary on client version.
 
 **Parameters:**
 - `player` (Spawn) - Spawn object representing `player`.

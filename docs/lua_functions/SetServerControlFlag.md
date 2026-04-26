@@ -1,7 +1,7 @@
 ### Function: SetServerControlFlag(spawn, param, param_value, value)
 
 **Description:**
-Tie to the control effect types found in https://github.com/emagi/eq2emu/blob/main/docs/data_types/control_effect_types.md
+Tie to the control effect types found in https://github.com/dlukt/eq2emu/blob/main/docs/data_types/control_effect_types.md
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.

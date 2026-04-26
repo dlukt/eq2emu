@@ -89,10 +89,10 @@ Stores important data and logs:
 
 Configuration files necessary to operate the server:
 
-- [`log_config.xml`](https://github.com/emagi/eq2emu/blob/main/server/log_config.xml.example): Logging configuration.
-- [`login_db.ini`](https://github.com/emagi/eq2emu/blob/main/server/login_db.ini.example): Login server database connection.
-- [`world_db.ini`](https://github.com/emagi/eq2emu/blob/main/server/world_db.ini.example): World server database connection.
-- [`server_config.json`](https://github.com/emagi/eq2emu/blob/main/server/server_config.json.example): Main configuration for login/world server and ports.
+- [`log_config.xml`](https://github.com/dlukt/eq2emu/blob/main/server/log_config.xml.example): Logging configuration.
+- [`login_db.ini`](https://github.com/dlukt/eq2emu/blob/main/server/login_db.ini.example): Login server database connection.
+- [`world_db.ini`](https://github.com/dlukt/eq2emu/blob/main/server/world_db.ini.example): World server database connection.
+- [`server_config.json`](https://github.com/dlukt/eq2emu/blob/main/server/server_config.json.example): Main configuration for login/world server and ports.
 
 </details>
 
@@ -106,14 +106,14 @@ Configuration files necessary to operate the server:
 - Handles login from EverQuest II clients.
 - Clients use `cl_ls_address` in `eq2_default.ini` to connect.
 - Default UDP Port: `9100`.
-- Configured via `LoginConfig -> ServerPort` in [`server_config.json`](https://github.com/emagi/eq2emu/blob/main/server/server_config.json.example).
+- Configured via `LoginConfig -> ServerPort` in [`server_config.json`](https://github.com/dlukt/eq2emu/blob/main/server/server_config.json.example).
 
 ### `eq2world`
 
 - Acts as the world and zone server.
 - Connects to `login` via TCP on `9100` (default).
 - Manages character creation, server list, and zoning.
-- Default UDP port: `9001` (can be customized via `LoginServer -> worldport` in [`server_config.json`](https://github.com/emagi/eq2emu/blob/main/server/server_config.json.example)).
+- Default UDP port: `9001` (can be customized via `LoginServer -> worldport` in [`server_config.json`](https://github.com/dlukt/eq2emu/blob/main/server/server_config.json.example)).
 
 </details>
 
@@ -124,10 +124,10 @@ Configuration files necessary to operate the server:
 
 These examples are included for quick setup:
 
-- [`log_config.xml.example`](https://github.com/emagi/eq2emu/blob/main/server/log_config.xml.example)
-- [`login_db.ini.example`](https://github.com/emagi/eq2emu/blob/main/server/login_db.ini.example)
-- [`world_db.ini.example`](https://github.com/emagi/eq2emu/blob/main/server/world_db.ini.example)
-- [`server_config.json.example`](https://github.com/emagi/eq2emu/blob/main/server/server_config.json.example)
+- [`log_config.xml.example`](https://github.com/dlukt/eq2emu/blob/main/server/log_config.xml.example)
+- [`login_db.ini.example`](https://github.com/dlukt/eq2emu/blob/main/server/login_db.ini.example)
+- [`world_db.ini.example`](https://github.com/dlukt/eq2emu/blob/main/server/world_db.ini.example)
+- [`server_config.json.example`](https://github.com/dlukt/eq2emu/blob/main/server/server_config.json.example)
 
 </details>
 

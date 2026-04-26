@@ -11,4 +11,4 @@ None
 
 **Notes:**
 - Lists out the known languages for the Player with the line "You know the following languages:" followed by the language name.
-- See https://github.com/emagi/eq2emu/blob/main/docs/data_types/skills.md and https://github.com/emagi/eq2emu/blob/main/docs/data_types/languages.md for the language lists.
+- See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/skills.md and https://github.com/dlukt/eq2emu/blob/main/docs/data_types/languages.md for the language lists.

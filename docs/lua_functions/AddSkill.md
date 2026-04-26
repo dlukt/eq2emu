@@ -15,7 +15,7 @@
 **Example:**
 
 ```lua
--- For SkillID refer to the skills table https://github.com/emagi/eq2emu/blob/main/docs/data_types/skills.md
+-- For SkillID refer to the skills table https://github.com/dlukt/eq2emu/blob/main/docs/data_types/skills.md
 -- Example usage (teach the player the “Gnollish” language skill)
 AddSkill(Player, GNOLLISH_LANGUAGE_SKILL_ID)
 ```

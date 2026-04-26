@@ -1,7 +1,7 @@
 ### Function: SetInfoStructString(spawn, field, value)
 
 **Description:**
-Sets the string field to the value provided.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/info_struct.md for field types.
+Sets the string field to the value provided.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/info_struct.md for field types.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.

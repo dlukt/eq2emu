@@ -1,7 +1,7 @@
 ### Function: GetInfoStructString(spawn, field)
 
 **Description:**
-Retrieves a string field from the spawn’s info data structure. The info struct contains various attributes of a spawn (like name, last name, guild, etc.). FieldName is the identifier of the string field.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
+Retrieves a string field from the spawn’s info data structure. The info struct contains various attributes of a spawn (like name, last name, guild, etc.). FieldName is the identifier of the string field.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.

@@ -6,9 +6,9 @@ PREMAKE5_PKG="https://github.com/premake/premake-core/releases/download/v5.0.0-b
 PREMAKE5_FILE="premake-5.0.0-beta2-linux.tar.gz"
 RECAST_GIT="https://github.com/recastnavigation/recastnavigation.git"
 FMT_GIT="https://github.com/fmtlib/fmt.git"
-EQ2SOURCE_GIT="https://github.com/emagi/eq2emu.git"
-EQ2CONTENT_GIT="https://github.com/emagi/eq2emu-content.git"
-EQ2MAPS_GIT="https://github.com/emagi/eq2emu-maps.git"
+EQ2SOURCE_GIT="https://github.com/dlukt/eq2emu.git"
+EQ2CONTENT_GIT="https://github.com/dlukt/eq2emu-content.git"
+EQ2MAPS_GIT="https://github.com/dlukt/eq2emu-maps.git"
 
 log() {
     echo "$(date +"%Y-%m-%d %H:%M:%S") - $1" | tee -a "$LOG_FILE"

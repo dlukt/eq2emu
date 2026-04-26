@@ -13,7 +13,7 @@
 **Example:**
 
 ```lua
--- See item stat types for BonusType ID's: https://raw.githubusercontent.com/emagi/eq2emu/refs/heads/main/docs/data_types/item_stat_types.md
+-- See item stat types for BonusType ID's: https://raw.githubusercontent.com/dlukt/eq2emu/refs/heads/main/docs/data_types/item_stat_types.md
 -- Spell Script Example usage (increase NPC's defense by 50 temporarily during spell's lifetime)
 function cast(Caster, Target)
     AddSpawnSpellBonus(Target, 106, 50.0)

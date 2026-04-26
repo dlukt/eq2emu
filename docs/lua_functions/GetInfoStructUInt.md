@@ -1,7 +1,7 @@
 ### Function: GetInfoStructUInt(spawn, field)
 
 **Description:**
-Retrieves an unsigned integer field from a spawn’s info struct. This can include things like level, model type, gender, etc.  See https://github.com/emagi/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
+Retrieves an unsigned integer field from a spawn’s info struct. This can include things like level, model type, gender, etc.  See https://github.com/dlukt/eq2emu/blob/main/docs/data_types/info_struct.md for a full list of options.
 
 **Parameters:**
 - `spawn` (Spawn) - Spawn object representing `spawn`.
