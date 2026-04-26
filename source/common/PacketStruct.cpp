@@ -34,6 +34,31 @@
 extern ConfigReader configReader;
 using namespace std;
 
+static OpcodeManager* GetPacketStructOpcodeManager(int16 client_version, int16* opcode_version = NULL) {
+	int16 resolved_version = GetOpcodeVersion(client_version);
+	if (opcode_version)
+		*opcode_version = resolved_version;
+
+	map<int16, OpcodeManager*>::iterator itr = EQOpcodeManager.find(resolved_version);
+	if (itr == EQOpcodeManager.end() || !itr->second)
+		return NULL;
+
+	return itr->second;
+}
+
+static OpcodeManager* GetPacketStructNameManager() {
+	map<int16, OpcodeManager*>::iterator itr = EQOpcodeManager.find(0);
+	if (itr != EQOpcodeManager.end() && itr->second)
+		return itr->second;
+
+	for (itr = EQOpcodeManager.begin(); itr != EQOpcodeManager.end(); itr++) {
+		if (itr->second)
+			return itr->second;
+	}
+
+	return NULL;
+}
+
 DataStruct::DataStruct() {
 	item_size = 0;
 	type = 0;
@@ -1622,23 +1647,29 @@ int16 PacketStruct::GetOpcodeValue(int16 client_version) {
 		client_cmd = true;
 #endif
 	if (client_cmd) {
-		EmuOpcode sub_opcode = EQOpcodeManager[0]->NameSearch(GetOpcodeType());
+		OpcodeManager* name_manager = GetPacketStructNameManager();
+		if (!name_manager) {
+			LogWrite(PACKET__ERROR, 0, "Packet", "Could not resolve opcode type %s: no opcode manager is loaded.", GetOpcodeType());
+			return opcode;
+		}
+
+		EmuOpcode sub_opcode = name_manager->NameSearch(GetOpcodeType());
 		if (sub_opcode != OP_Unknown) { //numbers should be used at OpcodeTypes, define them!
-			OpcodeVersion = GetOpcodeVersion(client_version);
-			if (EQOpcodeManager.count(OpcodeVersion) > 0) {
-				opcode = EQOpcodeManager[OpcodeVersion]->EmuToEQ(sub_opcode);
+			OpcodeManager* opcode_manager = GetPacketStructOpcodeManager(client_version, &OpcodeVersion);
+			if (opcode_manager) {
+				opcode = opcode_manager->EmuToEQ(sub_opcode);
 				if (opcode == 0xCDCD) {
-					LogWrite(PACKET__ERROR, 0, "Packet", "Could not find valid opcode for opcode: %s and client_version: %i", EQOpcodeManager[OpcodeVersion]->EmuToName(sub_opcode), client_version);
+					LogWrite(PACKET__ERROR, 0, "Packet", "Could not find valid opcode for opcode: %s and client_version: %i", opcode_manager->EmuToName(sub_opcode), client_version);
 				}
 			}
 		}		
 	}
 	else {
-		OpcodeVersion = GetOpcodeVersion(client_version);
-		if (EQOpcodeManager.count(OpcodeVersion) > 0) {
-			opcode = EQOpcodeManager[OpcodeVersion]->EmuToEQ(GetOpcode());
+		OpcodeManager* opcode_manager = GetPacketStructOpcodeManager(client_version, &OpcodeVersion);
+		if (opcode_manager) {
+			opcode = opcode_manager->EmuToEQ(GetOpcode());
 			if (opcode == 0xCDCD) {
-				LogWrite(PACKET__ERROR, 0, "Packet", "Could not find valid opcode for opcode: %s and client_version: %i", EQOpcodeManager[OpcodeVersion]->EmuToName(GetOpcode()), client_version);
+				LogWrite(PACKET__ERROR, 0, "Packet", "Could not find valid opcode for opcode: %s and client_version: %i", opcode_manager->EmuToName(GetOpcode()), client_version);
 			}
 		}
 	}
@@ -1831,7 +1862,8 @@ void PacketStruct::serializePacket(bool clear) {
 		int32 size = client_data.length() + 3; //gotta add the opcode and oversized
 		int8 oversized = 0xFF;
 		int16 OpcodeVersion = GetOpcodeVersion(client_version);
-		if (opcode_val == EQOpcodeManager[OpcodeVersion]->EmuToEQ(OP_EqExamineInfoCmd) && client_version > 561)
+		OpcodeManager* opcode_manager = GetPacketStructOpcodeManager(client_version, &OpcodeVersion);
+		if (opcode_manager && opcode_val == opcode_manager->EmuToEQ(OP_EqExamineInfoCmd) && client_version > 561)
 			size += (size - 9);
 		if (client_version <= 374) {
 			if (size >= 255) {
@@ -2256,7 +2288,15 @@ EQ2_EquipmentItem PacketStruct::getType_EQ2_EquipmentItem(DataStruct* data_struc
 }
 
 bool PacketStruct::SetOpcode(const char* new_opcode) {
-	opcode = EQOpcodeManager[0]->NameSearch(new_opcode);
+	OpcodeManager* name_manager = GetPacketStructNameManager();
+	if (!name_manager) {
+#ifndef MINILOGIN
+		LogWrite(PACKET__ERROR, 0, "Packet", "Warning: PacketStruct '%s' uses opcode named '%s', but no opcode manager is loaded.", GetName(), new_opcode);
+#endif
+		return false;
+	}
+
+	opcode = name_manager->NameSearch(new_opcode);
 	if (opcode == OP_Unknown) {
 #ifndef MINILOGIN
 		LogWrite(PACKET__ERROR, 0, "Packet", "Warning: PacketStruct '%s' uses an unknown opcode named '%s', this struct cannot be serialized directly.", GetName(), new_opcode);

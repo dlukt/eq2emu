@@ -269,12 +269,24 @@ bool NetConnection::ReadLoginConfig() {
 
 	LogWrite(INIT__INFO, 0, "Init", "Loading opcodes 2.0..");
 	EQOpcodeVersions = database.GetVersions();
+	if (EQOpcodeVersions.empty()) {
+		LogWrite(INIT__ERROR, 0, "Init", "No opcode version ranges were loaded from the login database. Make sure the login opcodes table is populated.");
+		return false;
+	}
+
 	map<int16,int16>::iterator version_itr2;
 	int16 version1 = 0;
 	for (version_itr2 = EQOpcodeVersions.begin(); version_itr2 != EQOpcodeVersions.end(); version_itr2++) {
 		version1 = version_itr2->first;
 		EQOpcodeManager[version1] = new RegularOpcodeManager();
 		map<string, uint16> eq = database.GetOpcodes(version1);
+		if (eq.empty()) {
+			LogWrite(INIT__ERROR, 0, "Init", "No opcodes were loaded for login client version range %i-%i.", version_itr2->first, version_itr2->second);
+			safe_delete(EQOpcodeManager[version1]);
+			EQOpcodeManager.erase(version1);
+			return false;
+		}
+
 		if(!EQOpcodeManager[version1]->LoadOpcodes(&eq)) {
 			LogWrite(INIT__ERROR, 0, "Init", "Loading opcodes failed. Make sure you have sourced the opcodes.sql file!");
 			return false;

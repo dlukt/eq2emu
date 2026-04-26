@@ -41,6 +41,7 @@
 #include "../Tradeskills/Tradeskills.h"
 #include "../../common/Log.h"
 #include "../../common/MiscFunctions.h"
+#include "../../common/string_util.h"
 #include "../Languages.h"
 #include "../Traits/Traits.h"
 #include "../Chat/Chat.h"

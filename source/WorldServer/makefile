@@ -18,8 +18,8 @@ APP			= eq2world
 Lua_C_Flags	= -DLUA_COMPAT_ALL -DLUA_USE_LINUX
 Lua_W_Flags	= -Wall
 
-C_Flags		= -I/eq2emu/fmt/include -I/eq2emu/recastnavigation/Detour/Include -I/usr/include/mariadb -I/usr/local/include/boost -I/usr/include/glm -I/usr/include/lua5.4 -march=native -pipe -pthread -std=c++17
-LD_Flags	= -L/usr/lib/x86_64-linux-gnu -lmariadb -lz -lpthread -L/eq2emu/recastnavigation/RecastDemo/Build/gmake2/lib/Debug -lDebugUtils -lDetour -lDetourCrowd -lDetourTileCache -lRecast -llua5.4-c++ -llua5.4 -L/usr/local/lib -rdynamic -lm -Wl,-E -ldl -lreadline -lssl -lcrypto -lboost_system -lboost_filesystem -lboost_iostreams -lboost_regex -lboost_program_options
+C_Flags		= -I/home/eq2emu/fmt/include -I/home/eq2emu/recastnavigation/Detour/Include -I/usr/include/mysql -I/usr/local/include/boost -I/usr/include/glm -I/usr/include/lua5.4 -march=native -pipe -pthread -std=c++17
+LD_Flags	= -L/usr/lib -lmariadb -lz -lpthread -L/home/eq2emu/recastnavigation/RecastDemo/Build/gmake2/lib/Debug -lDebugUtils -lDetour -lDetourCrowd -lDetourTileCache -lRecast -llua++5.4 -llua5.4 -L/usr/local/lib -rdynamic -lm -Wl,-E -ldl -lreadline -lssl -lcrypto -lboost_filesystem -lboost_iostreams -lboost_regex -lboost_program_options
 
 # World flags
 W_Flags		= -Wall -Wno-reorder
@@ -43,7 +43,7 @@ endif
 # File lists
 World_Source		= $(wildcard $(Source_Dir)/WorldServer/*.cpp) $(wildcard $(Source_Dir)/WorldServer/*/*.cpp)
 World_Objects		= $(patsubst %.cpp,$(Current_Build_Dir)/%.o,$(subst $(Source_Dir)/,,$(World_Source)))
-Common_Source		= $(wildcard $(Source_Dir)/common/*.cpp) $(wildcard $(Source_Dir)/common/*/*.cpp)
+Common_Source		= $(filter-out $(Source_Dir)/common/test_sha512.cpp $(Source_Dir)/common/tests/%, $(wildcard $(Source_Dir)/common/*.cpp) $(wildcard $(Source_Dir)/common/*/*.cpp))
 Common_Objects		= $(patsubst %.cpp,$(Current_Build_Dir)/%.o,$(subst $(Source_Dir)/,,$(Common_Source)))
 Lua_Source			= $(wildcard $(Source_Dir)/LUA/*.c)
 Lua_Objects			= $(patsubst %.c,$(Current_Build_Dir)/%.o,$(subst $(Source_Dir)/,,$(Lua_Source)))

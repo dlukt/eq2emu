@@ -389,7 +389,7 @@ bool LoginServer::Process() {
 				zone_auth.PurgeInactiveAuth();
 				string characterName = database.GetCharacterName( utwr->char_id );
 				if(!characterName.empty()){
-					ZoneAuthRequest* zar = new ZoneAuthRequest(utwr->lsaccountid,characterName.c_str(),access_key);
+					ZoneAuthRequest* zar = new ZoneAuthRequest(utwr->lsaccountid,(char*)characterName.c_str(),access_key);
 					zar->setFirstLogin ( true );
 					zone_auth.AddAuth(zar);
 				}

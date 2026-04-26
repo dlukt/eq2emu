@@ -37,6 +37,18 @@ extern map<int16,OpcodeManager*>EQOpcodeManager;
 
 uint8 EQApplicationPacket::default_opcode_size=2;
 
+static OpcodeManager* GetOpcodeManagerForVersion(int16 version, int16* opcode_version = NULL) {
+	int16 resolved_version = GetOpcodeVersion(version);
+	if (opcode_version)
+		*opcode_version = resolved_version;
+
+	map<int16, OpcodeManager*>::iterator itr = EQOpcodeManager.find(resolved_version);
+	if (itr == EQOpcodeManager.end() || !itr->second)
+		return NULL;
+
+	return itr->second;
+}
+
 EQPacket::EQPacket(const uint16 op, const unsigned char *buf, uint32 len)
 {
 	this->opcode=op;
@@ -56,18 +68,19 @@ EQPacket::EQPacket(const uint16 op, const unsigned char *buf, uint32 len)
 }
 
 const char* EQ2Packet::GetOpcodeName() {
-	int16 OpcodeVersion = GetOpcodeVersion(version);
-	if (EQOpcodeManager.count(OpcodeVersion) > 0)
-		return EQOpcodeManager[OpcodeVersion]->EmuToName(login_op);
-	else
-		return NULL;
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version);
+	if (opcode_manager)
+		return opcode_manager->EmuToName(login_op);
+
+	return NULL;
 }
 
 int8 EQ2Packet::PreparePacket(int16 MaxLen) {
-	int16 OpcodeVersion = GetOpcodeVersion(version);
+	int16 OpcodeVersion = 0;
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version, &OpcodeVersion);
 
 	// stops a crash for incorrect version
-	if (EQOpcodeManager.count(OpcodeVersion) == 0)
+	if (!opcode_manager)
 	{
 		LogWrite(PACKET__ERROR, 0, "Packet", "Version %i is not listed in the opcodes table.", version);
 		return -1;
@@ -75,10 +88,10 @@ int8 EQ2Packet::PreparePacket(int16 MaxLen) {
 
 	packet_prepared = true;
 
-	int16 login_opcode = EQOpcodeManager[OpcodeVersion]->EmuToEQ(login_op);
+	int16 login_opcode = opcode_manager->EmuToEQ(login_op);
 	if (login_opcode == 0xcdcd)
 	{
-		LogWrite(PACKET__ERROR, 0, "Packet", "Version %i is not listed in the opcodes table for opcode %s", version, EQOpcodeManager[OpcodeVersion]->EmuToName(login_op));
+		LogWrite(PACKET__ERROR, 0, "Packet", "Version %i is not listed in the opcodes table for opcode %s", version, opcode_manager->EmuToName(login_op));
 		return -1;
 	}
 	
@@ -185,11 +198,11 @@ void EQPacket::DumpRawHeader(uint16 seq, FILE* to) const
 }
 
 const char* EQPacket::GetOpcodeName(){
-	int16 OpcodeVersion = GetOpcodeVersion(version);
-	if(EQOpcodeManager.count(OpcodeVersion) > 0)
-		return EQOpcodeManager[OpcodeVersion]->EQToName(opcode);
-	else
-		return NULL;
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version);
+	if(opcode_manager)
+		return opcode_manager->EQToName(opcode);
+
+	return NULL;
 }
 void EQPacket::DumpRawHeaderNoTime(uint16 seq, FILE *to) const
 {
@@ -203,9 +216,9 @@ void EQPacket::DumpRawHeaderNoTime(uint16 seq, FILE *to) const
 		fprintf(to, "[Seq=%u] ",seq);
 	
 	string name;
-	int16 OpcodeVersion = GetOpcodeVersion(version);
-	if(EQOpcodeManager.count(OpcodeVersion) > 0)
-		name = EQOpcodeManager[OpcodeVersion]->EQToName(opcode);
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version);
+	if(opcode_manager)
+		name = opcode_manager->EQToName(opcode);
 	
 	fprintf(to, "[OpCode 0x%04x (%s) Size=%u]\n",opcode,name.c_str(),size);
 }
@@ -433,7 +446,15 @@ void EQApplicationPacket::SetOpcode(EmuOpcode emu_op) {
 		return;
 	}
 
-	opcode = EQOpcodeManager[GetOpcodeVersion(version)]->EmuToEQ(emu_op);
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version);
+	if(!opcode_manager) {
+		LogWrite(PACKET__ERROR, 0, "Packet", "Unable to convert Emu opcode %s (%d): no opcode manager for client version %i.", OpcodeNames[emu_op], emu_op, version);
+		opcode = 0;
+		emu_opcode = OP_Unknown;
+		return;
+	}
+
+	opcode = opcode_manager->EmuToEQ(emu_op);
 	
 	if(opcode == OP_Unknown) {
 		LogWrite(PACKET__DEBUG, 0, "Packet", "Unable to convert Emu opcode %s (%d) into an EQ opcode.", OpcodeNames[emu_op], emu_op);
@@ -452,7 +473,13 @@ const EmuOpcode EQApplicationPacket::GetOpcodeConst() const {
 	}
 
 	EmuOpcode emu_op;
-	emu_op = EQOpcodeManager[GetOpcodeVersion(version)]->EQToEmu(opcode);
+	OpcodeManager* opcode_manager = GetOpcodeManagerForVersion(version);
+	if(!opcode_manager) {
+		LogWrite(PACKET__ERROR, 0, "Packet", "Unable to convert EQ opcode 0x%.4X (%i): no opcode manager for client version %i.", opcode, opcode, version);
+		return OP_Unknown;
+	}
+
+	emu_op = opcode_manager->EQToEmu(opcode);
 	if(emu_op == OP_Unknown) {
 		LogWrite(PACKET__DEBUG, 1, "Packet", "Unable to convert EQ opcode 0x%.4X (%i) to an emu opcode (%s)", opcode, opcode, __FUNCTION__);
 	}
@@ -658,5 +685,4 @@ void DumpPacket(const EQApplicationPacket* app, bool iShowInfo) {
 void DumpPacketBin(const EQApplicationPacket* app) {
 	DumpPacketBin(app->pBuffer, app->size);
 }
-
 

@@ -200,6 +200,11 @@ int main(int argc, char** argv) {
 
 	LogWrite(WORLD__DEBUG, 1, "World", "-Loading opcodes...");
 	EQOpcodeVersions = database.GetVersions();
+	if (EQOpcodeVersions.empty()) {
+		LogWrite(INIT__ERROR, 0, "Init", "No opcode version ranges were loaded from the world database. Make sure the world opcodes table is populated.");
+		return false;
+	}
+
 	map<int16,int16>::iterator version_itr;
 	int16 version1 = 0;
 	int16 prevVersion = 0;
@@ -209,6 +214,13 @@ int main(int argc, char** argv) {
 		version1 = version_itr->first;
 		EQOpcodeManager[version1] = new RegularOpcodeManager();
 		map<string, uint16> eq = database.GetOpcodes(version1);
+		if (eq.empty()) {
+			LogWrite(INIT__ERROR, 0, "Init", "No opcodes were loaded for world client version range %i-%i.", version_itr->first, version_itr->second);
+			safe_delete(EQOpcodeManager[version1]);
+			EQOpcodeManager.erase(version1);
+			return false;
+		}
+
 		std::string missingOpcodesList = std::string("");
 		if(!EQOpcodeManager[version1]->LoadOpcodes(&eq, &missingOpcodesList)) {
 			LogWrite(INIT__ERROR, 0, "Init", "Loading opcodes failed. Make sure you have sourced the opcodes.sql file!");

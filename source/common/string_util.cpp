@@ -83,9 +83,31 @@ std::string str_tolower(std::string s)
 	return s;
 }
 
+namespace {
+std::vector<std::string> SplitStringInternal(const std::string &str, char delim) {
+	std::vector<std::string> ret;
+	ret.reserve(str.length() / 8 + 1);
+
+	size_t start = 0;
+	size_t end = str.find(delim);
+
+	while (end != std::string::npos) {
+		ret.emplace_back(str, start, end - start);
+		start = end + 1;
+		end = str.find(delim, start);
+	}
+
+	if (start < str.length()) {
+		ret.emplace_back(str, start, str.length() - start);
+	}
+
+	return ret;
+}
+} // anonymous namespace
+
 std::vector<std::string> split(const std::string &str_to_split, char delimiter)
 {
-	return SplitString(str_to_split, delimiter);
+	return SplitStringInternal(str_to_split, delimiter);
 }
 
 std::string str_toupper(std::string s)
@@ -113,30 +135,6 @@ std::string StringFormat(const char *format, ...)
 	std::string output = vStringFormat(format, args);
 	va_end(args);
 	return output;
-}
-
-std::vector<std::string> SplitString(const std::string &str, char delim) {
-	std::vector<std::string> ret;
-	ret.reserve(str.length() / 8 + 1); // Conservative reservation to reduce reallocations
-
-	size_t start = 0;
-	size_t end = str.find(delim);
-
-	while (end != std::string::npos) {
-		ret.emplace_back(str, start, end - start);
-		start = end + 1;
-		end = str.find(delim, start);
-	}
-
-	// Append the remainder, but match getline behavior which ignores the trailing empty token
-	// if the string ends with the delimiter.
-	if (start < str.length()) {
-		ret.emplace_back(str, start, str.length() - start);
-	}
-	// Note: If str is empty, or ends with delim (start == len), we add nothing,
-	// which matches stringstream/getline behavior for this loop.
-
-	return ret;
 }
 
 std::string implode(const std::string &glue, const std::vector<std::string> &src)
@@ -278,7 +276,7 @@ void find_replace(std::string &string_subject, const std::string &search_string,
 
 void ParseAccountString(const std::string &s, std::string &account, std::string &loginserver)
 {
-	auto split = SplitString(s, ':');
+	auto split = SplitStringInternal(s, ':');
 	if (split.size() == 2) {
 		loginserver = split[0];
 		account = split[1];
